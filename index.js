@@ -83,6 +83,59 @@ app.post(APIPREFIX + '/playlist', (req, res) => {
   }
 });
 
+app.delete(APIPREFIX + "/playlist", (req,res) => {
+  const playlistId = req.body.playlistId;
+  const songDeleteIndex = req.body.songDeleteIndex;
+  const sid = req.body.sid;
+
+  if(playlistId !== undefined){
+    if(songDeleteIndex !== undefined){
+      if(sid !== undefined){
+        request({
+          url: 'https://connect.monstercat.com/v2/playlist/' + playlistId,
+          method: 'GET',
+          headers: {
+            'Cookie': 'connect.sid=' + sid
+          }
+        }, function(err, resp, body){
+          if(err){
+            res.send(err);
+          }else{
+            const jsonResponse = JSON.parse(body)
+            const trackArray = jsonResponse.tracks
+
+            const patchObject = {};
+
+            patchObject.tracks = trackArray;
+            patchObject.tracks[songDeleteIndex] = [];
+
+            request({
+              url: 'https://connect.monstercat.com/v2/playlist/' + playlistId,
+              method: 'PATCH',
+              headers: {
+                'Cookie': 'connect.sid=' + sid
+              },
+              json: patchObject
+            }, function(patchErr, patchResp, patchBody){
+              if(patchErr){
+                res.send(patchErr);
+              }else{
+                res.json((patchBody));
+              }
+            });
+          }
+        });
+      }else{
+        res.send("sid not specified");
+      }
+    }else{
+      res.send("songDeleteIndex not specified");
+    }
+  }else{
+    res.send("playlistId not specified");
+  }
+});
+
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
   const {key} = req.query;
 
