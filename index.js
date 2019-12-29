@@ -128,13 +128,13 @@ app.delete(APIPREFIX + "/playlist", (req,res) => {
                           res.json((patchBody));
                         }
                       });
-                    }
                   }else{
                     res.send("trackId not correct");
                   }
                 }else{
                   res.send("releaseId not correct");
                 }
+              }
               });
             }else{
               res.send("trackId not specified");
