@@ -107,7 +107,7 @@ app.delete(APIPREFIX + "/playlist", (req,res) => {
             const patchObject = {};
 
             patchObject.tracks = trackArray;
-            patchObject.tracks[songDeleteIndex] = [];
+            patchObject.tracks.splice(songDeleteIndex,1);
 
             request({
               url: 'https://connect.monstercat.com/v2/playlist/' + playlistId,
