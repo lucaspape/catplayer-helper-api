@@ -22,7 +22,7 @@ app.get(APIPREFIX + '/', (req, res) => {
   res.send("Hello world!!");
 });
 
-app.post(APIPREFIX + '/playlist', (req, res) => {
+app.post(APIPREFIX + '/playlist/addtrack', (req, res) => {
   const playlistId = req.body.playlistId;
   const newSong = req.body.newSong;
   const sid = req.body.sid;
@@ -83,7 +83,7 @@ app.post(APIPREFIX + '/playlist', (req, res) => {
   }
 });
 
-app.delete(APIPREFIX + "/playlist", (req,res) => {
+app.post(APIPREFIX + "/playlist/deletetrack", (req,res) => {
   const playlistId = req.body.playlistId;
   const songDelete = req.body.songDelete;
   const sid = req.body.sid;
