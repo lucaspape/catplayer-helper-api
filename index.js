@@ -89,7 +89,6 @@ app.delete(APIPREFIX + "/playlist", (req,res) => {
   const sid = req.body.sid;
 
   if(playlistId !== undefined){
-    if(songDeleteIndex !== undefined){
       if(sid !== undefined){
         if(songDelete.songDeleteIndex !== undefined){
           if(songDelete.releaseId !== undefined){
@@ -142,9 +141,6 @@ app.delete(APIPREFIX + "/playlist", (req,res) => {
           }else{
             res.send("releaseId not specified");
           }
-        }else{
-          res.send("songDeleteIndex not specified");
-        }
       }else{
         res.send("sid not specified");
       }
