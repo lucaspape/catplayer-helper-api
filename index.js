@@ -2,10 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const request = require('request');
+const fs = require('fs');
 
 const PORT = 5000
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1'
+
+const mApiKey = JSON.parse(fs.readFileSync('config.json')).mApiKey;
 
 const app = express();
 app.use(cors());
