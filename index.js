@@ -112,7 +112,7 @@ app.delete(APIPREFIX + "/playlist", (req,res) => {
 
                   if(patchObject.tracks[songDelete.songDeleteIndex].releaseId === songDelete.releaseId){
                     if(patchObject.tracks[songDelete.songDeleteIndex].trackId === songDelete.trackId){
-                      patchObject.tracks.splice(songDeleteIndex,1);
+                      patchObject.tracks.splice(songDelete.songDeleteIndex,1);
                       request({
                         url: 'https://connect.monstercat.com/v2/playlist/' + playlistId,
                         method: 'PATCH',
