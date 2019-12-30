@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const fs = require('fs');
 
-const PORT = 5000
+const PORT = 5000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/v1'
+const APIPREFIX = '/v1';
 
 const mApiKey = JSON.parse(fs.readFileSync('config.json')).mApiKey;
 
@@ -153,25 +153,11 @@ app.post(APIPREFIX + "/playlist/deletetrack", (req,res) => {
 });
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
-  const {key} = req.query;
-
-  if(key === mApiKey){
-   res.send(JSON.parse(fs.readFileSync('currentdata.json')));
-  }else{
-   res.status(403)
-   res.send("Wrong API key!");
-  }
+  res.send(JSON.parse(fs.readFileSync('currentdata.json')));
 });
 
 app.get(APIPREFIX + '/livecover', (req, res) => {
-  const {key} = req.query;
-
-  if(key === mApiKey){
-    res.sendFile(__dirname + '/cover.png');
-  }else{
-    res.status(403);
-    res.send("Wrong API key!");
-  }
+  res.sendFile(__dirname + '/cover.png');
 });
 
 app.listen(PORT, () => {
