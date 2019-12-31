@@ -65,7 +65,7 @@ var search = function(tempArtist, tempTitle){
       }
 
       var finalObject = similarityArray[0];
-      
+
       if(finalObject !== undefined){
         for(var i=1; i < similarityArray.length; i++){
           if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
@@ -171,6 +171,28 @@ var advancedSearch = function(tempTitle, tempArtist){
             }
           }
       });
+    }else{
+      //could not find
+      console.log('Could not find, using backup');
+
+      const backupObject = {
+        title: tempTitle,
+        version: '',
+        artist: tempArtist,
+        releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
+        artistSimilarity: 0
+      }
+
+      download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
+      });
+
+      fs.writeFileSync('currentdata.json', JSON.stringify(backupObject));
+
+      console.log('Done!');
+
+      setTimeout(function(){
+        recognize();
+      }, 3000);
     }
   }
 
