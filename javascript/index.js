@@ -8,8 +8,6 @@ const PORT = 5000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
 
-const mApiKey = JSON.parse(fs.readFileSync('config.json')).mApiKey;
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
