@@ -94,6 +94,73 @@ var search = function(tempArtist, tempTitle){
             recognize();
           }, 3000);
     }else{
+      searchArtist(tempTitle, tempArtist);
+    }
+  }
+});
+}
+
+var searchArtist = loopFunction(tempTitle, tempArtist){
+  console.log('Using artist search');
+
+  request({
+    url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempArtist + '&limit=50&skip=0&fields=&search=' + tempArtist,
+    method: 'GET'
+  }, function(err, resp, body){
+    if(err){
+
+    }else{
+      console.log('tempTitle: ' + tempTitle);
+      console.log('tempArtist: ' + tempArtist);
+
+      var respJson = JSON.parse(body);
+
+      var responseTrackArray = respJson.results;
+
+      var similarityArray = []
+
+      for(var i=0; i < responseTrackArray.length; i++){
+        var versionConfidence = 0.0;
+
+        if(responseTrackArray[i].version === '' || responseTrackArray[i].version === undefined){
+          versionConfidence = 100;
+        }
+
+        const similarityObject = {
+          title: responseTrackArray[i].title,
+          version: responseTrackArray[i].version,
+          artist: responseTrackArray[i].artistsTitle,
+          releaseId: responseTrackArray[i].release.id,
+          titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
+          artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
+          versionConfidence: versionConfidence
+        }
+
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
+
+        similarityArray[i] = similarityObject;
+      }
+
+      var finalObject = similarityArray[0];
+
+      if(finalObject !== undefined){
+        for(var i=1; i < similarityArray.length; i++){
+          if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
+            finalObject = similarityArray[i];
+          }
+        }
+
+          download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
+          });
+
+          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+
+          console.log('Done!');
+
+          setTimeout(function(){
+            recognize();
+          }, 3000);
+    }else{
       console.log('Using advanced search');
       advancedSearch(tempTitle, tempArtist);
     }
