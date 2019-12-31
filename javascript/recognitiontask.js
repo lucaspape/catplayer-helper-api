@@ -66,7 +66,7 @@ var search = function(tempArtist, tempTitle){
           releaseId: responseTrackArray[i].release.id,
           titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
           artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versioConfidence: versionSimilarity
+          versionConfidence: versionConfidence
         }
 
         similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
@@ -194,10 +194,10 @@ var advancedSearch = function(tempTitle, tempArtist){
         version: '',
         artist: tempArtist,
         releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
-        titleSimilarity: 0,
-        artistSimilarity: 0,
-        versionSimilarity: 0,
-        totalSimilarity: 0
+        titleConfidence: 0,
+        artistConfidence: 0,
+        versionConfidence: 0,
+        totalConfidence: 0
       }
 
       download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
