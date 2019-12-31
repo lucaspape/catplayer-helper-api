@@ -63,7 +63,7 @@ var search = function(tempArtist, tempTitle){
           versionSimilarity: similarity(responseTrackArray[i].version, '')
         }
 
-        similarityObject.totalSimilarity = similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity;
+        similarityObject.totalSimilarity = (similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity) / 3;
 
         similarityArray[i] = similarityObject;
       }
@@ -145,7 +145,7 @@ var advancedSearch = function(tempTitle, tempArtist){
               versionSimilarity: similarity(responseTrackArray[i].version, rest)
             }
 
-            similarityObject.totalSimilarity = similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity;
+            similarityObject.totalSimilarity = (similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity) / 3;
 
             similarityArray[i] = similarityObject;
           }
