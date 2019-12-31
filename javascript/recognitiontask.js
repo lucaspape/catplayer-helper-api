@@ -65,7 +65,7 @@ var search = function(tempArtist, tempTitle){
       }
 
       var finalObject = similarityArray[0];
-
+      
       if(finalObject !== undefined){
         for(var i=1; i < similarityArray.length; i++){
           if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
@@ -84,27 +84,98 @@ var search = function(tempArtist, tempTitle){
             recognize();
           }, 3000);
     }else{
-      console.log('Could not find, using backup');
-
-      const backupObject = {
-        title: tempTitle,
-        version: '',
-        artist: tempArtist,
-        releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
-        artistSimilarity: 0
-      }
-
-      download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-      });
-
-      fs.writeFileSync('currentdata.json', JSON.stringify(backupObject));
-
-      setTimeout(function(){
-        recognize();
-      }, 3000);
+      console.log('Using advanced search');
+      advancedSearch(tempTitle, tempArtist);
     }
   }
 });
+}
+
+//used if could not find track because version is in title
+var advancedSearch = function(tempTitle, tempArtist){
+  const splitTitle = tempTitle.split(' ');
+
+  var k = splitTitle.length;
+
+  var loopFunction = function(){
+    //LOOP THIS
+    if(k > 0){
+      var searchTerm = '';
+
+      for(var i=0; i<k; i++){
+        searchTerm = searchTerm + splitTitle[i];
+      }
+
+      console.log(searchTerm);
+
+      var rest = '';
+
+      for(var i=k; i < splitTitle.length; i++){
+        rest = splitTitle[i];
+      }
+
+      console.log(rest);
+
+      //search for that
+      request({
+        url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + searchTerm + '&limit=50&skip=0&fields=&search=' + searchTerm,
+        method: 'GET'
+      }, function(err, resp, body){
+        if(err){
+
+        }else{
+          var respJson = JSON.parse(body);
+
+          var responseTrackArray = respJson.results;
+
+          var similarityArray = []
+
+          for(var i=0; i < responseTrackArray.length; i++){
+            const similarityObject = {
+              title: responseTrackArray[i].title,
+              version: responseTrackArray[i].version,
+              artist: responseTrackArray[i].artistsTitle,
+              releaseId: responseTrackArray[i].release.id,
+              artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
+            }
+
+            similarityArray[i] = similarityObject;
+          }
+
+          var finalObject = similarityArray[0];
+
+          if(finalObject !== undefined){
+            for(var i=1; i < similarityArray.length; i++){
+              if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
+                finalObject = similarityArray[i];
+              }
+            }
+
+              download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
+              });
+
+              fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+
+              console.log('Done!');
+
+              setTimeout(function(){
+                recognize();
+              }, 3000);
+
+              //STOP LOOP
+            }else{
+              k--;
+
+                //CONTINUE LOOP
+              loopFunction();
+            }
+          }
+      });
+    }
+  }
+
+  //start loop
+  loopFunction();
 }
 
 var download = function(uri, filename, callback) {
