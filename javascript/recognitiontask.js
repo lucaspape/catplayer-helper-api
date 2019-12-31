@@ -53,10 +53,10 @@ var search = function(tempArtist, tempTitle){
       var similarityArray = []
 
       for(var i=0; i < responseTrackArray.length; i++){
-        var versionSimilarity = 0.0;
+        var versionConfidence = 0.0;
 
         if(responseTrackArray[i].version === '' || responseTrackArray[i].version === undefined){
-          versionSimilarity = 100;
+          versionConfidence = 100;
         }
 
         const similarityObject = {
@@ -64,12 +64,12 @@ var search = function(tempArtist, tempTitle){
           version: responseTrackArray[i].version,
           artist: responseTrackArray[i].artistsTitle,
           releaseId: responseTrackArray[i].release.id,
-          titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
-          artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionSimilarity: versionSimilarity
+          titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
+          artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
+          versioConfidence: versionSimilarity
         }
 
-        similarityObject.totalSimilarity = (similarityObject.titleSimilarity+similarityObject.artistSimilarity+similarityObject.versionSimilarity) / 3;
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
 
         similarityArray[i] = similarityObject;
       }
@@ -78,7 +78,7 @@ var search = function(tempArtist, tempTitle){
 
       if(finalObject !== undefined){
         for(var i=1; i < similarityArray.length; i++){
-          if(similarityArray[i].totalSimilarity > finalObject.totalSimilarity){
+          if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
             finalObject = similarityArray[i];
           }
         }
@@ -146,12 +146,12 @@ var advancedSearch = function(tempTitle, tempArtist){
               version: responseTrackArray[i].version,
               artist: responseTrackArray[i].artistsTitle,
               releaseId: responseTrackArray[i].release.id,
-              titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
-              artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-              versionSimilarity: similarity(responseTrackArray[i].version, rest)
+              titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
+              artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
+              versionConfidence: similarity(responseTrackArray[i].version, rest)
             }
 
-            similarityObject.totalSimilarity = (similarityObject.titleSimilarity+similarityObject.artistSimilarity+similarityObject.versionSimilarity) / 3;
+            similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
 
             similarityArray[i] = similarityObject;
           }
@@ -160,7 +160,7 @@ var advancedSearch = function(tempTitle, tempArtist){
 
           if(finalObject !== undefined){
             for(var i=1; i < similarityArray.length; i++){
-              if(similarityArray[i].totalSimilarity > finalObject.totalSimilarity){
+              if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
                 finalObject = similarityArray[i];
               }
             }
