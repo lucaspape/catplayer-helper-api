@@ -60,9 +60,10 @@ var search = function(tempArtist, tempTitle){
           releaseId: responseTrackArray[i].release.id,
           titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
           artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionSimilarity: similarity(responseTrackArray[i].version, ''),
-          totalSimilarity: titleSimilarity*artistSimilarity*versionSimilarity
+          versionSimilarity: similarity(responseTrackArray[i].version, '')
         }
+
+        similarityObject.totalSimilarity = similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity;
 
         similarityArray[i] = similarityObject;
       }
@@ -141,9 +142,10 @@ var advancedSearch = function(tempTitle, tempArtist){
               releaseId: responseTrackArray[i].release.id,
               titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
               artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-              versionSimilarity: similarity(responseTrackArray[i].version, rest),
-              totalSimilarity: titleSimilarity*artistSimilarity*versionSimilarity
+              versionSimilarity: similarity(responseTrackArray[i].version, rest)
             }
+
+            similarityObject.totalSimilarity = similarityObject.titleSimilarity*similarityObject.artistSimilarity*similarityObject.versionSimilarity;
 
             similarityArray[i] = similarityObject;
           }
