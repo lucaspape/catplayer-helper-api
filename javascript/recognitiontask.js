@@ -53,6 +53,12 @@ var search = function(tempArtist, tempTitle){
       var similarityArray = []
 
       for(var i=0; i < responseTrackArray.length; i++){
+        var versionSimilarity = 0.0;
+
+        if(responseTrackArray[i].version === '' || responseTrackArray[i].version === undefined){
+          versionSimilarity = 100;
+        }
+
         const similarityObject = {
           title: responseTrackArray[i].title,
           version: responseTrackArray[i].version,
@@ -60,7 +66,7 @@ var search = function(tempArtist, tempTitle){
           releaseId: responseTrackArray[i].release.id,
           titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
           artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionSimilarity: similarity(responseTrackArray[i].version, '')
+          versionSimilarity: versionSimilarity
         }
 
         similarityObject.totalSimilarity = (similarityObject.titleSimilarity+similarityObject.artistSimilarity+similarityObject.versionSimilarity) / 3;
@@ -230,7 +236,7 @@ function similarity(s1, s2) {
   if (longerLength == 0) {
     return 1.0;
   }
-  return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100;
+  return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
 }
 
 function editDistance(s1, s2) {
