@@ -230,7 +230,7 @@ function similarity(s1, s2) {
   if (longerLength == 0) {
     return 1.0;
   }
-  return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+  return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100;
 }
 
 function editDistance(s1, s2) {
