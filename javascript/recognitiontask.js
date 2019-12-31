@@ -84,7 +84,21 @@ var search = function(tempArtist, tempTitle){
             recognize();
           }, 3000);
     }else{
-      console.log('Could not find');
+      console.log('Could not find, using backup');
+
+      const backupObject = {
+        title: tempTitle,
+        version: '',
+        artist: tempArtist,
+        releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
+        artistSimilarity: 0
+      }
+
+      download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
+      });
+
+      fs.writeFileSync('currentdata.json', JSON.stringify(backupObject));
+
       setTimeout(function(){
         recognize();
       }, 3000);
