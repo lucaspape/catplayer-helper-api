@@ -60,7 +60,8 @@ var search = function(tempArtist, tempTitle){
           releaseId: responseTrackArray[i].release.id,
           titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
           artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionSimilarity: similarity(responseTrackArray[i].version, '')
+          versionSimilarity: similarity(responseTrackArray[i].version, ''),
+          totalSimilarity: titleSimilarity*artistSimilarity*versionSimilarity
         }
 
         similarityArray[i] = similarityObject;
@@ -70,7 +71,7 @@ var search = function(tempArtist, tempTitle){
 
       if(finalObject !== undefined){
         for(var i=1; i < similarityArray.length; i++){
-          if(similarityArray[i].artistSimilarity*similarityArray[i].versionSimilarity*similarityArray[i].titleSimilarity > finalObject.artistSimilarity*finalObject.versionSimilarity*finalObject.titleSimilarity){
+          if(similarityArray[i].totalSimilarity > finalObject.totalSimilarity){
             finalObject = similarityArray[i];
           }
         }
@@ -140,7 +141,8 @@ var advancedSearch = function(tempTitle, tempArtist){
               releaseId: responseTrackArray[i].release.id,
               titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
               artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-              versionSimilarity: similarity(responseTrackArray[i].version, rest)
+              versionSimilarity: similarity(responseTrackArray[i].version, rest),
+              totalSimilarity: titleSimilarity*artistSimilarity*versionSimilarity
             }
 
             similarityArray[i] = similarityObject;
@@ -150,7 +152,7 @@ var advancedSearch = function(tempTitle, tempArtist){
 
           if(finalObject !== undefined){
             for(var i=1; i < similarityArray.length; i++){
-              if(similarityArray[i].artistSimilarity*similarityArray[i].versionSimilarity*similarityArray[i].titleSimilarity > finalObject.artistSimilarity*finalObject.versionSimilarity*finalObject.titleSimilarity){
+              if(similarityArray[i].totalSimilarity > finalObject.totalSimilarity){
                 finalObject = similarityArray[i];
               }
             }
@@ -186,7 +188,8 @@ var advancedSearch = function(tempTitle, tempArtist){
         releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
         titleSimilarity: 0,
         artistSimilarity: 0,
-        versionSimilarity: 0
+        versionSimilarity: 0,
+        totalSimilarity: 0
       }
 
       download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
