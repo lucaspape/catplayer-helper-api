@@ -100,7 +100,7 @@ var search = function(tempArtist, tempTitle){
 });
 }
 
-var searchArtist = loopFunction(tempTitle, tempArtist){
+var searchArtist = function(tempTitle, tempArtist){
   console.log('Using artist search');
 
   request({
