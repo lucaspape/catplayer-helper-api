@@ -58,7 +58,9 @@ var search = function(tempArtist, tempTitle){
           version: responseTrackArray[i].version,
           artist: responseTrackArray[i].artistsTitle,
           releaseId: responseTrackArray[i].release.id,
-          artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
+          titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
+          artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
+          versionSimilarity: similarity(responseTrackArray[i].version, '')
         }
 
         similarityArray[i] = similarityObject;
@@ -68,7 +70,7 @@ var search = function(tempArtist, tempTitle){
 
       if(finalObject !== undefined){
         for(var i=1; i < similarityArray.length; i++){
-          if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
+          if(similarityArray[i].artistSimilarity*similarityArray[i].versionSimilarity*similarityArray[i].titleSimilarity > finalObject.artistSimilarity*finalObject.versionSimilarity*finalObject.titleSimilarity){
             finalObject = similarityArray[i];
           }
         }
@@ -136,7 +138,9 @@ var advancedSearch = function(tempTitle, tempArtist){
               version: responseTrackArray[i].version,
               artist: responseTrackArray[i].artistsTitle,
               releaseId: responseTrackArray[i].release.id,
-              artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
+              titleSimilarity: similarity(responseTrackArray[i].title, tempTitle),
+              artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist),
+              versionSimilarity: similarity(responseTrackArray[i].version, rest)
             }
 
             similarityArray[i] = similarityObject;
@@ -146,7 +150,7 @@ var advancedSearch = function(tempTitle, tempArtist){
 
           if(finalObject !== undefined){
             for(var i=1; i < similarityArray.length; i++){
-              if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
+              if(similarityArray[i].artistSimilarity*similarityArray[i].versionSimilarity*similarityArray[i].titleSimilarity > finalObject.artistSimilarity*finalObject.versionSimilarity*finalObject.titleSimilarity){
                 finalObject = similarityArray[i];
               }
             }
