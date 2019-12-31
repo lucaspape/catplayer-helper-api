@@ -42,6 +42,7 @@ var recognize = function(){
                       for(var i=0; i < responseTrackArray.length; i++){
                         const similarityObject = {
                           title: responseTrackArray[i].title,
+                          version: responseTrackArray[i].version,
                           artist: responseTrackArray[i].artistsTitle,
                           releaseId: responseTrackArray[i].release.id,
                           artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
@@ -50,7 +51,7 @@ var recognize = function(){
                         similarityArray[i] = similarityObject;
                       }
 
-                      const finalObject = similarityArray[0];
+                      var finalObject = similarityArray[0];
 
                       if(finalObject !== undefined){
                         for(var i=1; i < similarityArray.length; i++){
