@@ -2,92 +2,95 @@ const tesseract = require('node-tesseract-ocr');
 const request = require('request');
 const fs = require('fs');
 
+const tesseractOptions = {
+        l: 'eng',
+        psm: 6
+}
+
 var recognize = function(){
-    console.log('Updating...');
+  const dateNow = Date.now() / 1000;
 
-    var tesseractOptions = {
-            l: 'eng',
-            psm: 6
-    }
+  const titleFileName = 'recognition/title_' + dateNow + '.png';
+  const artistFileName = 'recognition/artist' + dateNow + '.png';
 
-    const dateNow = Date.now() / 1000;
+  //download the screenshots
 
-    const titleFileName = 'recognition/title_' + dateNow + '.png';
-    const artistFileName = 'recognition/artist' + dateNow + '.png';
+  download('http://192.168.227.10:4000/api/v1/title', titleFileName, function(){
+    download('http://192.168.227.10:4000/api/v1/artist', artistFileName, function(){
+      tesseract.recognize(artistFileName, tesseractOptions)
+          .then(artist => {
+            var tempArtist = artist.replace('\n\u000c', '');
+            tesseract.recognize(titleFileName, tesseractOptions)
+              .then(title => {
+                var tempTitle = title.replace('\n\u000c', '');
 
-    try{
-    download('http://192.168.227.10:4000/api/v1/title', titleFileName, function(){
-      download('http://192.168.227.10:4000/api/v1/artist', artistFileName, function(){
-        tesseract.recognize(artistFileName, tesseractOptions)
-            .then(artist => {
-              var tempArtist = artist.replace('\n\u000c', '');
+                //search for the song
+                search(tempArtist, tempTitle);
 
-              tesseract.recognize(titleFileName, tesseractOptions)
-                .then(title => {
-                  var tempTitle = title.replace('\n\u000c', '');
-
-                  request({
-                    url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempTitle + '&limit=50&skip=0&fields=&search=' + tempTitle,
-                    method: 'GET'
-                  }, function(err, resp, body){
-                    if(err){
-
-                    }else{
-                      const respJson = JSON.parse(body);
-
-                      const responseTrackArray = respJson.results;
-
-                      const similarityArray = []
-
-                      for(var i=0; i < responseTrackArray.length; i++){
-                        const similarityObject = {
-                          title: responseTrackArray[i].title,
-                          version: responseTrackArray[i].version,
-                          artist: responseTrackArray[i].artistsTitle,
-                          releaseId: responseTrackArray[i].release.id,
-                          artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
-                        }
-
-                        similarityArray[i] = similarityObject;
-                      }
-
-                      var finalObject = similarityArray[0];
-
-                      if(finalObject !== undefined){
-                        for(var i=1; i < similarityArray.length; i++){
-                          if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
-                            finalObject = similarityArray[i];
-                          }
-                        }
-
-                        download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-                        });
-
-                        fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
-
-                        console.log('Done!');
-
-                        fs.unlinkSync(titleFileName);
-                        fs.unlinkSync(artistFileName);
-
-                        setTimeout(function(){
-                          recognize();
-                        }, 3000);
-                      }
-                    }
-                  });
-
-       }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
-       }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
+                fs.unlinkSync(titleFileName);
+                fs.unlinkSync(artistFileName);
+              }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
+           }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
       });
-    });
+  });
+}
 
-    }catch(err){
-      console.log(err);
-      fs.unlinkSync(titleFileName);
-      fs.unlinkSync(artistFileName);
-      recognize();
+var search = function(tempArtist, tempTitle){
+  request({
+    url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempTitle + '&limit=50&skip=0&fields=&search=' + tempTitle,
+    method: 'GET'
+  }, function(err, resp, body){
+    if(err){
+
+    }else{
+      console.log('tempTitle: ' + tempTitle);
+      console.log('tempArtist: ' + tempArtist);
+
+      var respJson = JSON.parse(body);
+
+      var responseTrackArray = respJson.results;
+
+      var similarityArray = []
+
+      for(var i=0; i < responseTrackArray.length; i++){
+        const similarityObject = {
+          title: responseTrackArray[i].title,
+          version: responseTrackArray[i].version,
+          artist: responseTrackArray[i].artistsTitle,
+          releaseId: responseTrackArray[i].release.id,
+          artistSimilarity: similarity(responseTrackArray[i].artistsTitle, tempArtist)
+        }
+
+        similarityArray[i] = similarityObject;
+      }
+
+      var finalObject = similarityArray[0];
+
+      if(finalObject !== undefined){
+        for(var i=1; i < similarityArray.length; i++){
+          if(similarityArray[i].artistSimilarity > finalObject.artistSimilarity){
+            finalObject = similarityArray[i];
+          }
+        }
+
+          download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
+          });
+
+          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+
+          console.log('Done!');
+
+          setTimeout(function(){
+            recognize();
+          }, 3000);
+    }else{
+      console.log('Could not find');
+      setTimeout(function(){
+        recognize();
+      }, 3000);
     }
+  }
+});
 }
 
 var download = function(uri, filename, callback) {
