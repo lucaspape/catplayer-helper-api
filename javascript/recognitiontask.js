@@ -184,7 +184,9 @@ var advancedSearch = function(tempTitle, tempArtist){
         version: '',
         artist: tempArtist,
         releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
-        artistSimilarity: 0
+        titleSimilarity: 0,
+        artistSimilarity: 0,
+        versionSimilarity: 0
       }
 
       download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
