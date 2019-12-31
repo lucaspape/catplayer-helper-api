@@ -69,7 +69,7 @@ var search = function(tempArtist, tempTitle){
           versionConfidence: versionConfidence
         }
 
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
 
         similarityArray[i] = similarityObject;
       }
@@ -136,7 +136,7 @@ var searchArtist = function(tempTitle, tempArtist){
           versionConfidence: versionConfidence
         }
 
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
 
         similarityArray[i] = similarityObject;
       }
