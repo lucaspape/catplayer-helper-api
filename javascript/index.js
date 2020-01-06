@@ -20,6 +20,10 @@ app.get(APIPREFIX + '/', (req, res) => {
   res.send("Hello world!!");
 });
 
+app.get(APIPREFIX + '/playlist/public', (req,res) =>{
+  res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
+});
+
 app.post(APIPREFIX + '/playlist/addtrack', (req, res) => {
   const playlistId = req.body.playlistId;
   const newSong = req.body.newSong;
