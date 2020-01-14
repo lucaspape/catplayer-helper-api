@@ -15,8 +15,8 @@ var recognize = function(){
 
   //download the screenshots
 
-  download('http://192.168.227.10:4000/api/v1/title', titleFileName, function(){
-    download('http://192.168.227.10:4000/api/v1/artist', artistFileName, function(){
+  download('http://192.168.227.2:4000/api/v1/title', titleFileName, function(){
+    download('http://192.168.227.2:4000/api/v1/artist', artistFileName, function(){
       tesseract.recognize(artistFileName, tesseractOptions)
           .then(artist => {
             var tempArtist = artist.replace('\n\u000c', '');
