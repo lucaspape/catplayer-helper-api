@@ -3,6 +3,13 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const request = require('request');
 const fs = require('fs');
+const lowdb = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const logAdapter = new FileSync('express-log.json');
+const logDB = lowdb(logAdapter);
+logDB.defaults({ requests: []})
+  .write();
 
 const PORT = 5000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
@@ -16,15 +23,27 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get(APIPREFIX + '/', (req, res) => {
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/'})
+    .write();
+
   res.status(418);
   res.send("Hello world!!");
 });
 
 app.get(APIPREFIX + '/playlist/public', (req,res) =>{
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/playlist/public'})
+    .write();
+
   res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
 });
 
 app.post(APIPREFIX + '/playlist/addtrack', (req, res) => {
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/playlist/addtrack'})
+    .write();
+
   const playlistId = req.body.playlistId;
   const newSong = req.body.newSong;
   const sid = req.body.sid;
@@ -86,6 +105,10 @@ app.post(APIPREFIX + '/playlist/addtrack', (req, res) => {
 });
 
 app.post(APIPREFIX + "/playlist/deletetrack", (req,res) => {
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/playlist/deletetrack'})
+    .write();
+
   const playlistId = req.body.playlistId;
   const songDelete = req.body.songDelete;
   const sid = req.body.sid;
@@ -155,11 +178,11 @@ app.post(APIPREFIX + "/playlist/deletetrack", (req,res) => {
 });
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
-  res.send(JSON.parse(fs.readFileSync('currentdata.json')));
-});
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/liveinfo'})
+    .write();
 
-app.get(APIPREFIX + '/livecover', (req, res) => {
-  res.sendFile(__dirname + '/cover.png');
+  res.send(JSON.parse(fs.readFileSync('currentdata.json')));
 });
 
 app.listen(PORT, () => {
