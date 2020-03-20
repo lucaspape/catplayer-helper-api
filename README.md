@@ -32,7 +32,7 @@ sid | monstercat connect sid (for authentication)
 
 GET /liveinfo
 
-Get livestream info of the (twitch)[https://www.twitch.tv/monstercat] livestream
+Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
 
 Sample response:
 
