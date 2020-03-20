@@ -9,7 +9,7 @@ docker build -t lucaspape/catplayer-helper-api .
 ```
 and
 ```
-docker run -p 5000:5000 -d lucaspape/catplayer-helper-api
+docker-compose up -d
 ```
 
 # Available methods:
