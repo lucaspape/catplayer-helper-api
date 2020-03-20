@@ -36,7 +36,7 @@ Get livestream info of the (twitch)[https://www.twitch.tv/monstercat] livestream
 
 Sample response:
 
-´´´
+```
 {
   title	"Borneo"
   version	""
@@ -47,5 +47,5 @@ Sample response:
   artistConfidence	87.5
   versionConfidence	100
   totalConfidence	81.25
-}
-´´´
+ }
+```
