@@ -272,7 +272,7 @@ var advancedSearch = function(tempTitle, tempArtist){
         version: '',
         artist: tempArtist,
         releaseId: '',
-        artistId: ''
+        artistId: '',
         titleConfidence: 0,
         artistConfidence: 0,
         versionConfidence: 0,
