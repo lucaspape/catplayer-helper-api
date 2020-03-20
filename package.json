@@ -15,6 +15,6 @@
     "https": "^1.0.0",
     "lowdb": "^1.0.0",
     "node-tesseract-ocr": "^1.0.0",
-    "request": "^2.88.0"
+    "request": "^2.88.2"
   }
 }
