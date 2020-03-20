@@ -8,12 +8,14 @@ services:
     ports:
       - "5000:5000"
     working_dir: /app/
+    restart: always
     volumes:
       - static-content:/app
   recg:
     build: .
     command: node javascript/recognitiontask.js
     working_dir: /app/
+    restart: always
     volumes:
       - static-content:/app
 
