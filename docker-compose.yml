@@ -1,8 +1,8 @@
-version: '1'
+version: '3'
 services:
   web:
     build: .
-    command: 'bash -c scripts/run-api.sh'
+    command: 'bash -c bash scripts/run-api.sh'
     environment:
       PORT: 5000  
     ports:
