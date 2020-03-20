@@ -13,7 +13,7 @@ services:
       - static-content:/app
   recg:
     build: .
-    command: node javascript/recognitiontask.js
+    command: node javascript/image-recognition.js
     working_dir: /app/
     restart: always
     volumes:
