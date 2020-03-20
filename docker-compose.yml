@@ -1,0 +1,23 @@
+web:
+  build: .
+  command: 'bash -c ''bash scripts/run-api.sh'''
+  working_dir: /app/user
+  environment:
+    PORT: 5000
+  ports:
+    - '5000:5000'
+recg:
+  build: .
+  command: 'bash -c ''bash scripts/run-recg.sh'''
+  working_dir: /app/user
+  environment:
+shell:
+  build: .
+  command: bash
+  working_dir: /app/user
+  environment:
+    PORT: 8080
+  ports:
+    - '8080:8080'
+  volumes:
+    - '.:/app/user'

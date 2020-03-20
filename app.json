@@ -1,0 +1,5 @@
+{
+  "name": "catplayer-helper-api",
+  "description": "Helper api for the catplayer app",
+  "image": "heroku/nodejs"
+}
