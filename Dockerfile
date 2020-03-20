@@ -7,4 +7,3 @@ RUN npm install
 COPY . .
 EXPOSE 5000
 RUN mkdir recognition/
-CMD bash scripts/run-api.sh & bash scripts/run-recg.sh
