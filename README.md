@@ -36,7 +36,7 @@ Get livestream info of the (twitch)[https://www.twitch.tv/monstercat] livestream
 
 Sample response:
 
-'''
+´´´
 {
   title	"Borneo"
   version	""
@@ -48,4 +48,4 @@ Sample response:
   versionConfidence	100
   totalConfidence	81.25
 }
-'''
+´´´
