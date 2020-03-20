@@ -2,11 +2,15 @@ version: '3'
 services:
   web:
     build: .
-    command: 'bash -c bash scripts/run-api.sh'
+    command: node javascript/index.js
     environment:
-      PORT: 5000  
+      PORT: 5000
     ports:
       - "5000:5000"
+    volumes:
+      - './app/'
   recg:
     build: .
-    command: 'bash -c bash scripts/run-recg.sh'
+    command: node javascript/recognitiontask.js
+    volumes:
+      - './app/'
