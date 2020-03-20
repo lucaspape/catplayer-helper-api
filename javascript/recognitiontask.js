@@ -64,6 +64,7 @@ var search = function(tempArtist, tempTitle){
           version: responseTrackArray[i].version,
           artist: responseTrackArray[i].artistsTitle,
           releaseId: responseTrackArray[i].release.id,
+          artistId: responseTrackArray[i].artists[0].id,
           titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
           artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
           versionConfidence: versionConfidence
@@ -94,7 +95,9 @@ var search = function(tempArtist, tempTitle){
             recognize();
           }, 3000);
     }else{
-      searchArtist(tempTitle, tempArtist);
+      setTimeout(function(){
+        searchArtist(tempTitle, tempArtist);
+      }, 100);
     }
   }
 });
@@ -131,6 +134,7 @@ var searchArtist = function(tempTitle, tempArtist){
           version: responseTrackArray[i].version,
           artist: responseTrackArray[i].artistsTitle,
           releaseId: responseTrackArray[i].release.id,
+          artistId: responseTrackArray[i].artists[0].id,
           titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
           artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
           versionConfidence: versionConfidence
@@ -162,7 +166,10 @@ var searchArtist = function(tempTitle, tempArtist){
           }, 3000);
     }else{
       console.log('Using advanced search');
-      advancedSearch(tempTitle, tempArtist);
+
+      setTimeout(function(){
+        advancedSearch(tempTitle, tempArtist);
+      }, 100);
     }
   }
 });
@@ -213,6 +220,7 @@ var advancedSearch = function(tempTitle, tempArtist){
               version: responseTrackArray[i].version,
               artist: responseTrackArray[i].artistsTitle,
               releaseId: responseTrackArray[i].release.id,
+              artistId: responseTrackArray[i].artists[0].id,
               titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
               artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
               versionConfidence: similarity(responseTrackArray[i].version, rest)
@@ -247,8 +255,11 @@ var advancedSearch = function(tempTitle, tempArtist){
             }else{
               k--;
 
-                //CONTINUE LOOP
-              loopFunction();
+              //CONTINUE LOOP
+
+              setTimeout(function(){
+                loopFunction();;
+              }, 100);
             }
           }
       });
@@ -260,7 +271,8 @@ var advancedSearch = function(tempTitle, tempArtist){
         title: tempTitle,
         version: '',
         artist: tempArtist,
-        releaseId: 'dc7d8a07-0603-4580-9005-2a534f02edd8',
+        releaseId: '',
+        artistId: ''
         titleConfidence: 0,
         artistConfidence: 0,
         versionConfidence: 0,
