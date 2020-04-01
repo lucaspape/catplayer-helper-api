@@ -14,22 +14,6 @@ docker-compose up -d
 
 # Available methods:
 
-POST /playlist/addtrack
-
-Request field | Description
--------------|------------
-playlistId | id of playlist the track will be added to
-newSong | jsonObject with releaseId and trackId
-sid | monstercat connect sid (for authentication)
-
-POST /playlist/deletetrack
-
-Request field | Description
--------------|------------
-playlistId | id of playlist the track will be added to
-songDelete | jsonObject with releaseId, trackId and songDeleteIndex
-sid | monstercat connect sid (for authentication)
-
 GET /liveinfo
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
@@ -38,14 +22,64 @@ Sample response:
 
 ```
 {
-  title	"Borneo"
-  version	""
-  artist	"Wolfgang Gartner & Aero Chord"
-  releaseId	"d946c222-5bc3-499b-993a-75930a802705"
-  artistId	"fd1cc546-0f93-49be-a9b8-f1a3d4e1dbe7"
-  titleConfidence	75
-  artistConfidence	87.5
-  versionConfidence	100
-  totalConfidence	81.25
- }
+  "title": "Boom Bap",
+  "version": "",
+  "artist": "Matroda",
+  "track": {
+    "artists": [
+      {
+        "id": "a20733d2-bc82-4a18-9642-4e7f00ff63db",
+        "name": "Matroda",
+        "public": true,
+        "role": "Primary",
+        "uri": "matroda"
+      }
+    ],
+    "artistsTitle": "Matroda",
+    "bpm": 125,
+    "creatorFriendly": true,
+    "debutDate": "2018-03-05T03:00:51-05:00",
+    "downloadable": false,
+    "duration": 264,
+    "explicit": false,
+    "genrePrimary": "Dance",
+    "genreSecondary": "House",
+    "id": "999a17f4-bcd6-4d5c-9eba-8632a2fe487f",
+    "inEarlyAccess": false,
+    "isrc": "CA6D21800039",
+    "playlistSort": 0,
+    "release": {
+      "artistsTitle": "Monstercat",
+      "catalogId": "MCUV5",
+      "id": "aebba702-628c-4f55-8ffb-02e31f11bd39",
+      "releaseDate": "2018-08-16T03:00:00-04:00",
+      "tags": null,
+      "title": "Monstercat Uncaged Vol. 5",
+      "type": "Album",
+      "upc": "703980542613"
+    },
+    "streamable": true,
+    "tags": [
+      "Upbeat",
+      "Bass",
+      "Dancey",
+      "EDM",
+      "House",
+      "electro",
+      "Energetic",
+      "Dirty",
+      "Anthemic",
+      "vocal chop",
+      "groovy",
+      "explosive"
+    ],
+    "title": "Boom Bap",
+    "trackNumber": 30,
+    "version": ""
+  },
+  "titleConfidence": 6.666666666666667,
+  "artistConfidence": 77.77777777777779,
+  "versionConfidence": 100,
+  "totalConfidence": 42.22222222222223
+}
 ```
