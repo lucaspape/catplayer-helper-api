@@ -24,7 +24,7 @@ var recognize = function(){
     if(config.override[i].day === dayName){
       const currentHour = new Date().getHours();
 
-      if(currentHour >= config.override[i].time && currentHour <= config.override[i].time+config.override[i].length){
+      if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
         fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
         return;
       }
