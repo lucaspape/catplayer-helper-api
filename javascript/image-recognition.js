@@ -6,14 +6,13 @@ const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
 
 var recognize = function(){
+  //download the screenshots
   const dateNow = Date.now() / 1000;
 
   const titleFileName = 'recognition/title_' + dateNow + '.png';
   const artistFileName = 'recognition/artist' + dateNow + '.png';
 
-  //download the screenshots
-
-  downloadImages(function(){
+  downloadImages(titleFileName, artistFileName, function(){
     recognizeText(artistFileName, function(artistText){
       recognizeText(titleFileName, function(titleText){
         search(artistText, titleText);
@@ -29,7 +28,7 @@ var recognize = function(){
   });
 }
 
-var downloadImages = function(downloadFinishedCallback){
+var downloadImages = function(titleFileName, artistFileName, downloadFinishedCallback){
     download(titleImageUrl, titleFileName, function(){
       download(artistImageUrl, artistFileName, function(){
         downloadFinishedCallback();
