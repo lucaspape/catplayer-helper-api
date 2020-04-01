@@ -7,6 +7,9 @@ const tesseractOptions = {
         psm: 6
 }
 
+const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
+const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
+
 var recognize = function(){
   const dateNow = Date.now() / 1000;
 
@@ -15,8 +18,8 @@ var recognize = function(){
 
   //download the screenshots
 
-  download('http://192.168.227.2:4000/api/v1/title', titleFileName, function(){
-    download('http://192.168.227.2:4000/api/v1/artist', artistFileName, function(){
+  download(titleImageUrl, titleFileName, function(){
+    download(artistImageUrl, artistFileName, function(){
       tesseract.recognize(artistFileName, tesseractOptions)
           .then(artist => {
             var tempArtist = artist.replace('\n\u000c', '');
