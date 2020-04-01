@@ -18,6 +18,8 @@ GET /liveinfo
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
 
+Warning: the track can be missing in the response if the track could not be found or a livestream event is currenly ongoing!
+
 Sample response:
 
 ```
