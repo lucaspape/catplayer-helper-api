@@ -2,11 +2,6 @@ const tesseract = require('node-tesseract-ocr');
 const request = require('request');
 const fs = require('fs');
 
-const tesseractOptions = {
-        l: 'eng',
-        psm: 6
-}
-
 const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
 
@@ -18,24 +13,72 @@ var recognize = function(){
 
   //download the screenshots
 
-  download(titleImageUrl, titleFileName, function(){
-    download(artistImageUrl, artistFileName, function(){
-      tesseract.recognize(artistFileName, tesseractOptions)
-          .then(artist => {
-            var tempArtist = artist.replace('\n\u000c', '');
-            tesseract.recognize(titleFileName, tesseractOptions)
-              .then(title => {
-                var tempTitle = title.replace('\n\u000c', '');
+  downloadImages(function(){
+    recognizeText(artistFileName, function(artistText){
+      recognizeText(titleFileName, function(titleText){
+        search(artistText, titleText);
 
-                //search for the song
-                search(tempArtist, tempTitle);
-
-                fs.unlinkSync(titleFileName);
-                fs.unlinkSync(artistFileName);
-              }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
-           }).catch((error) => {console.log(error); fs.unlinkSync(titleFileName); fs.unlinkSync(artistFileName); recognize();});
+        fs.unlinkSync(titleFileName);
+        fs.unlinkSync(artistFileName);
+      }, function(){
+        recognize();
       });
+    }, function(){
+      recognize();
+    });
   });
+}
+
+var downloadImages = function(downloadFinishedCallback){
+    download(titleImageUrl, titleFileName, function(){
+      download(artistImageUrl, artistFileName, function(){
+        downloadFinishedCallback();
+      });
+    });
+}
+
+const tesseractOptions = {
+        l: 'eng',
+        psm: 6
+}
+
+var recognizeText(imagePath, finishedCallback, errorCallback){
+  tesseract.recognize(imagePath, tesseractOptions)
+    .then(text => {
+      finishedCallback(text.replace('\n\u000c', ''));
+    }).catch((error) => {console.log(error); fs.unlinkSync(imagePath); errorCallback();
+}
+
+var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence){
+  var similarityArray = []
+
+  for(var i=0; i < trackArray.length; i++){
+    var versionConfidence = 0.0;
+
+    if(trackArray[i].version === '' || trackArray[i].version === undefined){
+      versionConfidence = 100;
+    }
+
+    const similarityObject = {
+      title: trackArray[i].title,
+      version: trackArray[i].version,
+      artist: trackArray[i].artistsTitle,
+      track: trackArray[i],
+      titleConfidence: similarity(trackArray[i].title, tempTitle),
+      artistConfidence: similarity(trackArray[i].artistsTitle, tempArtist),
+      versionConfidence: versionConfidence
+    }
+
+    if(includeVersionConfidence){
+      similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
+    }else{
+      similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
+    }
+
+    similarityArray[i] = similarityObject;
+  }
+
+   return similarityArray.sort((a,b) => (a.totalConfidence > b.totalConfidence) ? 1 : -1);
 }
 
 var search = function(tempArtist, tempTitle){
@@ -53,51 +96,19 @@ var search = function(tempArtist, tempTitle){
 
       var responseTrackArray = respJson.results;
 
-      var similarityArray = []
-
-      for(var i=0; i < responseTrackArray.length; i++){
-        var versionConfidence = 0.0;
-
-        if(responseTrackArray[i].version === '' || responseTrackArray[i].version === undefined){
-          versionConfidence = 100;
-        }
-
-        const similarityObject = {
-          title: responseTrackArray[i].title,
-          version: responseTrackArray[i].version,
-          artist: responseTrackArray[i].artistsTitle,
-          track: responseTrackArray[i],
-          titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
-          artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionConfidence: versionConfidence
-        }
-
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
-
-        similarityArray[i] = similarityObject;
-      }
-
-      var finalObject = similarityArray[0];
+      const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
+      const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
-        for(var i=1; i < similarityArray.length; i++){
-          if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
-            finalObject = similarityArray[i];
-          }
-        }
+        fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
-          download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-          });
+        console.log('Done!');
 
-          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
-
-          console.log('Done!');
-
-          setTimeout(function(){
-            recognize();
-          }, 3000);
-    }else{
-      setTimeout(function(){
+        setTimeout(function(){
+          recognize();
+        }, 3000);
+      }else{
+        setTimeout(function(){
         searchArtist(tempTitle, tempArtist);
       }, 100);
     }
@@ -122,42 +133,10 @@ var searchArtist = function(tempTitle, tempArtist){
 
       var responseTrackArray = respJson.results;
 
-      var similarityArray = []
-
-      for(var i=0; i < responseTrackArray.length; i++){
-        var versionConfidence = 0.0;
-
-        if(responseTrackArray[i].version === '' || responseTrackArray[i].version === undefined){
-          versionConfidence = 100;
-        }
-
-        const similarityObject = {
-          title: responseTrackArray[i].title,
-          version: responseTrackArray[i].version,
-          artist: responseTrackArray[i].artistsTitle,
-          track: responseTrackArray[i],
-          titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
-          artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-          versionConfidence: versionConfidence
-        }
-
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
-
-        similarityArray[i] = similarityObject;
-      }
-
-      var finalObject = similarityArray[0];
+      const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
+      const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
-        for(var i=1; i < similarityArray.length; i++){
-          if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
-            finalObject = similarityArray[i];
-          }
-        }
-
-          download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-          });
-
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
@@ -213,36 +192,10 @@ var advancedSearch = function(tempTitle, tempArtist){
 
           var responseTrackArray = respJson.results;
 
-          var similarityArray = []
-
-          for(var i=0; i < responseTrackArray.length; i++){
-            const similarityObject = {
-              title: responseTrackArray[i].title,
-              version: responseTrackArray[i].version,
-              artist: responseTrackArray[i].artistsTitle,
-              track: responseTrackArray[i],
-              titleConfidence: similarity(responseTrackArray[i].title, tempTitle),
-              artistConfidence: similarity(responseTrackArray[i].artistsTitle, tempArtist),
-              versionConfidence: similarity(responseTrackArray[i].version, rest)
-            }
-
-            similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
-
-            similarityArray[i] = similarityObject;
-          }
-
-          var finalObject = similarityArray[0];
+          const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, true);
+          const finalObject = similarityArray[0];
 
           if(finalObject !== undefined){
-            for(var i=1; i < similarityArray.length; i++){
-              if(similarityArray[i].totalConfidence > finalObject.totalConfidence){
-                finalObject = similarityArray[i];
-              }
-            }
-
-              download('https://connect.monstercat.com/v2/release/' + finalObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-              });
-
               fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
               console.log('Done!');
@@ -277,9 +230,6 @@ var advancedSearch = function(tempTitle, tempArtist){
         versionConfidence: 0,
         totalConfidence: 0
       }
-
-      download('https://connect.monstercat.com/v2/release/' + backupObject.releaseId + '/cover?image_width=512', 'cover.png', function(){
-      });
 
       fs.writeFileSync('currentdata.json', JSON.stringify(backupObject));
 
