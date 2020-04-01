@@ -1,7 +1,7 @@
 {
   "override": [
     {
-      "day:": "wednesday",
+      "day": "wednesday",
       "time": 20,
       "length": 1,
       "title": "COTWRadio",
