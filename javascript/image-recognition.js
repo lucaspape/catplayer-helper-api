@@ -67,8 +67,8 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
       version: trackArray[i].version,
       artist: trackArray[i].artistsTitle,
       track: trackArray[i],
-      titleConfidence: similarity(trackArray[i].title, tempTitle),
-      artistConfidence: similarity(trackArray[i].artistsTitle, tempArtist),
+      titleConfidence: similarity(trackArray[i].title, titleText),
+      artistConfidence: similarity(trackArray[i].artistsTitle, artistText),
       versionConfidence: versionConfidence
     }
 
