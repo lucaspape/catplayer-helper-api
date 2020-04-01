@@ -1,0 +1,17 @@
+{
+  "override": [
+    {
+      "day:": "wednesday",
+      "time": 22,
+      "length": 1,
+      "title": "COTWRadio",
+      "finalObject": {
+        "title": "Monstercat Call Of the Wild Radio",
+        "version": "",
+        "artist": "Monstercat",
+        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg",
+        "track": {}
+      }
+    }
+  ]
+}

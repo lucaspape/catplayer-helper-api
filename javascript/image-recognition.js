@@ -5,9 +5,32 @@ const fs = require('fs');
 const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
 
+var config = {};
+
+const configFile = 'configs/config_recognition.json';
+
+if(fs.existsSync(configFile)){
+  config = JSON.parse(fs.readFileSync(configFile));
+}
+
 var recognize = function(){
   //download the screenshots
   const dateNow = Date.now() / 1000;
+
+  var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  var d = new Date(dateString);
+  var dayName = days[d.getDay()];
+
+  for(var i=0; i<config.override.length; i++){
+    if(config.override[i].day === dayName){
+      const currentHour = new Date().getHours();
+
+      if(currentHour >= config.override[i].time && currentHour <= config.override[i].time+config.override[i].length){
+        fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
+        return;
+      }
+    }
+  }
 
   const titleFileName = 'recognition/title_' + dateNow + '.png';
   const artistFileName = 'recognition/artist' + dateNow + '.png';
