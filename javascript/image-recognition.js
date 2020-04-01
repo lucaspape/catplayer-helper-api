@@ -42,7 +42,7 @@ const tesseractOptions = {
         psm: 6
 }
 
-var recognizeText(imagePath, finishedCallback, errorCallback){
+var recognizeText = function(imagePath, finishedCallback, errorCallback){
   tesseract.recognize(imagePath, tesseractOptions)
     .then(text => {
       finishedCallback(text.replace('\n\u000c', ''));
