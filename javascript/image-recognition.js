@@ -249,7 +249,7 @@ var advancedSearch = function(tempTitle, tempArtist){
         title: tempTitle,
         version: '',
         artist: tempArtist,
-        track: {},
+        coverUrl: "https://assets.monstercat.com/artwork-fallback.jpg",
         titleConfidence: 0,
         artistConfidence: 0,
         versionConfidence: 0,
