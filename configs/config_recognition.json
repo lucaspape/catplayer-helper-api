@@ -11,6 +11,18 @@
         "artist": "Monstercat",
         "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
       }
+    },
+    {
+      "day": "thursday",
+      "time": 20,
+      "length": 1,
+      "title": "MCTV - Nonsens",
+      "finalObject": {
+        "title": "MCTV - Nonsens",
+        "version": "",
+        "artist": "",
+        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
+      }
     }
   ]
 }
