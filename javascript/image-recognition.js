@@ -50,7 +50,7 @@ var recognizeText = function(imagePath, finishedCallback, errorCallback){
       console.log(error);
       fs.unlinkSync(imagePath);
       errorCallback();
-    };
+    });
 }
 
 var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence){
