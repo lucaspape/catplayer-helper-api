@@ -46,7 +46,11 @@ var recognizeText = function(imagePath, finishedCallback, errorCallback){
   tesseract.recognize(imagePath, tesseractOptions)
     .then(text => {
       finishedCallback(text.replace('\n\u000c', ''));
-    }).catch((error) => {console.log(error); fs.unlinkSync(imagePath); errorCallback();
+    }).catch((error) => {
+      console.log(error);
+      fs.unlinkSync(imagePath);
+      errorCallback();
+    };
 }
 
 var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence){
