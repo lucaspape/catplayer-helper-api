@@ -18,8 +18,7 @@ var recognize = function(){
   const dateNow = Date.now() / 1000;
 
   var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  var d = new Date(dateString);
-  var dayName = days[d.getDay()];
+  var dayName = days[new Date().getDay()];
 
   for(var i=0; i<config.override.length; i++){
     if(config.override[i].day === dayName){
