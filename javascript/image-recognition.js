@@ -278,17 +278,21 @@ var download = function(uri, filename, callback) {
 recognize();
 
 function similarity(s1, s2) {
-  var longer = s1;
-  var shorter = s2;
-  if (s1.length < s2.length) {
-    longer = s2;
-    shorter = s1;
+  if(s1 !== undefined && s2 !== undefined){
+    var longer = s1;
+    var shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    var longerLength = longer.length;
+    if (longerLength == 0) {
+      return 1.0;
+    }
+    return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
+  }else{
+    return 0.0;
   }
-  var longerLength = longer.length;
-  if (longerLength == 0) {
-    return 1.0;
-  }
-  return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
 }
 
 function editDistance(s1, s2) {
