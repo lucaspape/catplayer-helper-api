@@ -25,7 +25,7 @@ var loadConfig = function(){
   if(fs.existsSync(recognitionConfigFile)){
     config = JSON.parse(fs.readFileSync(recognitionConfigFile));
   }
-  
+
   var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   var dayName = days[new Date().getDay()];
 
@@ -34,7 +34,7 @@ var loadConfig = function(){
       const currentHour = new Date().getHours();
 
       if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
-        if(config.override[i].config_override) !== undefined){
+        if(config.override[i].config_override !== undefined){
           configFile = 'config/' + config.override[i].config_override;
         }
       }

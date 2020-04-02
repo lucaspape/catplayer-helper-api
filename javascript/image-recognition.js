@@ -17,7 +17,7 @@ var loadConfig = function(){
 
 var recognize = function(){
   loadConfig();
-  
+
   //download the screenshots
   const dateNow = Date.now() / 1000;
 
@@ -29,7 +29,7 @@ var recognize = function(){
       const currentHour = new Date().getHours();
 
       if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
-        if(config.override[i].finalObject) !== undefined){
+        if(config.override[i].finalObject !== undefined){
           fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
           return;
         }
