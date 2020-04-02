@@ -1,4 +1,30 @@
 {
+  "additionalTracks": [
+    {
+      "artists": [
+        {
+          "id": "4d7e7854-16c2-475c-a4fc-826a29a7fc7d",
+          "name": "Infected Mushroom",
+          "public": true,
+          "role": "Primary",
+          "uri": "infectedmushroom"
+        }
+      ],
+      "artistsTitle": "Infected Mushroom",
+      "id": "RY7TkyNe_xUf-g",
+      "release": {
+        "artistsTitle": "Infected Mushroom",
+        "catalogId": "MC002",
+        "id": "574652322?collection=RY7TkyNe_xUf-g",
+        "title": "MCTV - Infected Mushroom Takeover"
+      },
+      "title": "MCTV - Infected Mushroom Takeover",
+      "trackNumber": 2,
+      "version": "",
+      "sortId": 1,
+      "streamUrl": "https://stream.lucaspape.de/monstercat/mc-tv/"
+    }
+  ],
   "tracks": [
     {
       "artists": [

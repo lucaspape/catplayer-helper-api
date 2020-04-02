@@ -6,6 +6,8 @@ const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
+const editKey = "test";
+
 const logAdapter = new FileSync('express-log.json');
 const logDB = lowdb(logAdapter);
 logDB.defaults({ requests: []})
@@ -13,7 +15,7 @@ logDB.defaults({ requests: []})
 
 const catalogDBAdapter = new FileSync('catalog-db.json');
 const catalogDB = lowdb(catalogDBAdapter);
-catalogDB.defaults({ tracks: []})
+catalogDB.defaults({ tracks: [], additionalTracks: []})
   .write();
 
 const PORT = 5000;
@@ -74,11 +76,60 @@ app.get(APIPREFIX + '/catalog/browse', (req,res) =>{
   }
 
   const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip+limit).value()
+
   var returnObject = {
     results : trackArray
   };
 
   res.send(returnObject);
+});
+
+app.get(APIPREFIX + '/catalog/browse/additional', (req,res) =>{
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/catalog/browse/additional'})
+    .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if(req.query.skip !== undefined){
+    skip = parseInt(req.query.skip);
+  }
+
+  if(req.query.limit !== undefined){
+    limit = parseInt(req.query.limit);
+
+    if(limit > 50){
+      limit = 50;
+    }
+  }
+
+  const trackArray = catalogDB.get('additionalTracks').sortBy('sortId').slice(skip, skip+limit).value()
+
+  var returnObject = {
+    results : trackArray
+  };
+
+  res.send(returnObject);
+});
+
+app.post(APIPREFIX + '/catalog/browse/additional', (req,res) =>{
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/catalog/browse/additional'})
+    .write();
+
+  const addition = req.body.addition;
+  const key = req.body.key;
+
+  if(addition !== undefined && key === editKey){
+      catalogDB.get('additionalTracks')
+        .push(addition)
+        .write();
+
+      res.send('OK');
+  }else{
+    res.send('Wrong key');
+  }
 });
 
 app.listen(PORT, () => {
