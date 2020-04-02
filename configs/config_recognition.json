@@ -22,8 +22,9 @@
         "version": "",
         "artist": "",
         "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
-      },
-      {
+      }
+    },
+    {
       "day": "thursday",
       "time": 13,
       "length": 2,
