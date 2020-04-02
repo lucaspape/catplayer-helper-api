@@ -58,23 +58,27 @@ app.get(APIPREFIX + '/catalog/browse', (req,res) =>{
     .push({ time: Math.floor(new Date()), url: '/catalog/browse'})
     .write();
 
-  var skip = parseInt(req.query.skip);
-  var limit = parseInt(req.query.limit);
+  var skip = 0;
+  var limit = 50;
 
-  if(skip === undefined){
-    skip = 0;
+  if(req.query.skip !== undefined){
+    skip = parseInt(req.query.skip);
   }
 
-  if(limit > 50 || limit === undefined){
-    limit = 50;
+  if(req.query.limit !== undefined){
+    limit = parseInt(req.query.limit);
+
+    if(limit > 50){
+      limit = 50;
+    }
   }
 
-  const trackArray = catalogDB.get('tracks').sortBy('sortId').value()
+  const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip+limit).value()
   var returnObject = {
-    results : trackArray.slice(skip, skip+limit)
+    results : trackArray
   };
 
-  res.send((returnObject));
+  res.send(returnObject);
 });
 
 app.listen(PORT, () => {
