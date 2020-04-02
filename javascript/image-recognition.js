@@ -121,7 +121,7 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
     }
   }
 
-   return similarityArray.sort((a,b) => (a.totalConfidence > b.totalConfidence) ? 1 : -1);
+   return similarityArray.sort((a,b) => (a.totalConfidence - b.totalConfidence));
 }
 
 var search = function(tempArtist, tempTitle){
