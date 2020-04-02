@@ -90,30 +90,35 @@ var recognizeText = function(imagePath, finishedCallback, errorCallback){
 var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence){
   var similarityArray = []
 
+  var arrayIndex = 0;
+
   for(var i=0; i < trackArray.length; i++){
-    var versionConfidence = 0.0;
+    if(trackArray[i] !== undefined){
+      var versionConfidence = 0.0;
 
-    if(trackArray[i].version === '' || trackArray[i].version === undefined){
-      versionConfidence = 100;
+      if(trackArray[i].version === '' || trackArray[i].version === undefined){
+        versionConfidence = 100;
+      }
+
+      const similarityObject = {
+        title: trackArray[i].title,
+        version: trackArray[i].version,
+        artist: trackArray[i].artistsTitle,
+        track: trackArray[i],
+        titleConfidence: similarity(trackArray[i].title, titleText),
+        artistConfidence: similarity(trackArray[i].artistsTitle, artistText),
+        versionConfidence: versionConfidence
+      }
+
+      if(includeVersionConfidence){
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
+      }else{
+        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
+      }
+
+      similarityArray[arrayIndex] = similarityObject;
+      arrayIndex++;
     }
-
-    const similarityObject = {
-      title: trackArray[i].title,
-      version: trackArray[i].version,
-      artist: trackArray[i].artistsTitle,
-      track: trackArray[i],
-      titleConfidence: similarity(trackArray[i].title, titleText),
-      artistConfidence: similarity(trackArray[i].artistsTitle, artistText),
-      versionConfidence: versionConfidence
-    }
-
-    if(includeVersionConfidence){
-      similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
-    }else{
-      similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
-    }
-
-    similarityArray[i] = similarityObject;
   }
 
    return similarityArray.sort((a,b) => (a.totalConfidence > b.totalConfidence) ? 1 : -1);
