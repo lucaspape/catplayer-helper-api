@@ -237,44 +237,30 @@ var advancedSearch = function(tempTitle, tempArtist){
           const finalObject = similarityArray[0];
 
           if(finalObject !== undefined){
-              fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+            if(finalObject.totalConfidence > minimumConfidence){
+                fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
-              console.log('Done!');
+                console.log('Done!');
 
-              setTimeout(function(){
-                recognize();
-              }, 3000);
+                setTimeout(function(){
+                  recognize();
+                }, 3000);
 
-              //STOP LOOP
-            }else{
-              k--;
-
-              //CONTINUE LOOP
-
-              setTimeout(function(){
-                loopFunction();;
-              }, 100);
+                //STOP LOOP
+                return;
+              }
             }
+            k--;
+
+            //CONTINUE LOOP
+            setTimeout(function(){
+              loopFunction();;
+            }, 100);
           }
       });
     }else{
       //could not find
-      console.log('Could not find, using backup');
-
-      const backupObject = {
-        title: tempTitle,
-        version: '',
-        artist: tempArtist,
-        coverUrl: "https://assets.monstercat.com/artwork-fallback.jpg",
-        titleConfidence: 0,
-        artistConfidence: 0,
-        versionConfidence: 0,
-        totalConfidence: 0
-      }
-
-      fs.writeFileSync('currentdata.json', JSON.stringify(backupObject));
-
-      console.log('Done!');
+      console.log('Could not find!');
 
       setTimeout(function(){
         recognize();
