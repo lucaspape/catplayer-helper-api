@@ -10,7 +10,7 @@ const recognitionConfigFile = 'configs/config_recognition.json';
 
 var config = {};
 
-const configFile = 'configs/config.json';
+var configFile = 'configs/config.json';
 
 var currentArtist = '';
 var currentTitle = '';
@@ -35,7 +35,7 @@ var loadConfig = function(){
 
       if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
         if(config.override[i].config_override !== undefined){
-          configFile = 'config/' + config.override[i].config_override;
+          configFile = 'configs/' + config.override[i].config_override;
         }
       }
     }
