@@ -48,7 +48,7 @@ var recognize = function(){
   downloadImages(titleFileName, artistFileName, function(){
     recognizeText(artistFileName, function(artistText){
       recognizeText(titleFileName, function(titleText){
-        console.log('Recognized text: ' artistText + " / " + titleText);
+        console.log('Recognized text: ' + artistText + " / " + titleText);
 
         search(artistText, titleText);
 
@@ -141,7 +141,7 @@ var search = function(tempArtist, tempTitle){
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
-          
+
           setTimeout(function(){
             recognize();
           }, 3000);
