@@ -92,6 +92,7 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
   const searchString = req.query.term;
 
   const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
+  const versionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
   const titleVersionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title + " " + track.version)).value();
   const artistArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
 
@@ -99,6 +100,10 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
 
   if(titleArray.length > 0){
     trackArray.push(...titleArray);
+  }
+
+  if(versionArray.length > 0){
+      trackArray.push(...versionArray);
   }
 
   if(titleVersionArray.length > 0){
