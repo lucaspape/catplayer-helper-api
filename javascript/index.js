@@ -75,7 +75,38 @@ app.get(APIPREFIX + '/catalog/browse', (req,res) =>{
     }
   }
 
-  const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip+limit).value()
+  const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip+limit).value();
+
+  var returnObject = {
+    results : trackArray
+  };
+
+  res.send(returnObject);
+});
+
+app.get(APIPREFIX + '/catalog/search', (req,res) =>{
+  logDB.get('requests')
+    .push({ time: Math.floor(new Date()), url: '/catalog/browse'})
+    .write();
+
+  const searchString = req.query.search;
+  var skip = 0;
+  var limit = 50;
+
+  if(req.query.skip !== undefined){
+    skip = parseInt(req.query.skip);
+  }
+
+  if(req.query.limit !== undefined){
+    limit = parseInt(req.query.limit);
+
+    if(limit > 50){
+      limit = 50;
+    }
+  }
+
+  const trackArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
+  trackArray.push(catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value());
 
   var returnObject = {
     results : trackArray
