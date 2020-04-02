@@ -98,15 +98,15 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
   const trackArray = [];
 
   if(titleArray.length > 0){
-    trackArray.push(titleArray);
+    trackArray.push(...titleArray);
   }
 
   if(titleVersionArray.length > 0){
-    trackArray.push(titleVersionArray);
+    trackArray.push(...titleVersionArray);
   }
 
   if(artistArray.length> 0){
-    trackArray.push(artistArray);
+    trackArray.push(...artistArray);
   }
 
   var returnObject = {
