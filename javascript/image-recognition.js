@@ -5,6 +5,8 @@ const fs = require('fs');
 const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
 
+var minimumConfidence = 35.0;
+
 var config = {};
 
 const configFile = 'configs/config_recognition.json';
@@ -131,7 +133,7 @@ var search = function(tempArtist, tempTitle){
       const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
-        if(finalObject.totalConfidence > 35){
+        if(finalObject.totalConfidence > minimumConfidence){
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
@@ -172,7 +174,7 @@ var searchArtist = function(tempTitle, tempArtist){
       const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
-        if(finalObject.totalConfidence > 35){
+        if(finalObject.totalConfidence > minimumConfidence){
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
