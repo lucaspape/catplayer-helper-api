@@ -20,6 +20,8 @@ var loadConfig = function(){
 var recognize = function(){
   loadConfig();
 
+  console.log('Config loaded!');
+
   //download the screenshots
   const dateNow = Date.now() / 1000;
 
@@ -32,6 +34,7 @@ var recognize = function(){
 
       if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
         if(config.override[i].finalObject !== undefined){
+          console.log('Override! Using custom object.');
           fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
           return;
         }
@@ -45,6 +48,8 @@ var recognize = function(){
   downloadImages(titleFileName, artistFileName, function(){
     recognizeText(artistFileName, function(artistText){
       recognizeText(titleFileName, function(titleText){
+        console.log('Recognized text: ' artistText + " / " + titleText);
+
         search(artistText, titleText);
 
         fs.unlinkSync(titleFileName);
@@ -115,16 +120,15 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
 }
 
 var search = function(tempArtist, tempTitle){
+  console.log('Searching...');
+
   request({
     url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempTitle + '&limit=50&skip=0&fields=&search=' + tempTitle,
     method: 'GET'
   }, function(err, resp, body){
     if(err){
-
+      console.log(err);
     }else{
-      console.log('tempTitle: ' + tempTitle);
-      console.log('tempArtist: ' + tempArtist);
-
       var respJson = JSON.parse(body);
 
       var responseTrackArray = respJson.results;
@@ -137,7 +141,7 @@ var search = function(tempArtist, tempTitle){
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
-
+          
           setTimeout(function(){
             recognize();
           }, 3000);
@@ -154,18 +158,15 @@ var search = function(tempArtist, tempTitle){
 }
 
 var searchArtist = function(tempTitle, tempArtist){
-  console.log('Using artist search');
+  console.log('Using artist search...');
 
   request({
     url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempArtist + '&limit=50&skip=0&fields=&search=' + tempArtist,
     method: 'GET'
   }, function(err, resp, body){
     if(err){
-
+      console.log(err);
     }else{
-      console.log('tempTitle: ' + tempTitle);
-      console.log('tempArtist: ' + tempArtist);
-
       var respJson = JSON.parse(body);
 
       var responseTrackArray = respJson.results;
@@ -187,8 +188,6 @@ var searchArtist = function(tempTitle, tempArtist){
         }
     }
 
-    console.log('Using advanced search');
-
     setTimeout(function(){
       advancedSearch(tempTitle, tempArtist);
     }, 100);
@@ -198,6 +197,8 @@ var searchArtist = function(tempTitle, tempArtist){
 
 //used if could not find track because version is in title
 var advancedSearch = function(tempTitle, tempArtist){
+  console.log('Advanced search...');
+
   const splitTitle = tempTitle.split(' ');
 
   var k = splitTitle.length;
@@ -211,15 +212,11 @@ var advancedSearch = function(tempTitle, tempArtist){
         searchTerm = searchTerm + splitTitle[i];
       }
 
-      console.log(searchTerm);
-
       var rest = '';
 
       for(var i=k; i < splitTitle.length; i++){
         rest = splitTitle[i];
       }
-
-      console.log(rest);
 
       //search for that
       request({
@@ -260,7 +257,7 @@ var advancedSearch = function(tempTitle, tempArtist){
       });
     }else{
       //could not find
-      console.log('Could not find!');
+      console.log('Could not find song!');
 
       setTimeout(function(){
         recognize();
