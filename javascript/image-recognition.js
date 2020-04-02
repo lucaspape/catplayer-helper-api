@@ -9,11 +9,15 @@ var config = {};
 
 const configFile = 'configs/config_recognition.json';
 
-if(fs.existsSync(configFile)){
-  config = JSON.parse(fs.readFileSync(configFile));
+var loadConfig = function(){
+  if(fs.existsSync(configFile)){
+    config = JSON.parse(fs.readFileSync(configFile));
+  }
 }
 
 var recognize = function(){
+  loadConfig();
+  
   //download the screenshots
   const dateNow = Date.now() / 1000;
 
@@ -25,8 +29,10 @@ var recognize = function(){
       const currentHour = new Date().getHours();
 
       if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
-        fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
-        return;
+        if(config.override[i].finalObject) !== undefined){
+          fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
+          return;
+        }
       }
     }
   }
