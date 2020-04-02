@@ -131,18 +131,22 @@ var search = function(tempArtist, tempTitle){
       const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
-        fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+        if(finalObject.totalConfidence > 35){
+          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
-        console.log('Done!');
+          console.log('Done!');
 
-        setTimeout(function(){
-          recognize();
-        }, 3000);
-      }else{
-        setTimeout(function(){
-        searchArtist(tempTitle, tempArtist);
-      }, 100);
-    }
+          setTimeout(function(){
+            recognize();
+          }, 3000);
+
+          return;
+        }
+      }
+
+      setTimeout(function(){
+      searchArtist(tempTitle, tempArtist);
+    }, 100);
   }
 });
 }
@@ -168,6 +172,7 @@ var searchArtist = function(tempTitle, tempArtist){
       const finalObject = similarityArray[0];
 
       if(finalObject !== undefined){
+        if(finalObject.totalConfidence > 35){
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
@@ -175,13 +180,16 @@ var searchArtist = function(tempTitle, tempArtist){
           setTimeout(function(){
             recognize();
           }, 3000);
-    }else{
-      console.log('Using advanced search');
 
-      setTimeout(function(){
-        advancedSearch(tempTitle, tempArtist);
-      }, 100);
+          return;
+        }
     }
+
+    console.log('Using advanced search');
+
+    setTimeout(function(){
+      advancedSearch(tempTitle, tempArtist);
+    }, 100);
   }
 });
 }
