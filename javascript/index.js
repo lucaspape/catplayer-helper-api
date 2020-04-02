@@ -131,7 +131,7 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
   }
 
   var returnObject = {
-    results : trackArray.sort((a,b) => (a.confidence - b.confidence)).reverse
+    results : trackArray.sort((a,b) => (a.confidence - b.confidence)).reverse()
   };
 
   res.send(returnObject);
