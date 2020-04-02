@@ -69,7 +69,7 @@ app.get(APIPREFIX + '/catalog/browse', (req,res) =>{
     limit = 50;
   }
 
-  const trackArray = catalogDB.get('tracks').value().reverse()
+  const trackArray = catalogDB.get('tracks').sortBy('sortId').value()
   var returnObject = {
     results : trackArray.slice(skip, skip+limit)
   };
@@ -115,10 +115,10 @@ var updateCatalogDatabase = function(){
             console.log(err);
           }else{
             var result = JSON.parse(body).results;
-            result.reverse();
 
             for(var i=0; i<result.length; i++){
               var track = result[i];
+              track.sortId = skip+i;
 
               for(var k=0; k<removeKeys.length; k++){
                 delete track[removeKeys[k]];
