@@ -27,14 +27,14 @@
     {
       "day": "thursday",
       "time": 17,
-      "length": 1,
+      "length": 2,
       "title": "Listening Party",
       "config_override" : "config_youtube.json"
     },
     {
       "day": "friday",
       "time": 19,
-      "length": 1,
+      "length": 2,
       "title": "Listening Party",
       "config_override" : "config_youtube.json"
     }
