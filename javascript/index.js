@@ -91,8 +91,18 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
 
   const searchString = req.query.term;
 
-  const trackArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
-  trackArray.push(catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value());
+  const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
+  const artistArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
+
+  const trackArray = [];
+
+  if(titleArray.length > 0){
+    trackArray.push(titleArray);
+  }
+
+  if(artistArray.length> 0){
+    trackArray.push(artistArray);
+  }
 
   var returnObject = {
     results : trackArray
