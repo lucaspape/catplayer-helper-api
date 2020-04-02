@@ -89,21 +89,7 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
     .push({ time: Math.floor(new Date()), url: '/catalog/browse'})
     .write();
 
-  const searchString = req.query.search;
-  var skip = 0;
-  var limit = 50;
-
-  if(req.query.skip !== undefined){
-    skip = parseInt(req.query.skip);
-  }
-
-  if(req.query.limit !== undefined){
-    limit = parseInt(req.query.limit);
-
-    if(limit > 50){
-      limit = 50;
-    }
-  }
+  const searchString = req.query.term;
 
   const trackArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
   trackArray.push(catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value());

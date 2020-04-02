@@ -123,7 +123,7 @@ var search = function(tempArtist, tempTitle){
   console.log('Searching...');
 
   request({
-    url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempTitle + '&limit=50&skip=0&fields=&search=' + tempTitle,
+    url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempTitle,
     method: 'GET'
   }, function(err, resp, body){
     if(err){
@@ -161,7 +161,7 @@ var searchArtist = function(tempTitle, tempArtist){
   console.log('Using artist search...');
 
   request({
-    url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + tempArtist + '&limit=50&skip=0&fields=&search=' + tempArtist,
+    url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempArtist,
     method: 'GET'
   }, function(err, resp, body){
     if(err){
@@ -220,7 +220,7 @@ var advancedSearch = function(tempTitle, tempArtist){
 
       //search for that
       request({
-        url: 'https://connect.monstercat.com/v2/catalog/browse?term=' + searchTerm + '&limit=50&skip=0&fields=&search=' + searchTerm,
+        url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + searchTerm,
         method: 'GET'
       }, function(err, resp, body){
         if(err){
