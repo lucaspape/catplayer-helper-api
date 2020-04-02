@@ -74,7 +74,7 @@ const tesseractOptions = {
 var recognizeText = function(imagePath, finishedCallback, errorCallback){
   tesseract.recognize(imagePath, tesseractOptions)
     .then(text => {
-      finishedCallback(text.replace(/[^ -~]+/g, ""));
+      finishedCallback(text.replace(/\n/g, " ").replace(/[^ -~]+/g, ""));
     }).catch((error) => {
       console.log(error);
       fs.unlinkSync(imagePath);
