@@ -89,7 +89,7 @@ app.get(APIPREFIX + '/catalog/search', (req,res) =>{
     .push({ time: Math.floor(new Date()), url: '/catalog/browse'})
     .write();
 
-  const searchString = req.query.term;
+  const searchString = req.query.term.replace(/[^ -~]+/g, "");
 
   const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
   const versionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
