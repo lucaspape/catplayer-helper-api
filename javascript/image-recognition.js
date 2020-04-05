@@ -128,7 +128,7 @@ var search = function(tempArtist, tempTitle) {
   console.log('Searching...');
 
   request({
-    url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempTitle,
+    url: 'http://database:6000/v1/catalog/search?term=' + tempTitle,
     method: 'GET'
   }, function(err, resp, body) {
     if (err) {
@@ -166,7 +166,7 @@ var searchArtist = function(tempTitle, tempArtist) {
   console.log('Using artist search...');
 
   request({
-    url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempArtist,
+    url: 'http://database:6000/v1/catalog/search?term=' + tempArtist,
     method: 'GET'
   }, function(err, resp, body) {
     if (err) {
@@ -225,7 +225,7 @@ var advancedSearch = function(tempTitle, tempArtist) {
 
       //search for that
       request({
-        url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + searchTerm,
+        url: 'http://database:6000/v1/catalog/search?term=' + searchTerm,
         method: 'GET'
       }, function(err, resp, body) {
         if (err) {
