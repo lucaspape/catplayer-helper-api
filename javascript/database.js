@@ -209,6 +209,14 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
+  dbAdapter = new FileSync('db.json');
+  db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   const searchString = req.query.term;
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
