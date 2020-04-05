@@ -3,6 +3,10 @@ services:
   database:
     build: .
     command: node javascript/database.js
+    environment:
+      PORT: 6000
+    ports:
+      - "6000:6000"
     working_dir: /app/
     volumes:
       - static-content:/app

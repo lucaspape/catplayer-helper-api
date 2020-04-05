@@ -13,13 +13,6 @@ logDB.defaults({
   })
   .write();
 
-const catalogDBAdapter = new FileSync('catalog-db.json');
-const catalogDB = lowdb(catalogDBAdapter);
-catalogDB.defaults({
-    tracks: []
-  })
-  .write();
-
 const PORT = 5000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
@@ -89,13 +82,17 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
     }
   }
 
-  const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
-
-  var returnObject = {
-    results: trackArray
-  };
-
-  res.send(returnObject);
+  request({
+      url: 'http://127.0.0.1:6000/v1/catalog/browse?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
@@ -108,97 +105,19 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
   const searchString = req.query.term.replace(/[^ -~]+/g, "");
 
-  const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
-  const versionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
-  const titleVersionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title + " " + track.version)).value();
-  const artistArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
-
-  const trackArray = [];
-
-  if (titleArray.length > 0) {
-    for (var i = 0; i < titleArray.length; i++) {
-      titleArray[i].confidence = similarity(titleArray[i].title, searchString);
-    }
-
-    trackArray.push(...titleArray);
-  }
-
-  if (versionArray.length > 0) {
-    for (var i = 0; i < versionArray.length; i++) {
-      versionArray[i].confidence = similarity(versionArray[i].version, searchString);
-    }
-
-    trackArray.push(...versionArray);
-  }
-
-  if (titleVersionArray.length > 0) {
-    for (var i = 0; i < titleVersionArray.length; i++) {
-      titleVersionArray[i].confidence = similarity(titleVersionArray[i].title + " " + titleVersionArray[i].title, searchString);
-    }
-
-    trackArray.push(...titleVersionArray);
-  }
-
-  if (artistArray.length > 0) {
-    for (var i = 0; i < artistArray.length; i++) {
-      artistArray[i].confidence = similarity(artistArray[i].artistsTitle, searchString);
-    }
-
-    trackArray.push(...artistArray);
-  }
-
-  var returnObject = {
-    results: trackArray.sort((a, b) => (a.confidence - b.confidence)).reverse()
-  };
-
-  res.send(returnObject);
+  request({
+      url: 'http://127.0.0.1:6000/v1/catalog/search?term=' + searchString,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
 });
 
 app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
-
-function similarity(s1, s2) {
-  if (s1 !== undefined && s2 !== undefined) {
-    var longer = s1;
-    var shorter = s2;
-    if (s1.length < s2.length) {
-      longer = s2;
-      shorter = s1;
-    }
-    var longerLength = longer.length;
-    if (longerLength == 0) {
-      return 1.0;
-    }
-    return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
-  } else {
-    return 0.0;
-  }
-}
-
-function editDistance(s1, s2) {
-  s1 = s1.toLowerCase();
-  s2 = s2.toLowerCase();
-
-  var costs = new Array();
-  for (var i = 0; i <= s1.length; i++) {
-    var lastValue = i;
-    for (var j = 0; j <= s2.length; j++) {
-      if (i == 0)
-        costs[j] = j;
-      else {
-        if (j > 0) {
-          var newValue = costs[j - 1];
-          if (s1.charAt(i - 1) != s2.charAt(j - 1))
-            newValue = Math.min(Math.min(newValue, lastValue),
-              costs[j]) + 1;
-          costs[j - 1] = lastValue;
-          lastValue = newValue;
-        }
-      }
-    }
-    if (i > 0)
-      costs[s2.length] = lastValue;
-  }
-  return costs[s2.length];
-}
