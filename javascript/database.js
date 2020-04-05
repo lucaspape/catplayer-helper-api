@@ -219,7 +219,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   var trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
 
   for (var k = 1; k < terms.length; k++) {
-    trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search))
+    trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
   }
 
   for (var i = 0; i < trackArray.length; i++) {
