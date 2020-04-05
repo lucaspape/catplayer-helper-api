@@ -98,6 +98,8 @@ var initCatalog = function(callback) {
         track.search += track.genreSecondary;
         track.search += track.id;
         track.search += track.release.artistsTitle;
+        track.search += track.release.catalogId;
+        track.search += track.release.id;
         track.search += track.title;
         track.search += track.version;
 
@@ -152,6 +154,7 @@ var initReleases = function(callback) {
         release.search += release.genreSecondary;
         release.search += release.title;
         release.search += release.version;
+        release.search += release.id;
 
         for (var k = 0; k < removeKeys.length; k++) {
           delete release[removeKeys[k]];
