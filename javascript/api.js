@@ -95,6 +95,42 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
     });
 });
 
+app.get(APIPREFIX + '/releases', (req, res) => {
+  logDB.get('requests')
+    .push({
+      time: Math.floor(new Date()),
+      url: '/releases'
+    })
+    .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  request({
+      url: 'http://database:6000/v1/releases?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
+});
+
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   logDB.get('requests')
     .push({
