@@ -1,5 +1,13 @@
 version: '3'
 services:
+  database:
+    build: .
+    command: node javascript/database.js
+    working_dir: /app/
+    restart: always
+    volumes:
+      - static-content:/app
+
   web:
     build: .
     command: node javascript/api.js

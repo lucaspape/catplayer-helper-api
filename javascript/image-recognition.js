@@ -11,13 +11,13 @@ var config = {};
 
 const configFile = 'configs/config_recognition.json';
 
-var loadConfig = function(){
-  if(fs.existsSync(configFile)){
+var loadConfig = function() {
+  if (fs.existsSync(configFile)) {
     config = JSON.parse(fs.readFileSync(configFile));
   }
 }
 
-var recognize = function(){
+var recognize = function() {
   loadConfig();
 
   console.log('Config loaded!');
@@ -28,12 +28,12 @@ var recognize = function(){
   var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   var dayName = days[new Date().getDay()];
 
-  for(var i=0; i<config.override.length; i++){
-    if(config.override[i].day === dayName){
+  for (var i = 0; i < config.override.length; i++) {
+    if (config.override[i].day === dayName) {
       const currentHour = new Date().getHours();
 
-      if(currentHour >= config.override[i].time && currentHour < config.override[i].time+config.override[i].length){
-        if(config.override[i].finalObject !== undefined){
+      if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
+        if (config.override[i].finalObject !== undefined) {
           console.log('Override! Using custom object.');
           fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
           return;
@@ -45,38 +45,38 @@ var recognize = function(){
   const titleFileName = 'recognition/title_' + dateNow + '.png';
   const artistFileName = 'recognition/artist' + dateNow + '.png';
 
-  downloadImages(titleFileName, artistFileName, function(){
-    recognizeText(artistFileName, function(artistText){
-      recognizeText(titleFileName, function(titleText){
+  downloadImages(titleFileName, artistFileName, function() {
+    recognizeText(artistFileName, function(artistText) {
+      recognizeText(titleFileName, function(titleText) {
         console.log('Recognized text: ' + artistText + " / " + titleText);
 
         search(artistText, titleText);
 
         fs.unlinkSync(titleFileName);
         fs.unlinkSync(artistFileName);
-      }, function(){
+      }, function() {
         recognize();
       });
-    }, function(){
+    }, function() {
       recognize();
     });
   });
 }
 
-var downloadImages = function(titleFileName, artistFileName, downloadFinishedCallback){
-    download(titleImageUrl, titleFileName, function(){
-      download(artistImageUrl, artistFileName, function(){
-        downloadFinishedCallback();
-      });
+var downloadImages = function(titleFileName, artistFileName, downloadFinishedCallback) {
+  download(titleImageUrl, titleFileName, function() {
+    download(artistImageUrl, artistFileName, function() {
+      downloadFinishedCallback();
     });
+  });
 }
 
 const tesseractOptions = {
-        l: 'eng',
-        psm: 6
+  l: 'eng',
+  psm: 6
 }
 
-var recognizeText = function(imagePath, finishedCallback, errorCallback){
+var recognizeText = function(imagePath, finishedCallback, errorCallback) {
   tesseract.recognize(imagePath, tesseractOptions)
     .then(text => {
       finishedCallback(text.replace(/\n/g, " ").replace(/[^ -~]+/g, ""));
@@ -87,16 +87,16 @@ var recognizeText = function(imagePath, finishedCallback, errorCallback){
     });
 }
 
-var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence){
+var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence) {
   var similarityArray = []
 
   var arrayIndex = 0;
 
-  for(var i=0; i < trackArray.length; i++){
-    if(trackArray[i] !== undefined){
+  for (var i = 0; i < trackArray.length; i++) {
+    if (trackArray[i] !== undefined) {
       var versionConfidence = 0.0;
 
-      if(trackArray[i].version === '' || trackArray[i].version === undefined){
+      if (trackArray[i].version === '' || trackArray[i].version === undefined) {
         versionConfidence = 100;
       }
 
@@ -110,10 +110,10 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
         versionConfidence: versionConfidence
       }
 
-      if(includeVersionConfidence){
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence+similarityObject.versionConfidence) / 3;
-      }else{
-        similarityObject.totalConfidence = (similarityObject.titleConfidence+similarityObject.artistConfidence) / 2;
+      if (includeVersionConfidence) {
+        similarityObject.totalConfidence = (similarityObject.titleConfidence + similarityObject.artistConfidence + similarityObject.versionConfidence) / 3;
+      } else {
+        similarityObject.totalConfidence = (similarityObject.titleConfidence + similarityObject.artistConfidence) / 2;
       }
 
       similarityArray[arrayIndex] = similarityObject;
@@ -121,19 +121,19 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
     }
   }
 
-   return similarityArray.sort((a,b) => (a.totalConfidence - b.totalConfidence)).reverse();
+  return similarityArray.sort((a, b) => (a.totalConfidence - b.totalConfidence)).reverse();
 }
 
-var search = function(tempArtist, tempTitle){
+var search = function(tempArtist, tempTitle) {
   console.log('Searching...');
 
   request({
     url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempTitle,
     method: 'GET'
-  }, function(err, resp, body){
-    if(err){
+  }, function(err, resp, body) {
+    if (err) {
       console.log(err);
-    }else{
+    } else {
       var respJson = JSON.parse(body);
 
       var responseTrackArray = respJson.results;
@@ -141,13 +141,13 @@ var search = function(tempArtist, tempTitle){
       const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
       const finalObject = similarityArray[0];
 
-      if(finalObject !== undefined){
-        if(finalObject.totalConfidence > minimumConfidence){
+      if (finalObject !== undefined) {
+        if (finalObject.totalConfidence > minimumConfidence) {
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
 
-          setTimeout(function(){
+          setTimeout(function() {
             recognize();
           }, 3000);
 
@@ -155,23 +155,23 @@ var search = function(tempArtist, tempTitle){
         }
       }
 
-      setTimeout(function(){
-      searchArtist(tempTitle, tempArtist);
-    }, 100);
-  }
-});
+      setTimeout(function() {
+        searchArtist(tempTitle, tempArtist);
+      }, 100);
+    }
+  });
 }
 
-var searchArtist = function(tempTitle, tempArtist){
+var searchArtist = function(tempTitle, tempArtist) {
   console.log('Using artist search...');
 
   request({
     url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + tempArtist,
     method: 'GET'
-  }, function(err, resp, body){
-    if(err){
+  }, function(err, resp, body) {
+    if (err) {
       console.log(err);
-    }else{
+    } else {
       var respJson = JSON.parse(body);
 
       var responseTrackArray = respJson.results;
@@ -179,47 +179,47 @@ var searchArtist = function(tempTitle, tempArtist){
       const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
       const finalObject = similarityArray[0];
 
-      if(finalObject !== undefined){
-        if(finalObject.totalConfidence > minimumConfidence){
+      if (finalObject !== undefined) {
+        if (finalObject.totalConfidence > minimumConfidence) {
           fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
           console.log('Done!');
 
-          setTimeout(function(){
+          setTimeout(function() {
             recognize();
           }, 3000);
 
           return;
         }
-    }
+      }
 
-    setTimeout(function(){
-      advancedSearch(tempTitle, tempArtist);
-    }, 100);
-  }
-});
+      setTimeout(function() {
+        advancedSearch(tempTitle, tempArtist);
+      }, 100);
+    }
+  });
 }
 
 //used if could not find track because version is in title
-var advancedSearch = function(tempTitle, tempArtist){
+var advancedSearch = function(tempTitle, tempArtist) {
   console.log('Advanced search...');
 
   const splitTitle = tempTitle.split(' ');
 
   var k = splitTitle.length;
 
-  var loopFunction = function(){
+  var loopFunction = function() {
     //LOOP THIS
-    if(k > 0){
+    if (k > 0) {
       var searchTerm = '';
 
-      for(var i=0; i<k; i++){
+      for (var i = 0; i < k; i++) {
         searchTerm = searchTerm + splitTitle[i];
       }
 
       var rest = '';
 
-      for(var i=k; i < splitTitle.length; i++){
+      for (var i = k; i < splitTitle.length; i++) {
         rest = splitTitle[i];
       }
 
@@ -227,10 +227,10 @@ var advancedSearch = function(tempTitle, tempArtist){
       request({
         url: 'https://api.lucaspape.de/monstercat/v1/catalog/search?term=' + searchTerm,
         method: 'GET'
-      }, function(err, resp, body){
-        if(err){
+      }, function(err, resp, body) {
+        if (err) {
 
-        }else{
+        } else {
           var respJson = JSON.parse(body);
 
           var responseTrackArray = respJson.results;
@@ -238,33 +238,33 @@ var advancedSearch = function(tempTitle, tempArtist){
           const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, true);
           const finalObject = similarityArray[0];
 
-          if(finalObject !== undefined){
-            if(finalObject.totalConfidence > minimumConfidence){
-                fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+          if (finalObject !== undefined) {
+            if (finalObject.totalConfidence > minimumConfidence) {
+              fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
 
-                console.log('Done!');
+              console.log('Done!');
 
-                setTimeout(function(){
-                  recognize();
-                }, 3000);
+              setTimeout(function() {
+                recognize();
+              }, 3000);
 
-                //STOP LOOP
-                return;
-              }
+              //STOP LOOP
+              return;
             }
-            k--;
-
-            //CONTINUE LOOP
-            setTimeout(function(){
-              loopFunction();;
-            }, 100);
           }
+          k--;
+
+          //CONTINUE LOOP
+          setTimeout(function() {
+            loopFunction();;
+          }, 100);
+        }
       });
-    }else{
+    } else {
       //could not find
       console.log('Could not find song!');
 
-      setTimeout(function(){
+      setTimeout(function() {
         recognize();
       }, 3000);
     }
@@ -283,7 +283,7 @@ var download = function(uri, filename, callback) {
 recognize();
 
 function similarity(s1, s2) {
-  if(s1 !== undefined && s2 !== undefined){
+  if (s1 !== undefined && s2 !== undefined) {
     var longer = s1;
     var shorter = s2;
     if (s1.length < s2.length) {
@@ -295,7 +295,7 @@ function similarity(s1, s2) {
       return 1.0;
     }
     return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
-  }else{
+  } else {
     return 0.0;
   }
 }
