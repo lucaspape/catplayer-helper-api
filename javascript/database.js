@@ -93,6 +93,14 @@ var initCatalog = function(callback) {
           delete track[removeKeys[k]];
         }
 
+        track.search = track.artistsTitle;
+        track.search += track.genrePrimary;
+        track.search += track.genreSecondary;
+        track.search += track.id;
+        track.search += track.release.artistsTitle;
+        track.search += track.title;
+        track.search += track.title;
+
         db.get('tracks')
           .push(track)
           .write();
@@ -193,49 +201,11 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const searchString = req.query.term.replace(/[^ -~]+/g, "");
+  const trackArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.search)).value();
 
-  const titleArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
-  const versionArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
-  const titleVersionArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title + " " + track.version)).value();
-  const artistArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
-
-  const trackArray = [];
-
-  if (titleArray.length > 0) {
-    for (var i = 0; i < titleArray.length; i++) {
-      titleArray[i].confidence = similarity(titleArray[i].title, searchString);
-    }
-
-    trackArray.push(...titleArray);
+  const returnObject = {
+    results: trackArray
   }
-
-  if (versionArray.length > 0) {
-    for (var i = 0; i < versionArray.length; i++) {
-      versionArray[i].confidence = similarity(versionArray[i].version, searchString);
-    }
-
-    trackArray.push(...versionArray);
-  }
-
-  if (titleVersionArray.length > 0) {
-    for (var i = 0; i < titleVersionArray.length; i++) {
-      titleVersionArray[i].confidence = similarity(titleVersionArray[i].title + " " + titleVersionArray[i].title, searchString);
-    }
-
-    trackArray.push(...titleVersionArray);
-  }
-
-  if (artistArray.length > 0) {
-    for (var i = 0; i < artistArray.length; i++) {
-      artistArray[i].confidence = similarity(artistArray[i].artistsTitle, searchString);
-    }
-
-    trackArray.push(...artistArray);
-  }
-
-  var returnObject = {
-    results: trackArray.sort((a, b) => (a.confidence - b.confidence)).reverse()
-  };
 
   res.send(returnObject);
 });
