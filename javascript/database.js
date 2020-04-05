@@ -213,15 +213,17 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  const searchString = req.query.term.replace(/[^ -~]+/g, "");
-  var trackArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.search)).value();
+  const searchString = req.query.term;
+  const terms = searchString.split();
+
+  var trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
+
+  for (var k = 1; k < terms.length; k++) {
+    trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search))
+  }
 
   for (var i = 0; i < trackArray.length; i++) {
-    var titleSimilarity = similarity(trackArray[i].title, searchString);
-    var versionSimilarity = similarity(trackArray[i].version, searchString);
-    var artistSimilarity = similarity(trackArray[i].artistsTitle, searchString);
-
-    trackArray[i].similarity = titleSimilarity + versionSimilarity + artistSimilarity;
+    trackArray[i].similarity = similarity(trackArray[i].search, searchString);
   }
 
   trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
