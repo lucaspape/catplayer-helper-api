@@ -35,11 +35,19 @@ var getTotalTracks = function(callback, errorCallback) {
 }
 
 var initializeDatabase = function() {
+  console.log('Starting init...');
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
 
   browseTracks(-1, 0,
     function(json) {
+      console.log('Received data...');
+      const total = json.total;
+
       for (var i = 0; i < json.results.length; i++) {
+        if (i % 100 === 0) {
+          console.log((i / total) * 100 + '%');
+        }
+
         var track = json.results[i];
         track.sortId = i;
 
@@ -61,7 +69,3 @@ var initializeDatabase = function() {
 }
 
 initializeDatabase();
-
-while (true) {
-
-}
