@@ -10,6 +10,12 @@ const PORT = 6000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
 
+const dbDefaults = {
+  tracks: [],
+  releases: [],
+  artists: []
+};
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -45,21 +51,34 @@ var browseReleases = function(limit, skip, callback, errorCallback) {
     });
 }
 
+var browseArtists = function(limit, skip, callback, errorCallback) {
+  request({
+      url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+}
+
 var initializeDatabase = function() {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   if (!(db.get('tracks').value().length > 0)) {
     console.log('Starting init...');
 
-    initCatalog(function() {
-      initReleases(function() {
-        console.log('Database init done!');
+    initArtists(function() {
+      initCatalog(function() {
+        initReleases(function() {
+          console.log('Database init done!');
+        });
       });
     });
   }
@@ -68,10 +87,7 @@ var initializeDatabase = function() {
 var initCatalog = function(callback) {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
@@ -127,10 +143,7 @@ var initCatalog = function(callback) {
 var initReleases = function(callback) {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
@@ -173,15 +186,58 @@ var initReleases = function(callback) {
     });
 }
 
+var initArtists = function(callback) {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults(dbDefaults)
+    .write();
+
+  const removeKeys = [];
+
+  browseArtists(-1, 0,
+    function(json) {
+      console.log('Received artists data...');
+      const total = json.total;
+
+      for (var i = 0; i < json.results.length; i++) {
+        if (i % 100 === 0) {
+          console.log((i / total) * 100 + '%');
+        }
+
+        var artist = json.results[i];
+        artist.sortId = i;
+
+        artist.search = artist.id;
+        artist.search += artist.uri;
+        artist.search += artist.name;
+        artist.search += artist.about;
+        artist.search += artist.bookingDetails;
+        artist.search += artist.managementDetails;
+        artist.search += artist.links;
+
+        for (var k = 0; k < removeKeys.length; k++) {
+          delete artist[removeKeys[k]];
+        }
+
+        db.get('artists')
+          .push(artist)
+          .write();
+      }
+
+      callback();
+    },
+
+    function(err) {
+      console.log(err);
+    });
+}
+
 initializeDatabase();
 
 app.get(APIPREFIX + '/catalog/browse', (req, res) => {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   var skip = 0;
@@ -216,10 +272,7 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
 app.get(APIPREFIX + '/releases', (req, res) => {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   var skip = 0;
@@ -251,13 +304,45 @@ app.get(APIPREFIX + '/releases', (req, res) => {
   res.send(returnObject);
 });
 
+app.get(APIPREFIX + '/artists', (req, res) => {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults(dbDefaults)
+    .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  const artistsArray = db.get('artists').sortBy('sortId').slice(skip, skip + limit).value();
+
+  for (var i = 0; i < releaseArray.length; i++) {
+    delete artistsArray[i]['sortId'];
+    delete artistsArray[i]['search'];
+  }
+
+  var returnObject = {
+    results: artistsArray
+  };
+
+  res.send(returnObject);
+});
+
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   var skip = 0;
@@ -306,10 +391,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 app.get(APIPREFIX + '/releases/search', (req, res) => {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
+  db.defaults(dbDefaults)
     .write();
 
   var skip = 0;
@@ -350,6 +432,55 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 
   const returnObject = {
     results: releaseArray.slice(skip, skip + limit)
+  }
+
+  res.send(returnObject);
+});
+
+app.get(APIPREFIX + '/artists/search', (req, res) => {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults(dbDefaults)
+    .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  const searchString = req.query.term;
+  const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
+
+  var artistsArray = db.get('artists').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+
+  for (var k = 1; k < terms.length; k++) {
+    artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
+  }
+
+  for (var i = 0; i < artistsArray.length; i++) {
+    artistsArray[i].similarity = similarity(artistsArray[i].search, searchString);
+  }
+
+  artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+
+  for (var i = 0; i < artistsArray.length; i++) {
+    delete artistsArray[i]['sortId'];
+    delete artistsArray[i]['similarity'];
+    delete artistsArray[i]['search'];
+  }
+
+  const returnObject = {
+    results: artistsArray.slice(skip, skip + limit)
   }
 
   res.send(returnObject);

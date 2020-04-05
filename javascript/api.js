@@ -131,6 +131,42 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     });
 });
 
+app.get(APIPREFIX + '/artists', (req, res) => {
+  logDB.get('requests')
+    .push({
+      time: Math.floor(new Date()),
+      url: '/artists'
+    })
+    .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  request({
+      url: 'http://database:6000/v1/artists?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
+});
+
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   logDB.get('requests')
     .push({
@@ -196,6 +232,44 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 
   request({
       url: 'http://database:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
+});
+
+app.get(APIPREFIX + '/artists/search', (req, res) => {
+  logDB.get('requests')
+    .push({
+      time: Math.floor(new Date()),
+      url: '/artists/search'
+    })
+    .write();
+
+  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  request({
+      url: 'http://database:6000/v1/artists/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
       method: 'GET'
     },
     function(err, resp, body) {
