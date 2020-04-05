@@ -141,8 +141,23 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
   const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
 
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
   request({
-      url: 'http://database:6000/v1/catalog/search?term=' + searchString,
+      url: 'http://database:6000/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
       method: 'GET'
     },
     function(err, resp, body) {
@@ -164,8 +179,23 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 
   const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
 
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
   request({
-      url: 'http://database:6000/v1/releases/search?term=' + searchString,
+      url: 'http://database:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
       method: 'GET'
     },
     function(err, resp, body) {

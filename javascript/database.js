@@ -257,6 +257,21 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     })
     .write();
 
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
   const searchString = req.query.term;
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
@@ -279,7 +294,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   }
 
   const returnObject = {
-    results: trackArray
+    results: trackArray.slice(skip, skip + limit)
   }
 
   res.send(returnObject);
@@ -293,6 +308,21 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
       releases: []
     })
     .write();
+
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
 
   const searchString = req.query.term;
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
@@ -316,7 +346,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
   }
 
   const returnObject = {
-    results: releaseArray
+    results: releaseArray.slice(skip, skip + limit)
   }
 
   res.send(returnObject);
