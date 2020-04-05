@@ -17,6 +17,13 @@ const PORT = 6000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
 
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
 var browseTracks = function(limit, skip, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
