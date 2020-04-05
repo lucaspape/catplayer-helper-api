@@ -88,7 +88,7 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
     },
     function(err, resp, body) {
       if (err) {
-        console.log(err);
+        res.send(err);
       } else {
         res.send(JSON.parse(body));
       }
@@ -124,7 +124,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     },
     function(err, resp, body) {
       if (err) {
-        console.log(err);
+        res.send(err);
       } else {
         res.send(JSON.parse(body));
       }
@@ -147,7 +147,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     },
     function(err, resp, body) {
       if (err) {
-        console.log(err);
+        res.send(err);
       } else {
         res.send(JSON.parse(body));
       }
@@ -170,7 +170,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     },
     function(err, resp, body) {
       if (err) {
-        console.log(err);
+        res.send(err);
       } else {
         res.send(JSON.parse(body));
       }
