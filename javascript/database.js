@@ -1,3 +1,4 @@
+const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
