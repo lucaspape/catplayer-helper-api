@@ -101,3 +101,5 @@ dist
 .tern-port
 *.png
 .DS_STORE
+
+catalog-db.json

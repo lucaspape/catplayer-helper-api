@@ -6,10 +6,11 @@ const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-const catalogDBAdapter = new FileSync('catalog-db.json');
-const catalogDB = lowdb(catalogDBAdapter);
-catalogDB.defaults({
-    tracks: []
+var dbAdapter = new FileSync('db.json');
+var db = lowdb(dbAdapter);
+db.defaults({
+    tracks: [],
+    releases: []
   })
   .write();
 
@@ -38,23 +39,46 @@ var browseTracks = function(limit, skip, callback, errorCallback) {
     });
 }
 
-var getTotalTracks = function(callback, errorCallback) {
-  browseTracks(0, 0,
-    function(json) {
-      callback(json.total);
+var browseReleases = function(limit, skip, callback, errorCallback) {
+  request({
+      url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
     },
-    function(err) {
-      errorCallback(err);
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
     });
 }
 
 var initializeDatabase = function() {
   console.log('Starting init...');
+
+  fs.unlinkSync('db.json');
+
+  dbAdapter = new FileSync('catalog-db.json');
+  db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
+  initCatalog(function() {
+    initReleases(function() {
+      console.log('Database init done!');
+    });
+  });
+}
+
+var initCatalog = function(callback) {
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
 
   browseTracks(-1, 0,
     function(json) {
-      console.log('Received data...');
+      console.log('Received catalog data...');
       const total = json.total;
 
       for (var i = 0; i < json.results.length; i++) {
@@ -69,12 +93,45 @@ var initializeDatabase = function() {
           delete track[removeKeys[k]];
         }
 
-        catalogDB.get('tracks')
+        db.get('tracks')
           .push(track)
           .write();
       }
 
-      console.log('Database init done!');
+      callback();
+    },
+
+    function(err) {
+      console.log(err);
+    });
+}
+
+var initReleases = function(callback) {
+  const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
+
+  browseReleases(-1, 0,
+    function(json) {
+      console.log('Received release data...');
+      const total = json.total;
+
+      for (var i = 0; i < json.results.length; i++) {
+        if (i % 100 === 0) {
+          console.log((i / total) * 100 + '%');
+        }
+
+        var release = json.results[i];
+        release.sortId = i;
+
+        for (var k = 0; k < removeKeys.length; k++) {
+          delete release[removeKeys[k]];
+        }
+
+        db.get('releases')
+          .push(release)
+          .write();
+      }
+
+      callback();
     },
 
     function(err) {
@@ -100,7 +157,32 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
     }
   }
 
-  const trackArray = catalogDB.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
+  const trackArray = db.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
+
+  var returnObject = {
+    results: trackArray
+  };
+
+  res.send(returnObject);
+});
+
+app.get(APIPREFIX + '/releases', (req, res) => {
+  var skip = 0;
+  var limit = 50;
+
+  if (req.query.skip !== undefined) {
+    skip = parseInt(req.query.skip);
+  }
+
+  if (req.query.limit !== undefined) {
+    limit = parseInt(req.query.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  const trackArray = db.get('releases').sortBy('sortId').slice(skip, skip + limit).value();
 
   var returnObject = {
     results: trackArray
@@ -112,10 +194,10 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const searchString = req.query.term.replace(/[^ -~]+/g, "");
 
-  const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
-  const versionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
-  const titleVersionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title + " " + track.version)).value();
-  const artistArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
+  const titleArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
+  const versionArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
+  const titleVersionArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title + " " + track.version)).value();
+  const artistArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.artistsTitle)).value();
 
   const trackArray = [];
 
