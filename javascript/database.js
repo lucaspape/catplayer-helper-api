@@ -105,6 +105,10 @@ var initCatalog = function(callback) {
           track.search += track.tags[k];
         }
 
+        for (var k = 0; k < track.artists.length; k++) {
+          track.search += track.artists[k].name;
+        }
+
         db.get('tracks')
           .push(track)
           .write();
