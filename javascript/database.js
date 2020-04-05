@@ -10,66 +10,52 @@ catalogDB.defaults({
   })
   .write();
 
-var updateCatalogDatabase = function() {
-  const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
-
+var browseTracks = function(limit, skip, callback, errorCallback) {
   request({
-    url: 'https://connect.monstercat.com/v2/catalog/browse?limit=50&skip=' + 0,
-    method: 'GET'
-  }, function(err, resp, body) {
-    if (err) {
-      console.log(err);
-    } else {
-      var respJson = JSON.parse(body);
-
-      const total = respJson.total;
-
-      var savedTracks = catalogDB.get('tracks').value().length;
-      var rest = ((total - savedTracks) % 50);
-      if (rest === 0) {
-        rest = savedTracks;
-      }
-      console.log(rest);
-
-      var skip = total - rest;
-
-      if (skip >= 0) {
-        console.log('Skip: ' + skip)
-
-        request({
-          url: 'https://connect.monstercat.com/v2/catalog/browse?limit=50&skip=' + skip,
-          method: 'GET'
-        }, function(err, result, body) {
-          if (err) {
-            console.log(err);
-          } else {
-            var result = JSON.parse(body).results;
-
-            for (var i = 0; i < result.length; i++) {
-              var track = result[i];
-              track.sortId = skip + i;
-
-              for (var k = 0; k < removeKeys.length; k++) {
-                delete track[removeKeys[k]];
-              }
-
-              catalogDB.get('tracks')
-                .push(track)
-                .write();
-            }
-
-            setTimeout(function() {
-              updateCatalogDatabase();
-            }, 100);
-          }
-        });
+      url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
       } else {
-        setTimeout(function() {
-          updateCatalogDatabase();
-        }, 5000);
+        callback(JSON.parse(body));
       }
-    }
-  });
+    });
 }
 
-updateCatalogDatabase();
+var getTotalTracks = function(callback, errorCallback) {
+  browseTracks(0, 0,
+    function(json) {
+      callback(json.total);
+    },
+    function(err) {
+      errorCallback(err);
+    });
+}
+
+var initializeDatabase = function() {
+  const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
+
+  browseTracks(-1, 0,
+    function(json) {
+      for (var i = 0; i < json.results.length; i++) {
+        var track = json.results[i];
+        track.sortId = i;
+
+        for (var k = 0; k < removeKeys.length; k++) {
+          delete track[removeKeys[k]];
+        }
+
+        catalogDB.get('tracks')
+          .push(track)
+          .write();
+      }
+    },
+
+    function(err) {
+      console.log(err);
+    });
+}
+
+initializeDatabase();
