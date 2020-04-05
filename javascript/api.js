@@ -83,7 +83,7 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
   }
 
   request({
-      url: 'http://127.0.0.1:6000/v1/catalog/browse?limit=' + limit + '&skip=' + skip,
+      url: 'http://database:6000/v1/catalog/browse?limit=' + limit + '&skip=' + skip,
       method: 'GET'
     },
     function(err, resp, body) {
@@ -106,7 +106,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const searchString = req.query.term.replace(/[^ -~]+/g, "");
 
   request({
-      url: 'http://127.0.0.1:6000/v1/catalog/search?term=' + searchString,
+      url: 'http://database:6000/v1/catalog/search?term=' + searchString,
       method: 'GET'
     },
     function(err, resp, body) {
