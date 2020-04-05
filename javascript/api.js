@@ -135,7 +135,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   logDB.get('requests')
     .push({
       time: Math.floor(new Date()),
-      url: '/catalog/browse'
+      url: '/catalog/search'
     })
     .write();
 
@@ -143,6 +143,29 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
   request({
       url: 'http://database:6000/v1/catalog/search?term=' + searchString,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(JSON.parse(body));
+      }
+    });
+});
+
+app.get(APIPREFIX + '/releases/search', (req, res) => {
+  logDB.get('requests')
+    .push({
+      time: Math.floor(new Date()),
+      url: '/releases/search'
+    })
+    .write();
+
+  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+
+  request({
+      url: 'http://database:6000/v1/releases/search?term=' + searchString,
       method: 'GET'
     },
     function(err, resp, body) {
