@@ -130,6 +130,13 @@ var initReleases = function(callback) {
         var release = json.results[i];
         release.sortId = i;
 
+        release.search = release.artistsTitle;
+        release.search += release.catalogId;
+        release.search += release.genrePrimary;
+        release.search += release.genreSecondary;
+        release.search += release.title;
+        release.search += release.version;
+
         for (var k = 0; k < removeKeys.length; k++) {
           delete release[removeKeys[k]];
         }
@@ -199,6 +206,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
   for (var i = 0; i < releaseArray.length; i++) {
     delete releaseArray[i]['sortId'];
+    delete releaseArray[i]['search'];
   }
 
   var returnObject = {
@@ -240,6 +248,43 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
   const returnObject = {
     results: trackArray
+  }
+
+  res.send(returnObject);
+});
+
+app.get(APIPREFIX + '/releases/search', (req, res) => {
+  dbAdapter = new FileSync('db.json');
+  db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
+  const searchString = req.query.term;
+  const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
+
+  var releaseArray = db.get('releases').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+
+  for (var k = 1; k < terms.length; k++) {
+    releaseArray = trackArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
+  }
+
+  for (var i = 0; i < trackArray.length; i++) {
+    releaseArray[i].similarity = similarity(releaseArray[i].search, searchString);
+  }
+
+  releaseArray = releaseArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+
+  for (var i = 0; i < releaseArray.length; i++) {
+    delete releaseArray[i]['sortId'];
+    delete releaseArray[i]['similarity'];
+    delete releaseArray[i]['search'];
+  }
+
+  const returnObject = {
+    results: releaseArray
   }
 
   res.send(returnObject);
