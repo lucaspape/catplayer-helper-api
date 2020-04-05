@@ -106,7 +106,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     })
     .write();
 
-  const searchString = req.query.term.replace(/[^ -~]+/g, "") git;
+  const searchString = req.query.term.replace(/[^ -~]+/g, "");
 
   const titleArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.title)).value();
   const versionArray = catalogDB.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.version)).value();
