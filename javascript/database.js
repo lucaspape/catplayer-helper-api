@@ -327,7 +327,7 @@ app.get(APIPREFIX + '/artists', (req, res) => {
 
   const artistsArray = db.get('artists').sortBy('sortId').slice(skip, skip + limit).value();
 
-  for (var i = 0; i < releaseArray.length; i++) {
+  for (var i = 0; i < artistsArray.length; i++) {
     delete artistsArray[i]['sortId'];
     delete artistsArray[i]['search'];
   }
