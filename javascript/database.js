@@ -46,6 +46,14 @@ var browseReleases = function(limit, skip, callback, errorCallback) {
 }
 
 var initializeDatabase = function() {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   if (!(db.get('tracks').value().length > 0)) {
     console.log('Starting init...');
 
