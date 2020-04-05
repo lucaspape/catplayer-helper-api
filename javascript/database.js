@@ -6,14 +6,6 @@ const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-var dbAdapter = new FileSync('db.json');
-var db = lowdb(dbAdapter);
-db.defaults({
-    tracks: [],
-    releases: []
-  })
-  .write();
-
 const PORT = 6000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
@@ -66,6 +58,14 @@ var initializeDatabase = function() {
 }
 
 var initCatalog = function(callback) {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
 
   browseTracks(-1, 0,
@@ -115,6 +115,14 @@ var initCatalog = function(callback) {
 }
 
 var initReleases = function(callback) {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
 
   browseReleases(-1, 0,
@@ -157,6 +165,14 @@ var initReleases = function(callback) {
 initializeDatabase();
 
 app.get(APIPREFIX + '/catalog/browse', (req, res) => {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   var skip = 0;
   var limit = 50;
 
@@ -187,6 +203,14 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
+  db.defaults({
+      tracks: [],
+      releases: []
+    })
+    .write();
+
   var skip = 0;
   var limit = 50;
 
@@ -217,8 +241,8 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  dbAdapter = new FileSync('db.json');
-  db = lowdb(dbAdapter);
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
   db.defaults({
       tracks: [],
       releases: []
@@ -254,8 +278,8 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases/search', (req, res) => {
-  dbAdapter = new FileSync('db.json');
-  db = lowdb(dbAdapter);
+  const dbAdapter = new FileSync('db.json');
+  const db = lowdb(dbAdapter);
   db.defaults({
       tracks: [],
       releases: []
