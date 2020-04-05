@@ -103,3 +103,5 @@ dist
 .DS_STORE
 
 catalog-db.json
+db-backup.json
+db.json

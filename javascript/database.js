@@ -54,23 +54,15 @@ var browseReleases = function(limit, skip, callback, errorCallback) {
 }
 
 var initializeDatabase = function() {
-  console.log('Starting init...');
+  if (!(db.get('tracks').value().length > 0)) {
+    console.log('Starting init...');
 
-  fs.unlinkSync('db.json');
-
-  dbAdapter = new FileSync('db.json');
-  db = lowdb(dbAdapter);
-  db.defaults({
-      tracks: [],
-      releases: []
-    })
-    .write();
-
-  initCatalog(function() {
-    initReleases(function() {
-      console.log('Database init done!');
+    initCatalog(function() {
+      initReleases(function() {
+        console.log('Database init done!');
+      });
     });
-  });
+  }
 }
 
 var initCatalog = function(callback) {
