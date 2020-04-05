@@ -292,7 +292,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
   var releaseArray = db.get('releases').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
 
   for (var k = 1; k < terms.length; k++) {
-    releaseArray = trackArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
+    releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
   }
 
   for (var i = 0; i < trackArray.length; i++) {
