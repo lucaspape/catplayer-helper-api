@@ -60,64 +60,46 @@ Sample response:
 
 ```
 {
-  "title": "Boom Bap",
+  "title": "What Are You Waiting For",
   "version": "",
-  "artist": "Matroda",
+  "artist": "Stonebank",
   "track": {
-    "artists": [
-      {
-        "id": "a20733d2-bc82-4a18-9642-4e7f00ff63db",
-        "name": "Matroda",
-        "public": true,
-        "role": "Primary",
-        "uri": "matroda"
-      }
-    ],
-    "artistsTitle": "Matroda",
-    "bpm": 125,
+    "artists": [{
+      "id": "f69849e2-5e70-45ab-a7ba-d0acd7d75e8b",
+      "name": "Stonebank",
+      "public": true,
+      "role": "Primary",
+      "uri": "stonebank"
+    }],
+    "artistsTitle": "Stonebank",
+    "bpm": 128,
     "creatorFriendly": true,
-    "debutDate": "2018-03-05T03:00:51-05:00",
-    "downloadable": false,
-    "duration": 264,
+    "debutDate": "2018-03-22T03:00:00-04:00",
+    "duration": 256,
     "explicit": false,
     "genrePrimary": "Dance",
-    "genreSecondary": "House",
-    "id": "999a17f4-bcd6-4d5c-9eba-8632a2fe487f",
-    "inEarlyAccess": false,
-    "isrc": "CA6D21800039",
+    "genreSecondary": "Electro",
+    "id": "3d9ad36e-603d-459d-825e-9746ea775029",
+    "isrc": "CA6D21800056",
     "playlistSort": 0,
     "release": {
       "artistsTitle": "Monstercat",
-      "catalogId": "MCUV5",
-      "id": "aebba702-628c-4f55-8ffb-02e31f11bd39",
-      "releaseDate": "2018-08-16T03:00:00-04:00",
+      "catalogId": "MCBO2018",
+      "id": "b142c486-c9fc-4aaf-b04c-49ac548e8c73",
+      "releaseDate": "2018-12-14T03:00:00-05:00",
       "tags": null,
-      "title": "Monstercat Uncaged Vol. 5",
+      "title": "Monstercat - Best of 2018",
       "type": "Album",
-      "upc": "703980542613"
+      "upc": "703980543979"
     },
-    "streamable": true,
-    "tags": [
-      "Upbeat",
-      "Bass",
-      "Dancey",
-      "EDM",
-      "House",
-      "electro",
-      "Energetic",
-      "Dirty",
-      "Anthemic",
-      "vocal chop",
-      "groovy",
-      "explosive"
-    ],
-    "title": "Boom Bap",
-    "trackNumber": 30,
+    "tags": ["nocontentid", "rocketleagueprimary"],
+    "title": "What Are You Waiting For",
+    "trackNumber": 31,
     "version": ""
   },
-  "titleConfidence": 6.666666666666667,
-  "artistConfidence": 77.77777777777779,
+  "titleConfidence": 92.3076923076923,
+  "artistConfidence": 81.81818181818183,
   "versionConfidence": 100,
-  "totalConfidence": 42.22222222222223
+  "totalConfidence": 87.06293706293707
 }
 ```
