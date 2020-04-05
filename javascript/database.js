@@ -99,7 +99,11 @@ var initCatalog = function(callback) {
         track.search += track.id;
         track.search += track.release.artistsTitle;
         track.search += track.title;
-        track.search += track.title;
+        track.search += track.version;
+
+        for (var k = 0; k < track.tags.length; k++) {
+          track.search += track.tags[k];
+        }
 
         db.get('tracks')
           .push(track)
@@ -167,6 +171,11 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
 
   const trackArray = db.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
 
+  for (var i = 0; i < trackArray.length; i++) {
+    delete trackArray[i]['sortId'];
+    delete trackArray[i]['search'];
+  }
+
   var returnObject = {
     results: trackArray
   };
@@ -190,10 +199,14 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     }
   }
 
-  const trackArray = db.get('releases').sortBy('sortId').slice(skip, skip + limit).value();
+  const releaseArray = db.get('releases').sortBy('sortId').slice(skip, skip + limit).value();
+
+  for (var i = 0; i < releaseArray.length; i++) {
+    delete releaseArray[i]['sortId'];
+  }
 
   var returnObject = {
-    results: trackArray
+    results: releaseArray
   };
 
   res.send(returnObject);
@@ -201,7 +214,23 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const searchString = req.query.term.replace(/[^ -~]+/g, "");
-  const trackArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.search)).value();
+  var trackArray = db.get('tracks').filter(track => new RegExp(searchString, 'i').test(track.search)).value();
+
+  for (var i = 0; i < trackArray.length; i++) {
+    var titleSimilarity = similarity(trackArray[i].title, searchString);
+    var versionSimilarity = similarity(trackArray[i].version, searchString);
+    var artistSimilarity = similarity(trackArray[i].artistsTitle, searchString);
+
+    trackArray[i].similarity = titleSimilarity + versionSimilarity + artistSimilarity;
+  }
+
+  trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+
+  for (var i = 0; i < trackArray.length; i++) {
+    delete trackArray[i]['sortId'];
+    delete trackArray[i]['similarity'];
+    delete trackArray[i]['search'];
+  }
 
   const returnObject = {
     results: trackArray
