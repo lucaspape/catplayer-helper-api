@@ -4,7 +4,6 @@ services:
     build: .
     command: node javascript/database.js
     working_dir: /app/
-    restart: never
     volumes:
       - static-content:/app
 
