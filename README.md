@@ -14,43 +14,43 @@ docker-compose up -d
 
 # Available methods:
 
-## GET /catalog
+## GET [/catalog](https://api.lucaspape.de/monstercat/v1/catalog)
 
 Returns 50 latest catalog songs
 
 Arguments: skip,limit
 
-## GET /catalog/search
+## GET [/catalog/search](https://api.lucaspape.de/monstercat/v1/catalog/search)
 
 Search for catalog songs
 
 Arguments: term,skip,limit
 
-## GET /releases
+## GET [/releases](https://api.lucaspape.de/monstercat/v1/releases)
 
 Returns 50 lates releases (albums)
 
 Arguments: skip,limit
 
-## GET /releases/search
+## GET [/releases/search](https://api.lucaspape.de/monstercat/v1/releases/search)
 
 Search for releases
 
 Arguments: term,skip,limit
 
-## GET /artists
+## GET [/artists](https://api.lucaspape.de/monstercat/v1/artists)
 
 Returns 50 artists
 
 Arguments: skip,limit
 
-## GET /artists/search
+## GET [/artists/search](https://api.lucaspape.de/monstercat/v1/artists/search)
 
 Search for artists
 
 Arguments: term,skip,limit
 
-## GET /liveinfo
+## GET [/liveinfo](https://api.lucaspape.de/monstercat/v1/liveinfo)
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
 
