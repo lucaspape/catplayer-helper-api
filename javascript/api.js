@@ -139,7 +139,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     })
     .write();
 
-  const searchString = req.query.term.replace(/[^ -~]+/g, "");
+  const searchString = req.query.term;
 
   request({
       url: 'http://database:6000/v1/catalog/search?term=' + searchString,
