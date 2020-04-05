@@ -14,7 +14,43 @@ docker-compose up -d
 
 # Available methods:
 
-GET /liveinfo
+# GET /catalog
+
+Returns 50 latest catalog songs
+
+Arguments: skip,limit
+
+# GET /catalog/search
+
+Search for catalog songs
+
+Arguments: term,skip,limit
+
+# GET /releases
+
+Returns 50 lates releases (albums)
+
+Arguments: skip,limit
+
+# GET /releases/search
+
+Search for releases
+
+Arguments: term,skip,limit
+
+# GET /artists
+
+Returns 50 artists
+
+Arguments: skip,limit
+
+# GET /artists/search
+
+Search for artists
+
+Arguments: term,skip,limit
+
+# GET /liveinfo
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
 
