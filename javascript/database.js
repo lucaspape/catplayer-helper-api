@@ -58,7 +58,7 @@ var initializeDatabase = function() {
 
   fs.unlinkSync('db.json');
 
-  dbAdapter = new FileSync('catalog-db.json');
+  dbAdapter = new FileSync('db.json');
   db = lowdb(dbAdapter);
   db.defaults({
       tracks: [],
