@@ -217,8 +217,8 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
-  const terms = searchString.split();
+  const searchString = req.query.term;
+  const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
   var trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
 
