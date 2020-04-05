@@ -59,7 +59,7 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
   res.send(JSON.parse(fs.readFileSync('currentdata.json')));
 });
 
-app.get(APIPREFIX + '/catalog/browse', (req, res) => {
+app.get(APIPREFIX + '/catalog', (req, res) => {
   logDB.get('requests')
     .push({
       time: Math.floor(new Date()),
@@ -83,7 +83,7 @@ app.get(APIPREFIX + '/catalog/browse', (req, res) => {
   }
 
   request({
-      url: 'http://database:6000/v1/catalog/browse?limit=' + limit + '&skip=' + skip,
+      url: 'http://database:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
       method: 'GET'
     },
     function(err, resp, body) {

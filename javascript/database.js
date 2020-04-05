@@ -234,7 +234,7 @@ var initArtists = function(callback) {
 
 initializeDatabase();
 
-app.get(APIPREFIX + '/catalog/browse', (req, res) => {
+app.get(APIPREFIX + '/catalog', (req, res) => {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)
