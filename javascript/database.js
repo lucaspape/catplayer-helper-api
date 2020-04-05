@@ -51,6 +51,8 @@ var initializeDatabase = function() {
           .push(track)
           .write();
       }
+
+      console.log('Database init done!');
     },
 
     function(err) {
@@ -59,3 +61,7 @@ var initializeDatabase = function() {
 }
 
 initializeDatabase();
+
+while (true) {
+
+}
