@@ -303,7 +303,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
   }
 
-  for (var i = 0; i < trackArray.length; i++) {
+  for (var i = 0; i < releaseArray.length; i++) {
     releaseArray[i].similarity = similarity(releaseArray[i].search, searchString);
   }
 
