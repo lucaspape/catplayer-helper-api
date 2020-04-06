@@ -1,7 +1,7 @@
 version:                     '3'
 services:
   database-catalog:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
@@ -9,7 +9,7 @@ services:
       - static-content:/app
 
   database-releases:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
@@ -17,7 +17,7 @@ services:
       - static-content:/app
 
   database-artists:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
@@ -25,7 +25,7 @@ services:
       - static-content:/app
 
   database-local:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/local/database-local.js
     working_dir:             /app/
     restart:                 always
@@ -33,7 +33,7 @@ services:
       - static-content:/app
 
   database-update-catalog:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
@@ -41,7 +41,7 @@ services:
       - static-content:/app
 
   database-update-releases:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
@@ -49,7 +49,7 @@ services:
       - static-content:/app
 
   database-update-artists:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
@@ -57,15 +57,15 @@ services:
       - static-content:/app
 
   web:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node javascript/api/api.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
-      
+
   recg:
-    build:                   javascript/image
+    build:                   javascript
     command:                 node javascript/image/image-recognition.js
     working_dir:             /app/
     restart:                 always
