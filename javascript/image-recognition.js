@@ -127,6 +127,10 @@ function orderBySimilarity(artistText, titleText, trackArray, includeVersionConf
 }
 
 function searchQuery(searchTerm, callback, errorCallback) {
+  searchTerm = searchTerm.replace('(', '%7B');
+  searchTerm = searchTerm.replace(')', '%7D');
+  searchTerm = searchTerm.trim();
+
   request({
     url: 'http://database:6000/v1/catalog/search?term=' + searchTerm + '&limit=-1',
     method: 'GET'
