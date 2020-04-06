@@ -8,6 +8,14 @@ services:
     volumes:
       - static-content:/app
 
+  database:
+    build: .
+    command: node javascript/database-local.js
+    working_dir: /app/
+    restart: always
+    volumes:
+      - static-content:/app
+
   database-update:
     build: .
     command: node javascript/database-update.js
@@ -15,7 +23,7 @@ services:
     restart: always
     volumes:
       - static-content:/app
-      
+
   web:
     build: .
     command: node javascript/api.js

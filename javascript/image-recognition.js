@@ -133,7 +133,7 @@ function searchQuery(searchTerm, callback, errorCallback) {
   searchTerm = searchTerm.trim();
 
   request({
-    url: 'http://database:6000/v1/catalog/search?term=' + searchTerm + '&limit=-1',
+    url: 'http://database:7000/v1/catalog/search?term=' + searchTerm + '&limit=-1',
     method: 'GET'
   }, function(err, resp, body) {
     if (err) {
