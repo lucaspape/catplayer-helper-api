@@ -10,7 +10,7 @@ var minimumConfidence = 35.0;
 
 var config = {};
 
-const configFile = 'configs/config_recognition.json';
+const configFile = 'image/configs/config_recognition.json';
 
 function loadConfig() {
   if (fs.existsSync(configFile)) {
