@@ -1,4 +1,4 @@
-docker-compose down
-docker-compose down -v
+docker-compose --compatibility down
+docker-compose --compatibility down -v
 git pull
-docker-compose up --force-recreate --build -d
+docker-compose --compatibility up --force-recreate --build -d
