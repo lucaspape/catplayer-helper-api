@@ -12,55 +12,60 @@ var config = {};
 
 const configFile = 'image/configs/config_recognition.json';
 
-function loadConfig() {
-  if (fs.existsSync(configFile)) {
-    config = JSON.parse(fs.readFileSync(configFile));
-  }
+function loadConfig(callback) {
+  download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config_recognition.json',
+    'javascript/image/configs/config_recognition.json',
+    function() {
+      if (fs.existsSync(configFile)) {
+        config = JSON.parse(fs.readFileSync(configFile));
+        callback();
+      }
+    });
 }
 
 function recognize() {
   setTimeout(function() {
-    loadConfig();
+    loadConfig(function() {
+      console.log('Config loaded!');
 
-    console.log('Config loaded!');
+      //download the screenshots
+      const dateNow = Date.now() / 1000;
 
-    //download the screenshots
-    const dateNow = Date.now() / 1000;
+      var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      var dayName = days[new Date().getDay()];
 
-    var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    var dayName = days[new Date().getDay()];
+      for (var i = 0; i < config.override.length; i++) {
+        if (config.override[i].day === dayName) {
+          const currentHour = new Date().getHours();
 
-    for (var i = 0; i < config.override.length; i++) {
-      if (config.override[i].day === dayName) {
-        const currentHour = new Date().getHours();
-
-        if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
-          if (config.override[i].finalObject !== undefined) {
-            console.log('Override! Using custom object.');
-            fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
-            return;
+          if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
+            if (config.override[i].finalObject !== undefined) {
+              console.log('Override! Using custom object.');
+              fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
+              return;
+            }
           }
         }
       }
-    }
 
-    const titleFileName = 'recognition/title_' + dateNow + '.png';
-    const artistFileName = 'recognition/artist' + dateNow + '.png';
+      const titleFileName = 'recognition/title_' + dateNow + '.png';
+      const artistFileName = 'recognition/artist' + dateNow + '.png';
 
-    downloadImages(titleFileName, artistFileName, function() {
-      recognizeText(artistFileName, function(artistText) {
-        recognizeText(titleFileName, function(titleText) {
-          console.log('Recognized text: ' + artistText + " / " + titleText);
+      downloadImages(titleFileName, artistFileName, function() {
+        recognizeText(artistFileName, function(artistText) {
+          recognizeText(titleFileName, function(titleText) {
+            console.log('Recognized text: ' + artistText + " / " + titleText);
 
-          searchTitle(artistText, titleText);
+            searchTitle(artistText, titleText);
 
-          fs.unlinkSync(titleFileName);
-          fs.unlinkSync(artistFileName);
+            fs.unlinkSync(titleFileName);
+            fs.unlinkSync(artistFileName);
+          }, function() {
+            recognize();
+          });
         }, function() {
           recognize();
         });
-      }, function() {
-        recognize();
       });
     });
   }, 100);
