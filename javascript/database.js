@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-var browseTracks = function(limit, skip, callback, errorCallback) {
+function browseTracks(limit, skip, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
       method: 'GET'
@@ -37,7 +37,7 @@ var browseTracks = function(limit, skip, callback, errorCallback) {
     });
 }
 
-var browseReleases = function(limit, skip, callback, errorCallback) {
+function browseReleases(limit, skip, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
       method: 'GET'
@@ -51,7 +51,7 @@ var browseReleases = function(limit, skip, callback, errorCallback) {
     });
 }
 
-var browseArtists = function(limit, skip, callback, errorCallback) {
+function browseArtists(limit, skip, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
       method: 'GET'
@@ -65,7 +65,7 @@ var browseArtists = function(limit, skip, callback, errorCallback) {
     });
 }
 
-var initializeDatabase = function() {
+function initializeDatabase() {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)
@@ -84,7 +84,7 @@ var initializeDatabase = function() {
   }
 }
 
-var initCatalog = function(callback) {
+function initCatalog(callback) {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)
@@ -140,7 +140,7 @@ var initCatalog = function(callback) {
     });
 }
 
-var initReleases = function(callback) {
+function initReleases(callback) {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)
@@ -186,7 +186,7 @@ var initReleases = function(callback) {
     });
 }
 
-var initArtists = function(callback) {
+function initArtists(callback) {
   const dbAdapter = new FileSync('db.json');
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)

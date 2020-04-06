@@ -21,7 +21,7 @@ var positionConfigArtist = {}
 
 var displayConfig = 0;
 
-var loadConfig = function() {
+function loadConfig() {
   if (fs.existsSync(recognitionConfigFile)) {
     config = JSON.parse(fs.readFileSync(recognitionConfigFile));
   }
@@ -48,7 +48,7 @@ var loadConfig = function() {
   }
 }
 
-var recognize = function() {
+function recognize() {
   loadConfig();
 
   const dateNow = Date.now() / 1000;
