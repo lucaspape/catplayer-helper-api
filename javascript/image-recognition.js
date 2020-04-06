@@ -259,6 +259,12 @@ var advancedSearch = function(tempTitle, tempArtist) {
 
 recognize();
 
+var download = function(uri, filename, callback) {
+  request.head(uri, function(err, res, body) {
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
+
 function similarity(s1, s2) {
   if (s1 !== undefined && s2 !== undefined) {
     var longer = s1;
