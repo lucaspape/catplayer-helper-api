@@ -1,12 +1,16 @@
 module.exports = {
   fixSearchString: function(searchString) {
-    searchString = searchString.replace(/[^\x20-\x7E]/g, "");
-    searchString = searchString.replace('(', '%7B');
-    searchString = searchString.replace(')', '%7D');
-    searchString = searchString.replace(' ', '%20');
-    searchString = searchString.trim();
+    if (searchString === undefined) {
+      return '';
+    } else {
+      searchString = searchString.replace(/[^\x20-\x7E]/g, "");
+      searchString = searchString.replace('(', '%7B');
+      searchString = searchString.replace(')', '%7D');
+      searchString = searchString.replace(' ', '%20');
+      searchString = searchString.trim();
 
-    return searchString;
+      return searchString;
+    }
   },
 
   fixSkipAndLimit: function(reqQuery, callback) {

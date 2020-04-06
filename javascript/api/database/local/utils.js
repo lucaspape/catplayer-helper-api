@@ -45,10 +45,14 @@ module.exports = {
   },
 
   fixSearchString: function(searchString) {
-    searchString = searchString.replace(/[^\x20-\x7E]/g, "");
-    searchString = searchString.trim();
+    if (searchString === undefined) {
+      return '';
+    } else {
+      searchString = searchString.replace(/[^\x20-\x7E]/g, "");
+      searchString = searchString.trim();
 
-    return searchString;
+      return searchString;
+    }
   },
 
   fixSkipAndLimit: function(reqQuery, callback) {
