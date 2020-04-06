@@ -63,6 +63,7 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+      
   recg:
     build:                   javascript/image
     command:                 node javascript/image/image-recognition.js
