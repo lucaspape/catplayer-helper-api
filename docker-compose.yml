@@ -1,63 +1,63 @@
 version:                     '3'
 services:
   database-catalog:
-    build:                   .
-    command:                 node javascript/database/host/database-catalog.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-releases:
-    build:                   .
-    command:                 node javascript/database/host/database-releases.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-artists:
-    build:                   .
-    command:                 node javascript/database/host/database-artists.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-local:
-    build:                   .
-    command:                 node javascript/database/local/database-local.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/local/database-local.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-update-catalog:
-    build:                   .
-    command:                 node javascript/database/update/database-update-catalog.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-update-releases:
-    build:                   .
-    command:                 node javascript/database/update/database-update-releases.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   database-update-artists:
-    build:                   .
-    command:                 node javascript/database/update/database-update-artists.js
+    build:                   javascript/api
+    command:                 node javascript/api/database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - static-content:/app
 
   web:
-    build:                   .
+    build:                   javascript/api
     command:                 node javascript/api/api.js
     working_dir:             /app/
     restart:                 always
