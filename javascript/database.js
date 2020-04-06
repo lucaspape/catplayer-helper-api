@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const lowdb = require('lowdb');
+const cookieParser = require('cookie-parser');
 const FileSync = require('lowdb/adapters/FileSync');
 
 const PORT = 6000;
@@ -18,9 +19,26 @@ const dbDefaults = {
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+function getSession(sid, callback, errorCallback) {
+  request({
+    headers: {
+      'Cookie': 'connect.sid=' + sid
+    },
+    url: 'https://connect.monstercat.com/v2/self/session',
+    method: 'GET'
+  }, function(err, resp, body) {
+    if (err) {
+      errorCallback(err);
+    } else {
+      callback(JSON.parse(body));
+    }
+  });
+}
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
   const dbAdapter = new FileSync('db.json');
@@ -50,11 +68,21 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
     delete trackArray[i]['search'];
   }
 
-  var returnObject = {
-    results: trackArray
-  };
+  const sid = req.cookies['connect.sid'];
 
-  res.send(returnObject);
+  getSession(sid,
+    function(json) {
+      trackArray = addMissingKeys(json.hasGold, trackArray);
+
+      var returnObject = {
+        results: trackArray
+      };
+
+      res.send(returnObject);
+    },
+    function(err) {
+      res.send(err);
+    });
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
@@ -85,11 +113,21 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     delete releaseArray[i]['search'];
   }
 
-  var returnObject = {
-    results: releaseArray
-  };
+  const sid = req.cookies['connect.sid'];
 
-  res.send(returnObject);
+  getSession(sid,
+    function(json) {
+      releaseArray = addMissingKeys(json.hasGold, releaseArray);
+
+      var returnObject = {
+        results: releaseArray
+      };
+
+      res.send(returnObject);
+    },
+    function(err) {
+      res.send(err);
+    });
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
@@ -277,6 +315,30 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
 app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
+
+function addMissingKeys(hasGold, array) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].inEarlyAccess) {
+      if (hasGold) {
+        array[i].streamable = true;
+        array[i].downloadable = false;
+      } else {
+        array[i].streamable = false;
+        array[i].downloadable = false;
+      }
+    } else {
+      if (hasGold) {
+        array[i].streamable = true;
+        array[i].downloadable = true;
+      } else {
+        array[i].streamable = true;
+        array[i].downloadable = false;
+      }
+    }
+  }
+
+  return array;
+}
 
 function similarity(s1, s2) {
   if (s1 !== undefined && s2 !== undefined) {

@@ -79,7 +79,7 @@ function initCatalog(callback) {
   db.defaults(dbDefaults)
     .write();
 
-  const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
+  const removeKeys = ['streamable', 'downloadable'];
 
   browseTracks(-1, 0,
     function(json) {
@@ -135,7 +135,7 @@ function initReleases(callback) {
   db.defaults(dbDefaults)
     .write();
 
-  const removeKeys = ['streamable', 'downloadable', 'inEarlyAccess'];
+  const removeKeys = ['streamable', 'downloadable'];
 
   browseReleases(-1, 0,
     function(json) {
