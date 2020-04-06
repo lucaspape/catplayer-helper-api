@@ -26,11 +26,11 @@ app.use(bodyParser.urlencoded({
 
 function getSession(sid, callback, errorCallback) {
   request({
-    headers: {
-      'Cookie': 'connect.sid=' + sid
-    },
     url: 'https://connect.monstercat.com/v2/self/session',
-    method: 'GET'
+    method: 'GET',
+    header: {
+      'Cookie': 'connect.sid=' + sid
+    }
   }, function(err, resp, body) {
     if (err) {
       errorCallback(err);
