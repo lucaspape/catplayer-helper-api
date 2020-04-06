@@ -11,7 +11,9 @@ const APIPREFIX = '/v1';
 
 const dbDefaults = {
   tracks: [],
+  tracksGold: [],
   releases: [],
+  releasesGold: [],
   artists: []
 };
 
@@ -30,6 +32,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 
   var skip = 0;
   var limit = 50;
+  var gold = false
 
   if (req.query.skip !== undefined) {
     skip = parseInt(req.query.skip);
@@ -43,7 +46,19 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
     }
   }
 
-  const trackArray = db.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
+  if (req.query.gold !== undefined) {
+    if (req.query.gold === true) {
+      gold = true;
+    }
+  }
+
+  var trackArray = [];
+
+  if (gold) {
+    trackArray = db.get('tracksGold').sortBy('sortId').slice(skip, skip + limit).value();
+  } else {
+    trackArray = db.get('tracks').sortBy('sortId').slice(skip, skip + limit).value();
+  }
 
   for (var i = 0; i < trackArray.length; i++) {
     delete trackArray[i]['sortId'];
@@ -65,6 +80,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
   var skip = 0;
   var limit = 50;
+  var gold = false;
 
   if (req.query.skip !== undefined) {
     skip = parseInt(req.query.skip);
@@ -78,7 +94,19 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     }
   }
 
-  const releaseArray = db.get('releases').sortBy('sortId').slice(skip, skip + limit).value();
+  if (req.query.gold !== undefined) {
+    if (req.query.gold === true) {
+      gold = true;
+    }
+  }
+
+  var releaseArray = [];
+
+  if (gold) {
+    releaseArray = db.get('releasesGold').sortBy('sortId').slice(skip, skip + limit).value();
+  } else {
+    releaseArray = db.get('releases').sortBy('sortId').slice(skip, skip + limit).value();
+  }
 
   for (var i = 0; i < releaseArray.length; i++) {
     delete releaseArray[i]['sortId'];
@@ -135,6 +163,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
   var skip = 0;
   var limit = 50;
+  var gold = false;
 
   if (req.query.skip !== undefined) {
     skip = parseInt(req.query.skip);
@@ -148,10 +177,23 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     }
   }
 
+  if (req.query.gold !== undefined) {
+    if (req.query.gold === true) {
+      gold = true;
+    }
+  }
+
   const searchString = req.query.term.trim();
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
-  var trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
+  var trackArray = [];
+
+  if (gold) {
+    trackArray = db.get('tracksGold').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
+  } else {
+    trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
+  }
+
 
   for (var k = 1; k < terms.length; k++) {
     trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
@@ -184,6 +226,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 
   var skip = 0;
   var limit = 50;
+  var gold = false;
 
   if (req.query.skip !== undefined) {
     skip = parseInt(req.query.skip);
@@ -197,10 +240,22 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     }
   }
 
+  if (req.query.gold !== undefined) {
+    if (req.query.gold === true) {
+      gold = true;
+    }
+  }
+
   const searchString = req.query.term.trim();
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
-  var releaseArray = db.get('releases').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+  var releaseArray = [];
+
+  if (gold) {
+    releaseArray = db.get('releasesGold').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+  } else {
+    releaseArray = db.get('releases').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+  }
 
   for (var k = 1; k < terms.length; k++) {
     releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));

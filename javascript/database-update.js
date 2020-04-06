@@ -5,7 +5,9 @@ const FileSync = require('lowdb/adapters/FileSync');
 
 const dbDefaults = {
   tracks: [],
+  tracksGold: [],
   releases: [],
+  releasesGold: [],
   artists: []
 };
 
@@ -79,8 +81,6 @@ function initCatalog(callback) {
   db.defaults(dbDefaults)
     .write();
 
-  const removeKeys = ['streamable', 'downloadable'];
-
   browseTracks(-1, 0,
     function(json) {
       console.log('Received catalog data...');
@@ -93,10 +93,6 @@ function initCatalog(callback) {
 
         var track = json.results[i];
         track.sortId = i;
-
-        for (var k = 0; k < removeKeys.length; k++) {
-          delete track[removeKeys[k]];
-        }
 
         track.search = track.artistsTitle;
         track.search += track.genrePrimary;
@@ -116,7 +112,27 @@ function initCatalog(callback) {
           track.search += track.artists[k].name;
         }
 
+        track.downloadable = false;
+
+        if (track.inEarlyAccess) {
+          track.streamable = false;
+        } else {
+          track.streamable = true;
+        }
+
         db.get('tracks')
+          .push(track)
+          .write();
+
+        track.streamable = true;
+
+        if (track.inEarlyAccess) {
+          track.downloadable = false;
+        } else {
+          track.downloadable = true;
+        }
+
+        db.get('tracksGold')
           .push(track)
           .write();
       }
@@ -134,8 +150,6 @@ function initReleases(callback) {
   const db = lowdb(dbAdapter);
   db.defaults(dbDefaults)
     .write();
-
-  const removeKeys = ['streamable', 'downloadable'];
 
   browseReleases(-1, 0,
     function(json) {
@@ -158,11 +172,27 @@ function initReleases(callback) {
         release.search += release.version;
         release.search += release.id;
 
-        for (var k = 0; k < removeKeys.length; k++) {
-          delete release[removeKeys[k]];
+        release.downloadable = false;
+
+        if (release.inEarlyAccess) {
+          release.streamable = false;
+        } else {
+          release.streamable = true;
         }
 
         db.get('releases')
+          .push(release)
+          .write();
+
+        release.streamable = true;
+
+        if (release.inEarlyAccess) {
+          release.downloadable = false;
+        } else {
+          release.downloadable = true;
+        }
+
+        db.get('releasesGold')
           .push(release)
           .write();
       }

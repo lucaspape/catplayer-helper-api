@@ -84,38 +84,35 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
     }
   }
 
-  request({
-      url: 'http://database:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        var trackArray = JSON.parse(body).results;
+  const sid = req.cookies['connect.sid'];
 
-        const sid = req.cookies['connect.sid'];
+  getSession(sid,
+    function(json) {
+      var hasGold = false;
 
-        getSession(sid,
-          function(json) {
-            var hasGold = false;
-
-            if (json.user !== undefined) {
-              hasGold = json.user.hasGold;
-            }
-
-            trackArray = addMissingKeys(hasGold, trackArray);
-
-            var returnObject = {
-              results: trackArray
-            };
-
-            res.send(returnObject);
-          },
-          function(err) {
-            res.send(err);
-          });
+      if (json.user !== undefined) {
+        hasGold = json.user.hasGold;
       }
+
+      request({
+        url: 'http://database:6000/v1/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+        method: 'GET'
+      }, function(err, resp, body) {
+        if (err) {
+          res.send(err);
+        } else {
+          var trackArray = JSON.parse(body).results;
+
+          var returnObject = {
+            results: trackArray
+          };
+
+          res.send(returnObject);
+        }
+      });
+    },
+    function(err) {
+      res.send(err);
     });
 });
 
@@ -142,38 +139,35 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     }
   }
 
-  request({
-      url: 'http://database:6000/v1/releases?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        var releasesArray = JSON.parse(body).results;
+  const sid = req.cookies['connect.sid'];
 
-        const sid = req.cookies['connect.sid'];
+  getSession(sid,
+    function(json) {
+      var hasGold = false;
 
-        getSession(sid,
-          function(json) {
-            var hasGold = false;
+      if (json.user !== undefined) {
+        hasGold = json.user.hasGold;
+      }
 
-            if (json.user !== undefined) {
-              hasGold = json.user.hasGold;
-            }
-
-            releasesArray = addMissingKeys(hasGold, releasesArray);
-
+      request({
+          url: 'http://database:6000/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + gold,
+          method: 'GET'
+        },
+        function(err, resp, body) {
+          if (err) {
+            res.send(err);
+          } else {
+            var releasesArray = JSON.parse(body).results;
             var returnObject = {
               results: releasesArray
             };
 
             res.send(returnObject);
-          },
-          function(err) {
-            res.send(err);
-          });
-      }
+          }
+        });
+    },
+    function(err) {
+      res.send(err);
     });
 });
 
