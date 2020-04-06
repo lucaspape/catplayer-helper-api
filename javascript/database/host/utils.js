@@ -1,4 +1,4 @@
-var methods = {
+module.exports = {
   similarity: function(s1, s2) {
     if (s1 !== undefined && s2 !== undefined) {
       var longer = s1;
@@ -70,5 +70,3 @@ var methods = {
     callback(skip, limit);
   }
 };
-
-exports.data = methods;
