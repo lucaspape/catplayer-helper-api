@@ -8,21 +8,21 @@ services:
     volumes:
       - static-content:/app
 
-    database-releases:
-      build:                 .
-      command:               node javascript/database/host/database-releases.js
-      working_dir:           /app/
-      restart:               always
-      volumes:
-        - static-content:/app
+  database-releases:
+    build:                   .
+    command:                 node javascript/database/host/database-releases.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
 
-    database-artists:
-      build:                 .
-      command:               node javascript/database/host/database-artists.js
-      working_dir:           /app/
-      restart:               always
-      volumes:
-        - static-content:/app
+  database-artists:
+    build:                   .
+    command:                 node javascript/database/host/database-artists.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
 
   database-local:
     build:                   .
