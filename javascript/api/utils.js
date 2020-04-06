@@ -1,5 +1,5 @@
 module.exports = {
-  function fixSearchString(searchString) {
+  fixSearchString: function(searchString) {
     searchString = searchString.replace(/[^\x20-\x7E]/g, "");
     searchString = searchString.replace('(', '%7B');
     searchString = searchString.replace(')', '%7D');
@@ -7,9 +7,9 @@ module.exports = {
     searchString = searchString.trim();
 
     return searchString;
-  }
+  },
 
-  function fixSkipAndLimit(reqQuery, callback) {
+  fixSkipAndLimit: function(reqQuery, callback) {
     var skip = 0;
     var limit = 50;
 
