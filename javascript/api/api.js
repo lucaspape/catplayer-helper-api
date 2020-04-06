@@ -265,19 +265,23 @@ app.listen(PORT, () => {
 });
 
 function getSession(sid, callback, errorCallback) {
-  request({
-    url: 'https://connect.monstercat.com/v2/self/session',
-    method: 'GET',
-    headers: {
-      'Cookie': 'connect.sid=' + sid
-    }
-  }, function(err, resp, body) {
-    if (err) {
-      errorCallback(err);
-    } else {
-      callback(JSON.parse(body));
-    }
-  });
+  if (sid !== undefined) {
+    request({
+      url: 'https://connect.monstercat.com/v2/self/session',
+      method: 'GET',
+      headers: {
+        'Cookie': 'connect.sid=' + sid
+      }
+    }, function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+  } else {
+    callback({});
+  }
 }
 
 function fixSearchString(searchString) {
