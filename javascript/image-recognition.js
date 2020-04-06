@@ -128,6 +128,44 @@ var search = function(tempArtist, tempTitle) {
   console.log('Searching...');
 
   request({
+    url: 'http://database:6000/v1/catalog/search?term=' + tempTitle + "%20" + tempArtist + "&limit=-1",
+    method: 'GET'
+  }, function(err, resp, body) {
+    if (err) {
+      console.log(err);
+    } else {
+      var respJson = JSON.parse(body);
+
+      var responseTrackArray = respJson.results;
+
+      const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
+      const finalObject = similarityArray[0];
+
+      if (finalObject !== undefined) {
+        if (finalObject.totalConfidence > minimumConfidence) {
+          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+
+          console.log('Done!');
+
+          setTimeout(function() {
+            recognize();
+          }, 3000);
+
+          return;
+        }
+      }
+
+      setTimeout(function() {
+        searchTitle(tempTitle, tempArtist);
+      }, 100);
+    }
+  });
+}
+
+var searchTitle = function(tempArtist, tempTitle) {
+  console.log('Searching title...');
+
+  request({
     url: 'http://database:6000/v1/catalog/search?term=' + tempTitle + "&limit=-1",
     method: 'GET'
   }, function(err, resp, body) {
