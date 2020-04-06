@@ -50,7 +50,7 @@ var recognize = function() {
       recognizeText(titleFileName, function(titleText) {
         console.log('Recognized text: ' + artistText + " / " + titleText);
 
-        search(artistText, titleText);
+        searchTitle(artistText, titleText);
 
         fs.unlinkSync(titleFileName);
         fs.unlinkSync(artistFileName);
@@ -124,57 +124,25 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
   return similarityArray.sort((a, b) => (a.totalConfidence - b.totalConfidence)).reverse();
 }
 
-var search = function(tempArtist, tempTitle) {
-  console.log('Searching...');
-
+var searchQuery = function(searchTerm, callback, errorCallback) {
   request({
-    url: 'http://database:6000/v1/catalog/search?term=' + tempTitle + "%20" + tempArtist + "&limit=-1",
+    url: 'http://database:6000/v1/catalog/search?term=' + searchTerm + '&limit=-1',
     method: 'GET'
   }, function(err, resp, body) {
     if (err) {
-      console.log(err);
+      errorCallback(err);
     } else {
-      var respJson = JSON.parse(body);
-
-      var responseTrackArray = respJson.results;
-
-      const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
-      const finalObject = similarityArray[0];
-
-      if (finalObject !== undefined) {
-        if (finalObject.totalConfidence > minimumConfidence) {
-          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
-
-          console.log('Done!');
-
-          setTimeout(function() {
-            recognize();
-          }, 3000);
-
-          return;
-        }
-      }
-
-      setTimeout(function() {
-        searchTitle(tempTitle, tempArtist);
-      }, 100);
+      callback(JSON.parse(body));
     }
-  });
+  })
 }
 
 var searchTitle = function(tempArtist, tempTitle) {
   console.log('Searching title...');
 
-  request({
-    url: 'http://database:6000/v1/catalog/search?term=' + tempTitle + "&limit=-1",
-    method: 'GET'
-  }, function(err, resp, body) {
-    if (err) {
-      console.log(err);
-    } else {
-      var respJson = JSON.parse(body);
-
-      var responseTrackArray = respJson.results;
+  searchQuery(tempTitle,
+    function(json) {
+      var responseTrackArray = json.results;
 
       const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
       const finalObject = similarityArray[0];
@@ -185,34 +153,25 @@ var searchTitle = function(tempArtist, tempTitle) {
 
           console.log('Done!');
 
-          setTimeout(function() {
-            recognize();
-          }, 3000);
+          recognize();
 
           return;
         }
       }
 
-      setTimeout(function() {
-        searchArtist(tempTitle, tempArtist);
-      }, 100);
-    }
-  });
+      searchArtist(tempTitle, tempArtist);
+    },
+    function(err) {
+      console.log(err);
+    });
 }
 
 var searchArtist = function(tempTitle, tempArtist) {
   console.log('Using artist search...');
 
-  request({
-    url: 'http://database:6000/v1/catalog/search?term=' + tempArtist + "&limit=-1",
-    method: 'GET'
-  }, function(err, resp, body) {
-    if (err) {
-      console.log(err);
-    } else {
-      var respJson = JSON.parse(body);
-
-      var responseTrackArray = respJson.results;
+  searchQuery(tempArtist,
+    function(json) {
+      var responseTrackArray = json.results;
 
       const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, false);
       const finalObject = similarityArray[0];
@@ -223,19 +182,17 @@ var searchArtist = function(tempTitle, tempArtist) {
 
           console.log('Done!');
 
-          setTimeout(function() {
-            recognize();
-          }, 3000);
+          recognize();
 
           return;
         }
       }
 
-      setTimeout(function() {
-        advancedSearch(tempTitle, tempArtist);
-      }, 100);
-    }
-  });
+      advancedSearch(tempTitle, tempArtist);
+    },
+    function(err) {
+      console.log(err);
+    });
 }
 
 //used if could not find track because version is in title
@@ -261,17 +218,9 @@ var advancedSearch = function(tempTitle, tempArtist) {
         rest = splitTitle[i];
       }
 
-      //search for that
-      request({
-        url: 'http://database:6000/v1/catalog/search?term=' + searchTerm + "&limit=-1",
-        method: 'GET'
-      }, function(err, resp, body) {
-        if (err) {
-
-        } else {
-          var respJson = JSON.parse(body);
-
-          var responseTrackArray = respJson.results;
+      searchQuery(searchTerm,
+        function(json) {
+          var responseTrackArray = json.results;
 
           const similarityArray = orderBySimilarity(tempArtist, tempTitle, responseTrackArray, true);
           const finalObject = similarityArray[0];
@@ -282,9 +231,7 @@ var advancedSearch = function(tempTitle, tempArtist) {
 
               console.log('Done!');
 
-              setTimeout(function() {
-                recognize();
-              }, 3000);
+              recognize();
 
               //STOP LOOP
               return;
@@ -293,30 +240,22 @@ var advancedSearch = function(tempTitle, tempArtist) {
           k--;
 
           //CONTINUE LOOP
-          setTimeout(function() {
-            loopFunction();;
-          }, 100);
-        }
-      });
+          loopFunction();;
+        },
+        function(err) {
+          console.log(err);
+        });
     } else {
       //could not find
       console.log('Could not find song!');
 
-      setTimeout(function() {
-        recognize();
-      }, 3000);
+      recognize();
     }
   }
 
   //start loop
   loopFunction();
 }
-
-var download = function(uri, filename, callback) {
-  request.head(uri, function(err, res, body) {
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
-};
 
 recognize();
 
