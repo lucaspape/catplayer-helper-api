@@ -406,7 +406,7 @@ function getSession(sid, callback, errorCallback) {
       }
     });
   } else {
-    return sessionCache[sid];
+    callback(sessionCache[sid]);
   }
 }
 
