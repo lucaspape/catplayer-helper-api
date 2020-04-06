@@ -11,13 +11,13 @@ var config = {};
 
 const configFile = 'configs/config_recognition.json';
 
-var loadConfig = function() {
+function loadConfig() {
   if (fs.existsSync(configFile)) {
     config = JSON.parse(fs.readFileSync(configFile));
   }
 }
 
-var recognize = function() {
+function recognize() {
   loadConfig();
 
   console.log('Config loaded!');
@@ -63,7 +63,7 @@ var recognize = function() {
   });
 }
 
-var downloadImages = function(titleFileName, artistFileName, downloadFinishedCallback) {
+function downloadImages(titleFileName, artistFileName, downloadFinishedCallback) {
   download(titleImageUrl, titleFileName, function() {
     download(artistImageUrl, artistFileName, function() {
       downloadFinishedCallback();
@@ -76,7 +76,7 @@ const tesseractOptions = {
   psm: 6
 }
 
-var recognizeText = function(imagePath, finishedCallback, errorCallback) {
+function recognizeText(imagePath, finishedCallback, errorCallback) {
   tesseract.recognize(imagePath, tesseractOptions)
     .then(text => {
       finishedCallback(text.replace(/\n/g, " ").replace(/[^ -~]+/g, ""));
@@ -87,7 +87,7 @@ var recognizeText = function(imagePath, finishedCallback, errorCallback) {
     });
 }
 
-var orderBySimilarity = function(artistText, titleText, trackArray, includeVersionConfidence) {
+function orderBySimilarity(artistText, titleText, trackArray, includeVersionConfidence) {
   var similarityArray = []
 
   var arrayIndex = 0;
@@ -124,7 +124,7 @@ var orderBySimilarity = function(artistText, titleText, trackArray, includeVersi
   return similarityArray.sort((a, b) => (a.totalConfidence - b.totalConfidence)).reverse();
 }
 
-var searchQuery = function(searchTerm, callback, errorCallback) {
+function searchQuery(searchTerm, callback, errorCallback) {
   request({
     url: 'http://database:6000/v1/catalog/search?term=' + searchTerm + '&limit=-1',
     method: 'GET'
@@ -137,7 +137,7 @@ var searchQuery = function(searchTerm, callback, errorCallback) {
   })
 }
 
-var searchTitle = function(tempArtist, tempTitle) {
+function searchTitle(tempArtist, tempTitle) {
   console.log('Searching title...');
 
   searchQuery(tempTitle,
@@ -166,7 +166,7 @@ var searchTitle = function(tempArtist, tempTitle) {
     });
 }
 
-var searchArtist = function(tempTitle, tempArtist) {
+function searchArtist(tempTitle, tempArtist) {
   console.log('Using artist search...');
 
   searchQuery(tempArtist,
@@ -196,14 +196,14 @@ var searchArtist = function(tempTitle, tempArtist) {
 }
 
 //used if could not find track because version is in title
-var advancedSearch = function(tempTitle, tempArtist) {
+function advancedSearch(tempTitle, tempArtist) {
   console.log('Advanced search...');
 
   const splitTitle = tempTitle.split(' ');
 
   var k = splitTitle.length;
 
-  var loopFunction = function() {
+  function loopFunction() {
     //LOOP THIS
     if (k > 0) {
       var searchTerm = '';
@@ -259,7 +259,7 @@ var advancedSearch = function(tempTitle, tempArtist) {
 
 recognize();
 
-var download = function(uri, filename, callback) {
+function download(uri, filename, callback) {
   request.head(uri, function(err, res, body) {
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
