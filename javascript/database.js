@@ -360,7 +360,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     }
   }
 
-  const searchString = req.query.term;
+  const searchString = req.query.term.trim();
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
   var trackArray = db.get('tracks').filter(track => new RegExp(terms[0], 'i').test(track.search)).value();
@@ -409,7 +409,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     }
   }
 
-  const searchString = req.query.term;
+  const searchString = req.query.term.trim();
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
   var releaseArray = db.get('releases').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
@@ -458,7 +458,7 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
     }
   }
 
-  const searchString = req.query.term;
+  const searchString = req.query.term.trim();
   const terms = searchString.replace(/[^\x20-\x7E]/g, "").split(' ');
 
   var artistsArray = db.get('artists').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
