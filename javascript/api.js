@@ -335,7 +335,7 @@ function getSession(sid, callback, errorCallback) {
   request({
     url: 'https://connect.monstercat.com/v2/self/session',
     method: 'GET',
-    header: {
+    headers: {
       'Cookie': 'connect.sid=' + sid
     }
   }, function(err, resp, body) {
