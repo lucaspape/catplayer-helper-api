@@ -85,7 +85,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
   }
 
   request({
-      url: 'http://database:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
+      url: 'http://127.0.0.1:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
       method: 'GET'
     },
     function(err, resp, body) {
@@ -98,7 +98,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 
         getSession(sid,
           function(json) {
-            trackArray = addMissingKeys(json.hasGold, trackArray);
+            trackArray = addMissingKeys(json.user.hasGold, trackArray);
 
             var returnObject = {
               results: trackArray
@@ -150,7 +150,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
         getSession(sid,
           function(json) {
-            releasesArray = addMissingKeys(json.hasGold, releasesArray);
+            releasesArray = addMissingKeys(json.user.hasGold, releasesArray);
 
             var returnObject = {
               results: releasesArray
