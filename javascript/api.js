@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
+const cookieParser = require('cookie-parser');
 const FileSync = require('lowdb/adapters/FileSync');
 
 const logAdapter = new FileSync('express-log.json');
@@ -20,6 +21,7 @@ const APIPREFIX = '/v1';
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -90,7 +92,23 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(JSON.parse(body));
+        var trackArray = JSON.parse(body).results;
+
+        const sid = req.cookies['connect.sid'];
+
+        getSession(sid,
+          function(json) {
+            trackArray = addMissingKeys(json.hasGold, trackArray);
+
+            var returnObject = {
+              results: trackArray
+            };
+
+            res.send(returnObject);
+          },
+          function(err) {
+            res.send(err);
+          });
       }
     });
 });
@@ -126,7 +144,23 @@ app.get(APIPREFIX + '/releases', (req, res) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(JSON.parse(body));
+        var releasesArray = JSON.parse(body).results;
+
+        const sid = req.cookies['connect.sid'];
+
+        getSession(sid,
+          function(json) {
+            releasesArray = addMissingKeys(json.hasGold, releasesArray);
+
+            var returnObject = {
+              results: releasesArray
+            };
+
+            res.send(returnObject);
+          },
+          function(err) {
+            res.send(err);
+          });
       }
     });
 });
@@ -296,3 +330,43 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
 app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
+
+function getSession(sid, callback, errorCallback) {
+  request({
+    url: 'https://connect.monstercat.com/v2/self/session',
+    method: 'GET',
+    header: {
+      'Cookie': 'connect.sid=' + sid
+    }
+  }, function(err, resp, body) {
+    if (err) {
+      errorCallback(err);
+    } else {
+      callback(JSON.parse(body));
+    }
+  });
+}
+
+function addMissingKeys(hasGold, array) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].inEarlyAccess) {
+      if (hasGold) {
+        array[i].streamable = true;
+        array[i].downloadable = false;
+      } else {
+        array[i].streamable = false;
+        array[i].downloadable = false;
+      }
+    } else {
+      if (hasGold) {
+        array[i].streamable = true;
+        array[i].downloadable = true;
+      } else {
+        array[i].streamable = true;
+        array[i].downloadable = false;
+      }
+    }
+  }
+
+  return array;
+}
