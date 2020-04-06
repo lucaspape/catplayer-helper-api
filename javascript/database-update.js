@@ -64,7 +64,7 @@ function initializeDatabase() {
             console.log('Database init done!');
 
             setTimeout(function() {
-              console.log('Exiting...')
+              initializeDatabase();
             }, 3600000);
           }
         });
