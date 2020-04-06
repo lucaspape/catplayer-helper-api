@@ -2,7 +2,7 @@ version:                     '3'
 services:
   database-catalog:
     build:                   javascript
-    command:                 node javascript/api/database/host/database-catalog.js
+    command:                 node api/database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -10,7 +10,7 @@ services:
 
   database-releases:
     build:                   javascript
-    command:                 node javascript/api/database/host/database-releases.js
+    command:                 node api/database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -18,7 +18,7 @@ services:
 
   database-artists:
     build:                   javascript
-    command:                 node javascript/api/database/host/database-artists.js
+    command:                 node api/database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -26,7 +26,7 @@ services:
 
   database-local:
     build:                   javascript
-    command:                 node javascript/api/database/local/database-local.js
+    command:                 node api/database/local/database-local.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -34,7 +34,7 @@ services:
 
   database-update-catalog:
     build:                   javascript
-    command:                 node javascript/api/database/update/database-update-catalog.js
+    command:                 node api/database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -42,7 +42,7 @@ services:
 
   database-update-releases:
     build:                   javascript
-    command:                 node javascript/api/database/update/database-update-releases.js
+    command:                 node api/database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -50,7 +50,7 @@ services:
 
   database-update-artists:
     build:                   javascript
-    command:                 node javascript/api/database/update/database-update-artists.js
+    command:                 node api/database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -58,7 +58,7 @@ services:
 
   web:
     build:                   javascript
-    command:                 node javascript/api/api.js
+    command:                 node api/api.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -66,7 +66,7 @@ services:
 
   recg:
     build:                   javascript
-    command:                 node javascript/image/image-recognition.js
+    command:                 node image/image-recognition.js
     working_dir:             /app/
     restart:                 always
     volumes:
