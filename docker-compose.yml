@@ -7,6 +7,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+    deploy:
+      replicas:              4
 
   database-releases:
     build:                   javascript
@@ -15,6 +17,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+    deploy:
+      replicas:              4
 
   database-artists:
     build:                   javascript
@@ -23,6 +27,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+    deploy:
+      replicas:              2
 
   database-local:
     build:                   javascript
@@ -63,6 +69,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+    deploy:
+      replicas:              10
 
   recg:
     build:                   javascript
