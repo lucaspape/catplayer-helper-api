@@ -90,3 +90,6 @@ services:
 
 volumes:
   static-content:
+    driver_opts:
+      type:                  tmpfs
+      device:                tmpfs
