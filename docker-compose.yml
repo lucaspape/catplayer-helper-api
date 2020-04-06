@@ -77,5 +77,8 @@ services:
     ports:
       - "6000:80"
 
+  proxy-internal:
+    build:                   proxy-internal
+
 volumes:
   static-content:

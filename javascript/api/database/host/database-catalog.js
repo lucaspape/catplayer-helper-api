@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/catalog', (req, res) => {
+app.get(APIPREFIX + '/', (req, res) => {
   const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(catalogDBDefaults)
@@ -60,7 +60,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/catalog/search', (req, res) => {
+app.get(APIPREFIX + '/search', (req, res) => {
   const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(catalogDBDefaults)

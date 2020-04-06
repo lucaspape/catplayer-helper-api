@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/releases', (req, res) => {
+app.get(APIPREFIX + '/', (req, res) => {
   const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(releasesDBDefaults)
@@ -53,7 +53,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/releases/search', (req, res) => {
+app.get(APIPREFIX + '/search', (req, res) => {
   const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(releasesDBDefaults)

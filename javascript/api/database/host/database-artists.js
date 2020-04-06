@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/artists', (req, res) => {
+app.get(APIPREFIX + '/', (req, res) => {
   const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(artistsDBDefaults)
@@ -45,7 +45,7 @@ app.get(APIPREFIX + '/artists', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/artists/search', (req, res) => {
+app.get(APIPREFIX + '/search', (req, res) => {
   const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(artistsDBDefaults)

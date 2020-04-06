@@ -46,7 +46,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
         }
 
         request({
-          url: 'http://database-catalog/v1/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+          url: 'http://proxy-internal/catalog/v1?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
           method: 'GET'
         }, function(err, resp, body) {
           if (err) {
@@ -75,7 +75,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
         }
 
         request({
-            url: 'http://database-releases/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+            url: 'http://proxy-internal/releases/v1?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
             method: 'GET'
           },
           function(err, resp, body) {
@@ -95,7 +95,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 app.get(APIPREFIX + '/artists', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
-        url: 'http://database-artists/v1/artists?limit=' + limit + '&skip=' + skip,
+        url: 'http://proxy-internal/artists/v1?limit=' + limit + '&skip=' + skip,
         method: 'GET'
       },
       function(err, resp, body) {
@@ -123,7 +123,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
         }
 
         request({
-            url: 'http://database-catalog/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+            url: 'http://proxy-internal/catalog/v1/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
             method: 'GET'
           },
           function(err, resp, body) {
@@ -155,7 +155,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
         }
 
         request({
-            url: 'http://database-releases/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+            url: 'http://proxy-internal/releases/v1/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
             method: 'GET'
           },
           function(err, resp, body) {
@@ -177,7 +177,7 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
-        url: 'http://database-artists/v1/artists/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
+        url: 'http://proxy-internal/artists/v1/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
         method: 'GET'
       },
       function(err, resp, body) {
