@@ -1,45 +1,77 @@
-version: '3'
+version:                     '3'
 services:
-  database:
-    build: .
-    command: node javascript/database.js
-    working_dir: /app/
-    restart: always
+  database-catalog:
+    build:                   .
+    command:                 node javascript/database/host/database-catalog.js
+    working_dir:             /app/
+    restart:                 always
     volumes:
       - static-content:/app
+
+    database-releases:
+      build:                 .
+      command:               node javascript/database/host/database-releases.js
+      working_dir:           /app/
+      restart:               always
+      volumes:
+        - static-content:/app
+
+    database-artists:
+      build:                 .
+      command:               node javascript/database/host/database-artists.js
+      working_dir:           /app/
+      restart:               always
+      volumes:
+        - static-content:/app
 
   database-local:
-    build: .
-    command: node javascript/database-local.js
-    working_dir: /app/
-    restart: always
+    build:                   .
+    command:                 node javascript/database/database-local.js
+    working_dir:             /app/
+    restart:                 always
     volumes:
       - static-content:/app
 
-  database-update:
-    build: .
-    command: node javascript/database-update.js
-    working_dir: /app/
-    restart: always
+  database-update-catalog:
+    build:                   .
+    command:                 node javascript/database/update/database-update-catalog.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
+
+  database-update-releases:
+    build:                   .
+    command:                 node javascript/database/update/database-update-releases.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
+
+  database-update-artists:
+    build:                   .
+    command:                 node javascript/database/update/database-update-artists.js
+    working_dir:             /app/
+    restart:                 always
     volumes:
       - static-content:/app
 
   web:
-    build: .
-    command: node javascript/api.js
+    build:                   .
+    command:                 node javascript/api/api.js
     environment:
-      PORT: 5000
+      PORT:                  5000
     ports:
       - "5000:5000"
-    working_dir: /app/
-    restart: always
+    working_dir:             /app/
+    restart:                 always
     volumes:
       - static-content:/app
   recg:
-    build: .
-    command: node javascript/image-recognition.js
-    working_dir: /app/
-    restart: always
+    build:                   .
+    command:                 node javascript/image-recognition.js
+    working_dir:             /app/
+    restart:                 always
     volumes:
       - static-content:/app
 
