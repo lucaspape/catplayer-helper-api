@@ -3,13 +3,19 @@ const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-const dbDefaults = {
+const catalogDBDefaults = {
   tracks: [],
-  tracksGold: [],
+  tracksGold: []
+}
+
+const releasesDBDefaults = {
   releases: [],
-  releasesGold: [],
+  releasesGold: []
+}
+
+const artistsDBDefaults = {
   artists: []
-};
+}
 
 function browseTracks(limit, skip, callback, errorCallback) {
   request({
@@ -59,26 +65,20 @@ function initializeDatabase() {
   initArtists(function() {
     initCatalog(function() {
       initReleases(function() {
-        fs.rename('db-temp.json', 'db.json', function(err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Database init done!');
+        console.log('Database init done!');
 
-            setTimeout(function() {
-              initializeDatabase();
-            }, 3600000);
-          }
-        });
+        setTimeout(function() {
+          initializeDatabase();
+        }, 3600000);
       });
     });
   });
 }
 
 function initCatalog(callback) {
-  const dbAdapter = new FileSync('db-temp.json');
+  const dbAdapter = new FileSync('db-catalog-temp.json');
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(catalogDBDefaults)
     .write();
 
   browseTracks(-1, 0,
@@ -137,6 +137,10 @@ function initCatalog(callback) {
           .write();
       }
 
+      fs.rename('db-catalog-temp.json', 'db-catalog.json', function(err) {
+        console.log(err);
+      });
+
       callback();
     },
 
@@ -146,9 +150,9 @@ function initCatalog(callback) {
 }
 
 function initReleases(callback) {
-  const dbAdapter = new FileSync('db-temp.json');
+  const dbAdapter = new FileSync('db-releases-temp.json');
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(releasesDBDefaults)
     .write();
 
   browseReleases(-1, 0,
@@ -197,6 +201,10 @@ function initReleases(callback) {
           .write();
       }
 
+      fs.rename('db-releases-temp.json', 'db-releases.json', function(err) {
+        console.log(err);
+      });
+
       callback();
     },
 
@@ -206,9 +214,9 @@ function initReleases(callback) {
 }
 
 function initArtists(callback) {
-  const dbAdapter = new FileSync('db-temp.json');
+  const dbAdapter = new FileSync('db-artists-temp.json');
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(artistsDBDefaults)
     .write();
 
   const removeKeys = [];
@@ -242,6 +250,10 @@ function initArtists(callback) {
           .push(artist)
           .write();
       }
+
+      fs.rename('db-artists-temp.json', 'db-artists.json', function(err) {
+        console.log(err);
+      });
 
       callback();
     },

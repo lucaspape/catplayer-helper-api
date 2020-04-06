@@ -9,13 +9,23 @@ const PORT = 6000;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/v1';
 
-const dbDefaults = {
+const catalogDBFile = 'db-catalog.json';
+const releasesDBFile = 'db-releases.json';
+const artistsDBFile = 'db-artists.json';
+
+const catalogDBDefaults = {
   tracks: [],
-  tracksGold: [],
+  tracksGold: []
+}
+
+const releasesDBDefaults = {
   releases: [],
-  releasesGold: [],
+  releasesGold: []
+}
+
+const artistsDBDefaults = {
   artists: []
-};
+}
 
 const app = express();
 app.use(cors());
@@ -25,9 +35,9 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(catalogDBDefaults)
     .write();
 
   var skip = 0;
@@ -73,9 +83,9 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(releasesDBDefaults)
     .write();
 
   var skip = 0;
@@ -121,9 +131,9 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(artistsDBDefaults)
     .write();
 
   var skip = 0;
@@ -156,9 +166,9 @@ app.get(APIPREFIX + '/artists', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(catalogDBDefaults)
     .write();
 
   var skip = 0;
@@ -219,9 +229,9 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases/search', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(releasesDBDefaults)
     .write();
 
   var skip = 0;
@@ -281,9 +291,9 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists/search', (req, res) => {
-  const dbAdapter = new FileSync('db.json');
+  const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
-  db.defaults(dbDefaults)
+  db.defaults(artistsDBDefaults)
     .write();
 
   var skip = 0;
