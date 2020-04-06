@@ -13,8 +13,8 @@ var config = {};
 const configFile = 'image/configs/config_recognition.json';
 
 function loadConfig(callback) {
-  download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config_recognition.json',
-    'javascript/image/configs/config_recognition.json',
+  download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/' + configFile,
+    configFile,
     function() {
       if (fs.existsSync(configFile)) {
         config = JSON.parse(fs.readFileSync(configFile));
