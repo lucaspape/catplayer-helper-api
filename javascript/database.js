@@ -85,21 +85,11 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     delete releaseArray[i]['search'];
   }
 
-  const sid = req.cookies['connect.sid'];
+  var returnObject = {
+    results: releaseArray
+  };
 
-  getSession(sid,
-    function(json) {
-      releaseArray = addMissingKeys(json.hasGold, releaseArray);
-
-      var returnObject = {
-        results: releaseArray
-      };
-
-      res.send(returnObject);
-    },
-    function(err) {
-      res.send(err);
-    });
+  res.send(returnObject);
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
