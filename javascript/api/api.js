@@ -5,14 +5,6 @@ const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
 const cookieParser = require('cookie-parser');
-const FileSync = require('lowdb/adapters/FileSync');
-
-const logAdapter = new FileSync('express-log.json');
-const logDB = lowdb(logAdapter);
-logDB.defaults({
-    requests: []
-  })
-  .write();
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
@@ -27,48 +19,20 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get(APIPREFIX + '/', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/'
-    })
-    .write();
-
   res.status(418);
   res.send("Hello world!!");
 });
 
 app.get(APIPREFIX + '/playlist/public', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/playlist/public'
-    })
-    .write();
-
   res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
 });
 
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/liveinfo'
-    })
-    .write();
-
   res.send(JSON.parse(fs.readFileSync('currentdata.json')));
 });
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/catalog/browse'
-    })
-    .write();
-
   fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
@@ -98,13 +62,6 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/releases'
-    })
-    .write();
-
   fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
@@ -135,13 +92,6 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/artists'
-    })
-    .write();
-
   fixSkipAndLimit(req.query, function(skip, limit) {
     request({
         url: 'http://database-artists/v1/artists?limit=' + limit + '&skip=' + skip,
@@ -158,13 +108,6 @@ app.get(APIPREFIX + '/artists', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/catalog/search'
-    })
-    .write();
-
   var searchString = fixSearchString(req.query.term);
 
   fixSkipAndLimit(req.query, function(skip, limit) {
@@ -197,13 +140,6 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases/search', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/releases/search'
-    })
-    .write();
-
   var searchString = fixSearchString(req.query.term);
 
   fixSkipAndLimit(req.query, function(skip, limit) {
@@ -236,13 +172,6 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists/search', (req, res) => {
-  logDB.get('requests')
-    .push({
-      time: Math.floor(new Date()),
-      url: '/artists/search'
-    })
-    .write();
-
   var searchString = fixSearchString(req.query.term);
 
   fixSkipAndLimit(req.query, function(skip, limit) {
