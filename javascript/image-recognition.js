@@ -129,6 +129,7 @@ function orderBySimilarity(artistText, titleText, trackArray, includeVersionConf
 function searchQuery(searchTerm, callback, errorCallback) {
   searchTerm = searchTerm.replace('(', '%7B');
   searchTerm = searchTerm.replace(')', '%7D');
+  searchTerm = searchTerm.replace(' ', '%20');
   searchTerm = searchTerm.trim();
 
   request({
