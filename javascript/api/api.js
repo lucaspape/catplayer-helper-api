@@ -5,6 +5,7 @@ const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
 const cookieParser = require('cookie-parser');
+const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
@@ -33,7 +34,7 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
     getSession(sid,
@@ -62,7 +63,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
     getSession(sid,
@@ -92,7 +93,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
         url: 'http://database-artists/v1/artists?limit=' + limit + '&skip=' + skip,
         method: 'GET'
@@ -108,9 +109,9 @@ app.get(APIPREFIX + '/artists', (req, res) => {
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
-  var searchString = fixSearchString(req.query.term);
+  var searchString = utils.fixSearchString(req.query.term);
 
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
     getSession(sid,
@@ -140,9 +141,9 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/releases/search', (req, res) => {
-  var searchString = fixSearchString(req.query.term);
+  var searchString = utils.fixSearchString(req.query.term);
 
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
 
     getSession(sid,
@@ -172,9 +173,9 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 });
 
 app.get(APIPREFIX + '/artists/search', (req, res) => {
-  var searchString = fixSearchString(req.query.term);
+  var searchString = utils.fixSearchString(req.query.term);
 
-  fixSkipAndLimit(req.query, function(skip, limit) {
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
         url: 'http://database-artists/v1/artists/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
         method: 'GET'
@@ -211,33 +212,4 @@ function getSession(sid, callback, errorCallback) {
   } else {
     callback({});
   }
-}
-
-function fixSearchString(searchString) {
-  searchString = searchString.replace(/[^\x20-\x7E]/g, "");
-  searchString = searchString.replace('(', '%7B');
-  searchString = searchString.replace(')', '%7D');
-  searchString = searchString.replace(' ', '%20');
-  searchString = searchString.trim();
-
-  return searchString;
-}
-
-function fixSkipAndLimit(reqQuery, callback) {
-  var skip = 0;
-  var limit = 50;
-
-  if (reqQuery.skip !== undefined) {
-    skip = parseInt(reqQuery.skip);
-  }
-
-  if (reqQuery.limit !== undefined) {
-    limit = parseInt(reqQuery.limit);
-
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  callback(skip, limit);
 }

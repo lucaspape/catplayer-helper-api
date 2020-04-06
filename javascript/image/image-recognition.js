@@ -1,6 +1,7 @@
 const tesseract = require('node-tesseract-ocr');
 const request = require('request');
 const fs = require('fs');
+const utils = require('./utils.js');
 
 const titleImageUrl = 'http://10.10.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.10.0.2:4000/api/v1/artist';
@@ -66,8 +67,8 @@ function recognize() {
 }
 
 function downloadImages(titleFileName, artistFileName, downloadFinishedCallback) {
-  download(titleImageUrl, titleFileName, function() {
-    download(artistImageUrl, artistFileName, function() {
+  utils.download(titleImageUrl, titleFileName, function() {
+    utils.download(artistImageUrl, artistFileName, function() {
       downloadFinishedCallback();
     });
   });
@@ -107,8 +108,8 @@ function orderBySimilarity(artistText, titleText, trackArray, includeVersionConf
         version: trackArray[i].version,
         artist: trackArray[i].artistsTitle,
         track: trackArray[i],
-        titleConfidence: similarity(trackArray[i].title, titleText),
-        artistConfidence: similarity(trackArray[i].artistsTitle, artistText),
+        titleConfidence: utils.similarity(trackArray[i].title, titleText),
+        artistConfidence: utils.similarity(trackArray[i].artistsTitle, artistText),
         versionConfidence: versionConfidence
       }
 
@@ -265,54 +266,3 @@ function advancedSearch(tempTitle, tempArtist) {
 }
 
 recognize();
-
-function download(uri, filename, callback) {
-  request.head(uri, function(err, res, body) {
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
-};
-
-function similarity(s1, s2) {
-  if (s1 !== undefined && s2 !== undefined) {
-    var longer = s1;
-    var shorter = s2;
-    if (s1.length < s2.length) {
-      longer = s2;
-      shorter = s1;
-    }
-    var longerLength = longer.length;
-    if (longerLength == 0) {
-      return 1.0;
-    }
-    return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
-  } else {
-    return 0.0;
-  }
-}
-
-function editDistance(s1, s2) {
-  s1 = s1.toLowerCase();
-  s2 = s2.toLowerCase();
-
-  var costs = new Array();
-  for (var i = 0; i <= s1.length; i++) {
-    var lastValue = i;
-    for (var j = 0; j <= s2.length; j++) {
-      if (i == 0)
-        costs[j] = j;
-      else {
-        if (j > 0) {
-          var newValue = costs[j - 1];
-          if (s1.charAt(i - 1) != s2.charAt(j - 1))
-            newValue = Math.min(Math.min(newValue, lastValue),
-              costs[j]) + 1;
-          costs[j - 1] = lastValue;
-          lastValue = newValue;
-        }
-      }
-    }
-    if (i > 0)
-      costs[s2.length] = lastValue;
-  }
-  return costs[s2.length];
-}
