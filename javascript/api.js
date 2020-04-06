@@ -85,7 +85,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
   }
 
   request({
-      url: 'http://127.0.0.1:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
+      url: 'http://database:6000/v1/catalog?limit=' + limit + '&skip=' + skip,
       method: 'GET'
     },
     function(err, resp, body) {
@@ -238,7 +238,22 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(JSON.parse(body));
+        var trackArray = JSON.parse(body).results;
+        const sid = req.cookies['connect.sid'];
+
+        getSession(sid,
+          function(json) {
+            trackArray = addMissingKeys(json.user.hasGold, trackArray);
+
+            var returnObject = {
+              results: trackArray
+            };
+
+            res.send(returnObject);
+          },
+          function(err) {
+            res.send(err);
+          });
       }
     });
 });
@@ -280,7 +295,23 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(JSON.parse(body));
+        var releasesArray = JSON.parse(body).results;
+
+        const sid = req.cookies['connect.sid'];
+
+        getSession(sid,
+          function(json) {
+            releasesArray = addMissingKeys(json.user.hasGold, releasesArray);
+
+            var returnObject = {
+              results: releasesArray
+            };
+
+            res.send(returnObject);
+          },
+          function(err) {
+            res.send(err);
+          });
       }
     });
 });
