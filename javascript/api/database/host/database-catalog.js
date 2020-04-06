@@ -8,7 +8,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/v1';
+const APIPREFIX = '';
 
 const catalogDBFile = 'db-catalog.json';
 
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/', (req, res) => {
+app.get(APIPREFIX + '/catalog', (req, res) => {
   const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(catalogDBDefaults)
@@ -60,7 +60,7 @@ app.get(APIPREFIX + '/', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/search', (req, res) => {
+app.get(APIPREFIX + '/catalog/search', (req, res) => {
   const dbAdapter = new FileSync(catalogDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(catalogDBDefaults)

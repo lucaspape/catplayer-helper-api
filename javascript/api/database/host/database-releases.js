@@ -8,7 +8,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/v1';
+const APIPREFIX = '';
 
 const releasesDBFile = 'db-releases.json';
 
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/', (req, res) => {
+app.get(APIPREFIX + '/releases', (req, res) => {
   const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(releasesDBDefaults)
@@ -53,7 +53,7 @@ app.get(APIPREFIX + '/', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/search', (req, res) => {
+app.get(APIPREFIX + '/releases/search', (req, res) => {
   const dbAdapter = new FileSync(releasesDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(releasesDBDefaults)

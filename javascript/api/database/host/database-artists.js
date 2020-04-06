@@ -8,7 +8,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/v1';
+const APIPREFIX = '';
 
 const artistsDBFile = 'db-artists.json';
 
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/', (req, res) => {
+app.get(APIPREFIX + '/artists', (req, res) => {
   const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(artistsDBDefaults)
@@ -45,7 +45,7 @@ app.get(APIPREFIX + '/', (req, res) => {
   });
 });
 
-app.get(APIPREFIX + '/search', (req, res) => {
+app.get(APIPREFIX + '/artists/search', (req, res) => {
   const dbAdapter = new FileSync(artistsDBFile);
   const db = lowdb(dbAdapter);
   db.defaults(artistsDBDefaults)
