@@ -134,7 +134,7 @@ function searchQuery(searchTerm, callback, errorCallback) {
     } else {
       callback(JSON.parse(body));
     }
-  })
+  });
 }
 
 function searchTitle(tempArtist, tempTitle) {
