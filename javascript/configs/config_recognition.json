@@ -1,12 +1,5 @@
 {
   "override": [{
-      "day": "monday",
-      "time": 19,
-      "length": 2,
-      "title": "Listening Party",
-      "config_override": "config_youtube.json"
-    },
-    {
       "day": "wednesday",
       "time": 20,
       "length": 1,
@@ -29,20 +22,6 @@
         "artist": "",
         "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
       }
-    },
-    {
-      "day": "thursday",
-      "time": 17,
-      "length": 2,
-      "title": "Listening Party",
-      "config_override": "config_youtube.json"
-    },
-    {
-      "day": "friday",
-      "time": 19,
-      "length": 2,
-      "title": "Listening Party",
-      "config_override": "config_youtube.json"
     }
   ]
 }

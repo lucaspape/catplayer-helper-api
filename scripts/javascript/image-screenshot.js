@@ -6,11 +6,11 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const recognitionConfigFile = 'configs/config_recognition.json';
+const recognitionConfigFile = 'scripts/configs/config_recognition.json';
 
 var config = {};
 
-var configFile = 'configs/config.json';
+var configFile = 'scripts/configs/config.json';
 
 var currentArtist = '';
 var currentTitle = '';
@@ -35,7 +35,7 @@ function loadConfig() {
 
       if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
         if (config.override[i].config_override !== undefined) {
-          configFile = 'configs/' + config.override[i].config_override;
+          configFile = 'scripts/configs/' + config.override[i].config_override;
         }
       }
     }
