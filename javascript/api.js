@@ -150,7 +150,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
       }
 
       request({
-          url: 'http://database:6000/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + gold,
+          url: 'http://database:6000/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
           method: 'GET'
         },
         function(err, resp, body) {
