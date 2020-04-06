@@ -42,13 +42,15 @@ function loadConfig(callback) {
         }
       }
 
-      if (fs.existsSync(configFile)) {
-        positionConfigTitle = JSON.parse(fs.readFileSync(configFile)).title;
-        positionConfigArtist = JSON.parse(fs.readFileSync(configFile)).artist;
-        displayConfig = JSON.parse(fs.readFileSync(configFile)).display;
-      }
+      download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/' + configFile, configFile, function() {
+        if (fs.existsSync(configFile)) {
+          positionConfigTitle = JSON.parse(fs.readFileSync(configFile)).title;
+          positionConfigArtist = JSON.parse(fs.readFileSync(configFile)).artist;
+          displayConfig = JSON.parse(fs.readFileSync(configFile)).display;
+        }
 
-      callback();
+        callback();
+      });
     });
 }
 
