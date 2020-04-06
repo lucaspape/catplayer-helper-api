@@ -2,6 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const utils = require('./utils.js');
 
 const catalogDBDefaults = {
   tracks: [],
@@ -28,12 +29,15 @@ function browseTracks(limit, skip, callback, errorCallback) {
 function initializeDatabase() {
   console.log('Starting init...');
 
-  initCatalog(function() {
-    console.log('Database init done!');
+  utils.download('https://lucaspape.de/monstercat-app/' + catalogDBFile, catalogDBFile, function() {
+    initCatalog(function() {
+      console.log('Database init done!');
 
-    setTimeout(function() {
-      initializeDatabase();
-    }, 3600000);
+      setTimeout(function() {
+        initializeDatabase();
+      }, 3600000);
+    });
+
   });
 }
 

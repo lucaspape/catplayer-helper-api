@@ -2,6 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const lowdb = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const utils = require('./utils.js');
 
 const artistsDBDefaults = {
   artists: []
@@ -27,12 +28,14 @@ function browseArtists(limit, skip, callback, errorCallback) {
 function initializeDatabase() {
   console.log('Starting init...');
 
-  initArtists(function() {
-    console.log('Database init done!');
+  utils.download('https://lucaspape.de/monstercat-app/' + artistsDBFile, artistsDBFile, function() {
+    initArtists(function() {
+      console.log('Database init done!');
 
-    setTimeout(function() {
-      initializeDatabase();
-    }, 3600000);
+      setTimeout(function() {
+        initializeDatabase();
+      }, 3600000);
+    });
   });
 }
 
