@@ -175,7 +175,11 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     })
     .write();
 
-  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  searchString = searchString.replace('(', '%7B');
+  searchString = searchString.replace(')', '%7D');
+  searchString = searchString.replace(' ', '%20');
+  searchString = searchString.trim();
 
   var skip = 0;
   var limit = 50;
@@ -213,7 +217,11 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     })
     .write();
 
-  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  searchString = searchString.replace('(', '%7B');
+  searchString = searchString.replace(')', '%7D');
+  searchString = searchString.replace(' ', '%20');
+  searchString = searchString.trim();
 
   var skip = 0;
   var limit = 50;
@@ -251,7 +259,11 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
     })
     .write();
 
-  const searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
+  searchString = searchString.replace('(', '%7B');
+  searchString = searchString.replace(')', '%7D');
+  searchString = searchString.replace(' ', '%20');
+  searchString = searchString.trim();
 
   var skip = 0;
   var limit = 50;
