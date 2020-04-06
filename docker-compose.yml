@@ -59,8 +59,6 @@ services:
   web:
     build:                   .
     command:                 node javascript/api/api.js
-    environment:
-      PORT:                  80
     ports:
       - "80:5000"
     working_dir:             /app/
