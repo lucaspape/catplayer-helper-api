@@ -3,15 +3,19 @@ services:
   database:
     build: .
     command: node javascript/database.js
-    environment:
-      PORT: 6000
-    ports:
-      - "6000:6000"
     working_dir: /app/
     restart: always
     volumes:
       - static-content:/app
 
+  database-update:
+    build: .
+    command: node javascript/database-update.js
+    working_dir: /app/
+    restart: always
+    volumes:
+      - static-content:/app
+      
   web:
     build: .
     command: node javascript/api.js
