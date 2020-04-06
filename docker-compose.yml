@@ -8,7 +8,7 @@ services:
     volumes:
       - static-content:/app
 
-  database:
+  database-local:
     build: .
     command: node javascript/database-local.js
     working_dir: /app/
