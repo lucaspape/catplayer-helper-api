@@ -17,6 +17,14 @@ const artistsDBDefaults = {
   artists: []
 }
 
+const catalogDBFile = 'db-catalog.json';
+const releasesDBFile = 'db-releases.json';
+const artistsDBFile = 'db-artists.json';
+
+const catalogDBTempFile = 'db-catalog-temp.json';
+const releasesDBTempFile = 'db-releases-temp.json';
+const artistsDBTempFile = 'db-artists-temp.json';
+
 function browseTracks(limit, skip, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
@@ -76,7 +84,7 @@ function initializeDatabase() {
 }
 
 function initCatalog(callback) {
-  const dbAdapter = new FileSync('db-catalog-temp.json');
+  const dbAdapter = new FileSync(catalogDBTempFile);
   const db = lowdb(dbAdapter);
   db.defaults(catalogDBDefaults)
     .write();
@@ -137,8 +145,12 @@ function initCatalog(callback) {
           .write();
       }
 
-      fs.rename('db-catalog-temp.json', 'db-catalog.json', function(err) {
-        console.log(err);
+      fs.rename(catalogDBTempFile, catalogDBFile, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Catalog init done!');
+        }
       });
 
       callback();
@@ -150,7 +162,7 @@ function initCatalog(callback) {
 }
 
 function initReleases(callback) {
-  const dbAdapter = new FileSync('db-releases-temp.json');
+  const dbAdapter = new FileSync(releasesDBTempFile);
   const db = lowdb(dbAdapter);
   db.defaults(releasesDBDefaults)
     .write();
@@ -201,8 +213,12 @@ function initReleases(callback) {
           .write();
       }
 
-      fs.rename('db-releases-temp.json', 'db-releases.json', function(err) {
-        console.log(err);
+      fs.rename(releasesDBTempFile, releasesDBFile, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Releases db init done!');
+        }
       });
 
       callback();
@@ -214,7 +230,7 @@ function initReleases(callback) {
 }
 
 function initArtists(callback) {
-  const dbAdapter = new FileSync('db-artists-temp.json');
+  const dbAdapter = new FileSync(artistsDBTempFile);
   const db = lowdb(dbAdapter);
   db.defaults(artistsDBDefaults)
     .write();
@@ -251,8 +267,12 @@ function initArtists(callback) {
           .write();
       }
 
-      fs.rename('db-artists-temp.json', 'db-artists.json', function(err) {
-        console.log(err);
+      fs.rename(artistsDBTempFile, artistsDBFile, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Artists db init done!');
+        }
       });
 
       callback();
