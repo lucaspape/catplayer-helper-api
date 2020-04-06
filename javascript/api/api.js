@@ -69,45 +69,32 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
     })
     .write();
 
-  var skip = 0;
-  var limit = 50;
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    const sid = req.cookies['connect.sid'];
 
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
+    getSession(sid,
+      function(json) {
+        var hasGold = false;
 
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
-
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  const sid = req.cookies['connect.sid'];
-
-  getSession(sid,
-    function(json) {
-      var hasGold = false;
-
-      if (json.user !== undefined) {
-        hasGold = json.user.hasGold;
-      }
-
-      request({
-        url: 'http://database-catalog:6000/v1/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
-        method: 'GET'
-      }, function(err, resp, body) {
-        if (err) {
-          res.send(err);
-        } else {
-          res.send(JSON.parse(body));
+        if (json.user !== undefined) {
+          hasGold = json.user.hasGold;
         }
+
+        request({
+          url: 'http://database-catalog:6000/v1/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+          method: 'GET'
+        }, function(err, resp, body) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send(JSON.parse(body));
+          }
+        });
+      },
+      function(err) {
+        res.send(err);
       });
-    },
-    function(err) {
-      res.send(err);
-    });
+  });
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
@@ -118,46 +105,33 @@ app.get(APIPREFIX + '/releases', (req, res) => {
     })
     .write();
 
-  var skip = 0;
-  var limit = 50;
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    const sid = req.cookies['connect.sid'];
 
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
+    getSession(sid,
+      function(json) {
+        var hasGold = false;
 
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
+        if (json.user !== undefined) {
+          hasGold = json.user.hasGold;
+        }
 
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  const sid = req.cookies['connect.sid'];
-
-  getSession(sid,
-    function(json) {
-      var hasGold = false;
-
-      if (json.user !== undefined) {
-        hasGold = json.user.hasGold;
-      }
-
-      request({
-          url: 'http://database-releases:6000/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
-          method: 'GET'
-        },
-        function(err, resp, body) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.send(JSON.parse(body));
-          }
-        });
-    },
-    function(err) {
-      res.send(err);
-    });
+        request({
+            url: 'http://database-releases:6000/v1/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+            method: 'GET'
+          },
+          function(err, resp, body) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send(JSON.parse(body));
+            }
+          });
+      },
+      function(err) {
+        res.send(err);
+      });
+  });
 });
 
 app.get(APIPREFIX + '/artists', (req, res) => {
@@ -168,32 +142,19 @@ app.get(APIPREFIX + '/artists', (req, res) => {
     })
     .write();
 
-  var skip = 0;
-  var limit = 50;
-
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
-
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
-
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  request({
-      url: 'http://database-artists:6000/v1/artists?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send(JSON.parse(body));
-      }
-    });
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    request({
+        url: 'http://database-artists:6000/v1/artists?limit=' + limit + '&skip=' + skip,
+        method: 'GET'
+      },
+      function(err, resp, body) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send(JSON.parse(body));
+        }
+      });
+  });
 });
 
 app.get(APIPREFIX + '/catalog/search', (req, res) => {
@@ -204,52 +165,35 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     })
     .write();
 
-  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
-  searchString = searchString.replace('(', '%7B');
-  searchString = searchString.replace(')', '%7D');
-  searchString = searchString.replace(' ', '%20');
-  searchString = searchString.trim();
+  var searchString = fixSearchString(req.query.term);
 
-  var skip = 0;
-  var limit = 50;
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    const sid = req.cookies['connect.sid'];
 
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
+    getSession(sid,
+      function(json) {
+        var hasGold = false;
 
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
+        if (json.user !== undefined) {
+          hasGold = json.user.hasGold;
+        }
 
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  const sid = req.cookies['connect.sid'];
-
-  getSession(sid,
-    function(json) {
-      var hasGold = false;
-
-      if (json.user !== undefined) {
-        hasGold = json.user.hasGold;
-      }
-
-      request({
-          url: 'http://database-catalog:6000/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
-          method: 'GET'
-        },
-        function(err, resp, body) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.send(JSON.parse(body));
-          }
-        });
-    },
-    function(err) {
-      res.send(err);
-    });
+        request({
+            url: 'http://database-catalog:6000/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+            method: 'GET'
+          },
+          function(err, resp, body) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send(JSON.parse(body));
+            }
+          });
+      },
+      function(err) {
+        res.send(err);
+      });
+  });
 });
 
 app.get(APIPREFIX + '/releases/search', (req, res) => {
@@ -260,52 +204,35 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     })
     .write();
 
-  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
-  searchString = searchString.replace('(', '%7B');
-  searchString = searchString.replace(')', '%7D');
-  searchString = searchString.replace(' ', '%20');
-  searchString = searchString.trim();
+  var searchString = fixSearchString(req.query.term);
 
-  var skip = 0;
-  var limit = 50;
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    const sid = req.cookies['connect.sid'];
 
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
+    getSession(sid,
+      function(json) {
+        var hasGold = false;
 
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
+        if (json.user !== undefined) {
+          hasGold = json.user.hasGold;
+        }
 
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  const sid = req.cookies['connect.sid'];
-
-  getSession(sid,
-    function(json) {
-      var hasGold = false;
-
-      if (json.user !== undefined) {
-        hasGold = json.user.hasGold;
-      }
-
-      request({
-          url: 'http://database-releases:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
-          method: 'GET'
-        },
-        function(err, resp, body) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.send(JSON.parse(body));
-          }
-        });
-    },
-    function(err) {
-      res.send(err);
-    });
+        request({
+            url: 'http://database-releases:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+            method: 'GET'
+          },
+          function(err, resp, body) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send(JSON.parse(body));
+            }
+          });
+      },
+      function(err) {
+        res.send(err);
+      });
+  });
 });
 
 app.get(APIPREFIX + '/artists/search', (req, res) => {
@@ -316,38 +243,21 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
     })
     .write();
 
-  var searchString = req.query.term.replace(/[^\x20-\x7E]/g, "");
-  searchString = searchString.replace('(', '%7B');
-  searchString = searchString.replace(')', '%7D');
-  searchString = searchString.replace(' ', '%20');
-  searchString = searchString.trim();
+  var searchString = fixSearchString(req.query.term);
 
-  var skip = 0;
-  var limit = 50;
-
-  if (req.query.skip !== undefined) {
-    skip = parseInt(req.query.skip);
-  }
-
-  if (req.query.limit !== undefined) {
-    limit = parseInt(req.query.limit);
-
-    if (limit > 50) {
-      limit = 50;
-    }
-  }
-
-  request({
-      url: 'http://database-artists:6000/v1/artists/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send(JSON.parse(body));
-      }
-    });
+  fixSkipAndLimit(req.query, function(skip, limit) {
+    request({
+        url: 'http://database-artists:6000/v1/artists/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
+        method: 'GET'
+      },
+      function(err, resp, body) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send(JSON.parse(body));
+        }
+      });
+  });
 });
 
 app.listen(PORT, () => {
@@ -376,4 +286,33 @@ function getSession(sid, callback, errorCallback) {
   } else {
     callback(sessionCache[sid]);
   }
+}
+
+function fixSearchString(searchString) {
+  searchString = searchString.replace(/[^\x20-\x7E]/g, "");
+  searchString = searchString.replace('(', '%7B');
+  searchString = searchString.replace(')', '%7D');
+  searchString = searchString.replace(' ', '%20');
+  searchString = searchString.trim();
+
+  return searchString;
+}
+
+function fixSkipAndLimit(reqQuery, callback) {
+  var skip = 0;
+  var limit = 50;
+
+  if (reqQuery.skip !== undefined) {
+    skip = parseInt(reqQuery.skip);
+  }
+
+  if (reqQuery.limit !== undefined) {
+    limit = parseInt(reqQuery.limit);
+
+    if (limit > 50) {
+      limit = 50;
+    }
+  }
+
+  callback(skip, limit);
 }
