@@ -236,37 +236,36 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
     }
   }
 
-  request({
-      url: 'http://database:6000/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        var trackArray = JSON.parse(body).results;
-        const sid = req.cookies['connect.sid'];
+  const sid = req.cookies['connect.sid'];
 
-        getSession(sid,
-          function(json) {
-            var hasGold = false;
+  getSession(sid,
+    function(json) {
+      var hasGold = false;
 
-            if (json.user !== undefined) {
-              hasGold = json.user.hasGold;
-            }
+      if (json.user !== undefined) {
+        hasGold = json.user.hasGold;
+      }
 
-            trackArray = addMissingKeys(hasGold, trackArray);
+      request({
+          url: 'http://database:6000/v1/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+          method: 'GET'
+        },
+        function(err, resp, body) {
+          if (err) {
+            res.send(err);
+          } else {
+            var trackArray = JSON.parse(body).results;
 
             var returnObject = {
               results: trackArray
             };
 
             res.send(returnObject);
-          },
-          function(err) {
-            res.send(err);
-          });
-      }
+          }
+        });
+    },
+    function(err) {
+      res.send(err);
     });
 });
 
@@ -299,38 +298,36 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
     }
   }
 
-  request({
-      url: 'http://database:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        res.send(err);
-      } else {
-        var releasesArray = JSON.parse(body).results;
+  const sid = req.cookies['connect.sid'];
 
-        const sid = req.cookies['connect.sid'];
+  getSession(sid,
+    function(json) {
+      var hasGold = false;
 
-        getSession(sid,
-          function(json) {
-            var hasGold = false;
+      if (json.user !== undefined) {
+        hasGold = json.user.hasGold;
+      }
 
-            if (json.user !== undefined) {
-              hasGold = json.user.hasGold;
-            }
-
-            releasesArray = addMissingKeys(hasGold, releasesArray);
+      request({
+          url: 'http://database:6000/v1/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+          method: 'GET'
+        },
+        function(err, resp, body) {
+          if (err) {
+            res.send(err);
+          } else {
+            var releasesArray = JSON.parse(body).results;
 
             var returnObject = {
               results: releasesArray
             };
 
             res.send(returnObject);
-          },
-          function(err) {
-            res.send(err);
-          });
-      }
+          }
+        });
+    },
+    function(err) {
+      res.send(err);
     });
 });
 
@@ -402,27 +399,4 @@ function getSession(sid, callback, errorCallback) {
   } else {
     callback(sessionCache[sid]);
   }
-}
-
-function addMissingKeys(hasGold, array) {
-  var downloadAllowed = hasGold;
-  var streamingAllowed = true;
-
-  for (var i = 0; i < array.length; i++) {
-    if (array[i].inEarlyAccess) {
-      downloadAllowed = false;
-      streamingAllowed = hasGold;
-
-      array[i].streamable = streamingAllowed;
-      array[i].downloadable = downloadAllowed;
-
-      downloadAllowed = hasGold;
-      streamingAllowed = true;
-    } else {
-      array[i].streamable = streamingAllowed;
-      array[i].downloadable = downloadAllowed;
-    }
-  }
-
-  return array;
 }
