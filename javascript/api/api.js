@@ -275,9 +275,7 @@ function getSession(sid, callback, errorCallback) {
     if (err) {
       errorCallback(err);
     } else {
-      const json = JSON.parse(body)
-      sessionCache[sid] = json;
-      callback(json);
+      callback(JSON.parse(body));
     }
   });
 }
