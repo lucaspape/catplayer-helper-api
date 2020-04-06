@@ -51,7 +51,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            res.send(body);
+            res.send(JSON.parse(body));
           }
         });
       },
@@ -81,7 +81,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(body);
+              res.send(JSON.parse(body));
             }
           });
       },
@@ -101,7 +101,7 @@ app.get(APIPREFIX + '/artists', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.send(body);
+          res.send(JSON.parse(body));
         }
       });
   });
@@ -129,7 +129,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(body);
+              res.send(JSON.parse(body));
             }
           });
       },
@@ -161,7 +161,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(body);
+              res.send(JSON.parse(body));
             }
           });
       },
@@ -183,7 +183,7 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.send(body);
+          res.send(JSON.parse(body));
         }
       });
   });
