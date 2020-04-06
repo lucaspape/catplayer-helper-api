@@ -3,6 +3,30 @@
       "day": "wednesday",
       "time": 20,
       "length": 1,
+      "title": "MCTV Instinct Vol 5",
+      "finalObject": {
+        "title": "MCTV Instinct Vol 5",
+        "version": "",
+        "artist": "Monstercat",
+        "coverUrl": "https://connect.monstercat.com/v2/release/11fd5ef5-aa5b-47e6-bfb0-cc500caa7de3/cover"
+      }
+    },
+    {
+      "day": "wednesday",
+      "time": 7,
+      "length": 1,
+      "title": "COTWRadio Rebroadcast",
+      "finalObject": {
+        "title": "Monstercat Call Of the Wild Radio Rebroadcast",
+        "version": "",
+        "artist": "Monstercat",
+        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
+      }
+    },
+    {
+      "day": "wednesday",
+      "time": 20,
+      "length": 1,
       "title": "COTWRadio",
       "finalObject": {
         "title": "Monstercat Call Of the Wild Radio",
@@ -15,9 +39,9 @@
       "day": "thursday",
       "time": 20,
       "length": 1,
-      "title": "MCTV - Nonsens",
+      "title": "MCTV - Vicetone",
       "finalObject": {
-        "title": "MCTV - Nonsens",
+        "title": "MCTV - Vicetone",
         "version": "",
         "artist": "",
         "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
