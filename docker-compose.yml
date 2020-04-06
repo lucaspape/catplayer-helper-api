@@ -60,7 +60,7 @@ services:
     build:                   .
     command:                 node javascript/api/api.js
     ports:
-      - "80:5000"
+      - "5000:80"
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -76,7 +76,7 @@ services:
   proxy:
     build:                   proxy
     ports:
-      - "80:6000"
+      - "6000:80"
 
 volumes:
   static-content:
