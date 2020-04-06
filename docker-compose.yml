@@ -26,7 +26,7 @@ services:
 
   database-local:
     build:                   .
-    command:                 node javascript/database/database-local.js
+    command:                 node javascript/database/local/database-local.js
     working_dir:             /app/
     restart:                 always
     volumes:
