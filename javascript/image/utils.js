@@ -1,29 +1,29 @@
 const request = require('request');
 const fs = require('fs');
 
+function similarity(s1, s2) {
+  if (s1 !== undefined && s2 !== undefined) {
+    var longer = s1;
+    var shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    var longerLength = longer.length;
+    if (longerLength == 0) {
+      return 1.0;
+    }
+    return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
+  } else {
+    return 0.0;
+  }
+}
+
 module.exports = {
   download: function(uri, filename, callback) {
     request.head(uri, function(err, res, body) {
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
-  },
-
-  similarity: function(s1, s2) {
-    if (s1 !== undefined && s2 !== undefined) {
-      var longer = s1;
-      var shorter = s2;
-      if (s1.length < s2.length) {
-        longer = s2;
-        shorter = s1;
-      }
-      var longerLength = longer.length;
-      if (longerLength == 0) {
-        return 1.0;
-      }
-      return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) * 100.0;
-    } else {
-      return 0.0;
-    }
   },
 
   editDistance: function(s1, s2) {
