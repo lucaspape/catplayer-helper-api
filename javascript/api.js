@@ -101,13 +101,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          var trackArray = JSON.parse(body).results;
-
-          var returnObject = {
-            results: trackArray
-          };
-
-          res.send(returnObject);
+          res.send(JSON.parse(body));
         }
       });
     },
@@ -157,12 +151,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            var releasesArray = JSON.parse(body).results;
-            var returnObject = {
-              results: releasesArray
-            };
-
-            res.send(returnObject);
+            res.send(JSON.parse(body));
           }
         });
     },
@@ -254,13 +243,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            var trackArray = JSON.parse(body).results;
-
-            var returnObject = {
-              results: trackArray
-            };
-
-            res.send(returnObject);
+            res.send(JSON.parse(body));
           }
         });
     },
@@ -316,13 +299,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            var releasesArray = JSON.parse(body).results;
-
-            var returnObject = {
-              results: releasesArray
-            };
-
-            res.send(returnObject);
+            res.send(JSON.parse(body));
           }
         });
     },
