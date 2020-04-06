@@ -98,7 +98,13 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 
         getSession(sid,
           function(json) {
-            trackArray = addMissingKeys(json.user.hasGold, trackArray);
+            var hasGold = false;
+
+            if (json.user !== undefined) {
+              hasGold = json.user.hasGold;
+            }
+
+            trackArray = addMissingKeys(hasGold, trackArray);
 
             var returnObject = {
               results: trackArray
@@ -150,7 +156,13 @@ app.get(APIPREFIX + '/releases', (req, res) => {
 
         getSession(sid,
           function(json) {
-            releasesArray = addMissingKeys(json.user.hasGold, releasesArray);
+            var hasGold = false;
+
+            if (json.user !== undefined) {
+              hasGold = json.user.hasGold;
+            }
+
+            releasesArray = addMissingKeys(hasGold, releasesArray);
 
             var returnObject = {
               results: releasesArray
@@ -243,7 +255,13 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
 
         getSession(sid,
           function(json) {
-            trackArray = addMissingKeys(json.user.hasGold, trackArray);
+            var hasGold = false;
+
+            if (json.user !== undefined) {
+              hasGold = json.user.hasGold;
+            }
+
+            trackArray = addMissingKeys(hasGold, trackArray);
 
             var returnObject = {
               results: trackArray
@@ -301,7 +319,13 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
 
         getSession(sid,
           function(json) {
-            releasesArray = addMissingKeys(json.user.hasGold, releasesArray);
+            var hasGold = false;
+
+            if (json.user !== undefined) {
+              hasGold = json.user.hasGold;
+            }
+
+            releasesArray = addMissingKeys(hasGold, releasesArray);
 
             var returnObject = {
               results: releasesArray
