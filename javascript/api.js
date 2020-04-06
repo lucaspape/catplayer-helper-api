@@ -403,23 +403,22 @@ function getSession(sid, callback, errorCallback) {
 }
 
 function addMissingKeys(hasGold, array) {
+  var downloadAllowed = hasGold;
+  var streamingAllowed = true;
+
   for (var i = 0; i < array.length; i++) {
     if (array[i].inEarlyAccess) {
-      if (hasGold) {
-        array[i].streamable = true;
-        array[i].downloadable = false;
-      } else {
-        array[i].streamable = false;
-        array[i].downloadable = false;
-      }
+      downloadAllowed = false;
+      streamingAllowed = hasGold;
+
+      array[i].streamable = streamingAllowed;
+      array[i].downloadable = downloadAllowed;
+
+      downloadAllowed = hasGold;
+      streamingAllowed = true;
     } else {
-      if (hasGold) {
-        array[i].streamable = true;
-        array[i].downloadable = true;
-      } else {
-        array[i].streamable = true;
-        array[i].downloadable = false;
-      }
+      array[i].streamable = streamingAllowed;
+      array[i].downloadable = downloadAllowed;
     }
   }
 
