@@ -13,7 +13,7 @@ var config = {};
 const configFile = 'image/configs/config_recognition.json';
 
 function loadConfig(callback) {
-  download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/' + configFile,
+  utils.download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/' + configFile,
     configFile,
     function() {
       if (fs.existsSync(configFile)) {
