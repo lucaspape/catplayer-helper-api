@@ -5,7 +5,7 @@ This api is hosted at https://api.lucaspape.de/monstercat/v1/
 
 Deploy using
 ```
-docker build -t lucaspape/catplayer-helper-api .
+git clone https://github.com/lucaspape/catplayer-helper-api.git
 ```
 and
 ```
