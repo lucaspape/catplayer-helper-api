@@ -386,20 +386,28 @@ app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
 
+var sessionCache = [];
+
 function getSession(sid, callback, errorCallback) {
-  request({
-    url: 'https://connect.monstercat.com/v2/self/session',
-    method: 'GET',
-    headers: {
-      'Cookie': 'connect.sid=' + sid
-    }
-  }, function(err, resp, body) {
-    if (err) {
-      errorCallback(err);
-    } else {
-      callback(JSON.parse(body));
-    }
-  });
+  if (sessionCache[sid] === undefined) {
+    request({
+      url: 'https://connect.monstercat.com/v2/self/session',
+      method: 'GET',
+      headers: {
+        'Cookie': 'connect.sid=' + sid
+      }
+    }, function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        const json = JSON.parse(body)
+        sessionCache[sid] = json;
+        callback(json);
+      }
+    });
+  } else {
+    return sessionCache[sid];
+  }
 }
 
 function addMissingKeys(hasGold, array) {
