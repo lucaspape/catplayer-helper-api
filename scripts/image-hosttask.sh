@@ -1,5 +1,5 @@
 while true
 do
-  node javascript/image-host.js
+  node javascript/image/image-host.js
   sleep 1
 done

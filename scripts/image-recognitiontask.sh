@@ -1,5 +1,5 @@
 while true
 do
-  node javascript/image-screenshot.js
+  node javascript/image/image-screenshot.js
   sleep 1
 done
