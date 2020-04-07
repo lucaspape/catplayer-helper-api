@@ -58,7 +58,6 @@ services:
     build:                   javascript
     command:                 node api/database/update/database-update-artists.js
     working_dir:             /app/
-    restart:                 always
     volumes:
       - static-content:/app
 
