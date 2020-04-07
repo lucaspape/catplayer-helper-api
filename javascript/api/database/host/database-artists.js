@@ -10,8 +10,6 @@ const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '';
 
-
-
 const artistsDBFile = 'db-artists.json';
 
 const artistsDBDefaults = {
@@ -62,24 +60,22 @@ createDatabaseConnection.connect(err => {
             console.log('Connected to database!');
 
             app.get(APIPREFIX + '/artists', (req, res) => {
-              const dbAdapter = new FileSync(artistsDBFile);
-              const db = lowdb(dbAdapter);
-              db.defaults(artistsDBDefaults)
-                .write();
-
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
                 const artistsArray = db.get('artists').sortBy('sortId').slice(skip, skip + limit).value();
 
-                for (var i = 0; i < artistsArray.length; i++) {
-                  delete artistsArray[i]['sortId'];
-                  delete artistsArray[i]['search'];
-                }
+                const artistsQuery = 'SELECT * FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + limit + ', ' + skip + ';';
 
-                var returnObject = {
-                  results: artistsArray
-                };
+                mysqlConnection.query(artistsQuery, (err, result) => {
+                  if (err) {
+                    res.send(err);
+                  } else {
+                    var returnObject = {
+                      results: result
+                    };
 
-                res.send(returnObject);
+                    res.send(returnObject);
+                  }
+                });
               });
             });
 
