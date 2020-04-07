@@ -91,7 +91,10 @@ function initCatalog(mysqlConnection, callback) {
           track.search += track.artists[k].name;
         }
 
-        const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,mcRelease,tags,title,trackNumber,version,search) values ("' + track.id + '","' + JSON.stringify(track.artists).replace('"', '\'\'') + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + JSON.stringify(track.release).replace('"', '\'\'') + '","' + JSON.stringify(track.tags).replace('"', '\'\'') + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.search + '");'
+        const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,mcRelease,tags,title,trackNumber,version,search) values ("' + track.id + '","' + JSON.stringify(track.artists).replace('"', ''
+          '') + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + JSON.stringify(track.release).replace('"', ''
+          '') + '","' + JSON.stringify(track.tags).replace('"', ''
+          '') + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.search + '");'
 
         mysqlConnection.query(insertTrackQuery, (err, results) => {
           if (err) {
