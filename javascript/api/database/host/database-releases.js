@@ -71,7 +71,9 @@ createDatabaseConnection.connect(err => {
                 const searchString = utils.fixSearchString(req.query.term)
                 const terms = searchString.split(' ');
 
-                const catalogSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
+                const catalogSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC '
+                ' + ';
+                ';
 
                 mysqlConnection.query(catalogSearchQuery, (err, result) => {
                   if (err) {
