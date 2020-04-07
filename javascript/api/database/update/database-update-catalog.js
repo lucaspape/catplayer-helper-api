@@ -45,7 +45,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createCatalogTableQuery = 'CREATE TABLE `' + dbName + '`.`catalog` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` BOOLEAN, `debutDate` TEXT, `duration` INT, `explicit` BOOLEAN, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `mcRelease` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `search` TEXT);'
+  const createCatalogTableQuery = 'CREATE OR REPLACE TABLE `' + dbName + '`.`catalog` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` BOOLEAN, `debutDate` TEXT, `duration` INT, `explicit` BOOLEAN, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `mcRelease` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `search` TEXT);'
   mysqlConnection.query(createCatalogTableQuery, (err, result) => {
     if (err) {
       console.log(err);
