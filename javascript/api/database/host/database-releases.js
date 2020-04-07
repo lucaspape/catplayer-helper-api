@@ -68,6 +68,9 @@ createDatabaseConnection.connect(err => {
 
             app.get(APIPREFIX + '/releases/search', (req, res) => {
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
+                const searchString = utils.fixSearchString(req.query.term)
+                const terms = searchString.split(' ');
+
                 const catalogSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
                 mysqlConnection.query(catalogSearchQuery, (err, result) => {
