@@ -79,7 +79,7 @@ createDatabaseConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    var artistsArray = JSON.parse(result);
+                    var artistsArray = result;
 
                     for (var k = 1; k < terms.length; k++) {
                       artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
