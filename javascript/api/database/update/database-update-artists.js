@@ -15,7 +15,7 @@ createDatabaseConnection.connect(err => {
     console.log(err);
     return err;
   } else {
-    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS' + dbName, (err, result) => {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName, (err, result) => {
       if (err) {
         console.log(err);
         return err;
