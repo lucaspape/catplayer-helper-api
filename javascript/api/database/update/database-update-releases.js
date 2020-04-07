@@ -102,7 +102,9 @@ function initReleases(mysqlConnection, callback) {
         } else {
           callback();
         }
-      }
+      };
+
+      sqlCallback();
     },
 
     function(err) {

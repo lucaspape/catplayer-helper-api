@@ -120,6 +120,8 @@ function initCatalog(mysqlConnection, callback) {
           callback();
         }
       };
+
+      sqlCallback();
     },
 
     function(err) {
