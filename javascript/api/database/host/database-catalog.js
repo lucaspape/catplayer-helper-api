@@ -185,5 +185,15 @@ function addMissingKeys(track, gold) {
     }
   }
 
+  var artistArray = [];
+  const artists = track.artists.split(',');
+
+  for (var i = 0; i < artists.length; i++) {
+    artistArray[i] = {};
+    artistArray[i].id = artists[i];
+  }
+
+  track.artists = artistArray;
+
   return track;
 }
