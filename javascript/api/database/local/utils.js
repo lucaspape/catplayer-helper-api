@@ -65,10 +65,6 @@ module.exports = {
 
     if (reqQuery.limit !== undefined) {
       limit = parseInt(reqQuery.limit);
-
-      if (limit > 50) {
-        limit = 50;
-      }
     }
 
     callback(skip, limit);
