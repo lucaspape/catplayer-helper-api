@@ -56,20 +56,29 @@ createDatabaseConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    for (var i = 0; i < result.length; i++) {
-                      const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, tags, title, type FROM `' + dbName + '`.`releases` WHERE id='
-                      result[i].releaseId;
+                    var i = 0;
 
-                      mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                        result[i].release = releaseResult;
-                      });
-                    }
+                    var queryFinished = function() {
+                      if (i < result.length) {
+                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, tags, title, type FROM `' + dbName + '`.`releases` WHERE id='
+                        result[i].releaseId;
 
-                    var returnObject = {
-                      results: result
+                        mysqlConnection.query(releaseQuery, (err, releaseResult) => {
+                          result[i].release = releaseResult;
+                          queryFinished()
+                        });
+                      } else {
+                        var returnObject = {
+                          results: result
+                        };
+
+                        res.send(returnObject);
+                      }
+
+                      i++;
                     };
 
-                    res.send(returnObject);
+                    queryFinished();
                   }
                 });
               });
