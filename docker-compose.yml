@@ -8,7 +8,7 @@ services:
     volumes:
       - static-content:/app
     deploy:
-      replicas:              4
+      replicas:              1
 
   database-releases:
     build:                   javascript
@@ -18,7 +18,7 @@ services:
     volumes:
       - static-content:/app
     deploy:
-      replicas:              4
+      replicas:              1
 
   database-artists:
     build:                   javascript
@@ -28,7 +28,7 @@ services:
     volumes:
       - static-content:/app
     deploy:
-      replicas:              2
+      replicas:              1
 
   database-local:
     build:                   javascript
@@ -70,7 +70,7 @@ services:
     volumes:
       - static-content:/app
     deploy:
-      replicas:              10
+      replicas:              1
 
   recg:
     build:                   javascript
