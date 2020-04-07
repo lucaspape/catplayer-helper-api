@@ -69,7 +69,7 @@ createDatabaseConnection.connect(err => {
 
             app.get(APIPREFIX + '/artists/search', (req, res) => {
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
-                onst searchString = utils.fixSearchString(req.query.term)
+                const searchString = utils.fixSearchString(req.query.term)
                 const terms = searchString.split(' ');
 
                 const artistsSearchQuery = 'SELECT * FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ' WHERE search LIKE "%' + terms[0] + '%";';
