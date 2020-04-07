@@ -73,7 +73,6 @@ createDatabaseConnection.connect(err => {
                           if (err) {
                             res.send(err);
                           } else {
-                            console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
                             addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
                               trackArray[i] = track;
@@ -139,7 +138,6 @@ createDatabaseConnection.connect(err => {
                           if (err) {
                             res.send(err);
                           } else {
-                            console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
                             addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
                               trackArray[i] = track;
