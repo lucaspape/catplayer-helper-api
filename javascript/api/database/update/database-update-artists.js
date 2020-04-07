@@ -16,22 +16,27 @@ createDatabaseConnection.connect(err => {
     return err;
   } else {
     createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS' + dbName, (err, result) => {
-      const mysqlConnection = mysql.createConnection({
-        host: 'mariadb',
-        user: 'root',
-        password: 'JacPV7QZ',
-        database: dbName
-      });
+      if (err) {
+        console.log(err);
+        return err;
+      } else {
+        const mysqlConnection = mysql.createConnection({
+          host: 'mariadb',
+          user: 'root',
+          password: 'JacPV7QZ',
+          database: dbName
+        });
 
-      mysqlConnection.connect(err => {
-        if (err) {
-          console.log(err);
-          return err;
-        } else {
-          console.log('Connected to database!');
-          initializeDatabase();
-        }
-      });
+        mysqlConnection.connect(err => {
+          if (err) {
+            console.log(err);
+            return err;
+          } else {
+            console.log('Connected to database!');
+            initializeDatabase();
+          }
+        });
+      }
     });
   }
 });
