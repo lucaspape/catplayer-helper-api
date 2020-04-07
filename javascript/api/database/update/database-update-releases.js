@@ -59,7 +59,7 @@ function initializeDatabase(mysqlConnection) {
   });
 }
 
-function initReleases(callback) {
+function initReleases(mysqlConnection, callback) {
   browseReleases(-1, 0,
     function(json) {
       console.log('Received release data...');

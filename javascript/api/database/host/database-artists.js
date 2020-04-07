@@ -10,6 +10,8 @@ const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '';
 
+
+
 const artistsDBFile = 'db-artists.json';
 
 const artistsDBDefaults = {
@@ -23,64 +25,106 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get(APIPREFIX + '/artists', (req, res) => {
-  const dbAdapter = new FileSync(artistsDBFile);
-  const db = lowdb(dbAdapter);
-  db.defaults(artistsDBDefaults)
-    .write();
+const mysql = require('mysql');
 
-  utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const artistsArray = db.get('artists').sortBy('sortId').slice(skip, skip + limit).value();
+const dbName = 'monstercatDB';
 
-    for (var i = 0; i < artistsArray.length; i++) {
-      delete artistsArray[i]['sortId'];
-      delete artistsArray[i]['search'];
-    }
-
-    var returnObject = {
-      results: artistsArray
-    };
-
-    res.send(returnObject);
-  });
+const createDatabaseConnection = mysql.createConnection({
+  host: 'mariadb',
+  user: 'root',
+  password: 'JacPV7QZ'
 });
 
-app.get(APIPREFIX + '/artists/search', (req, res) => {
-  const dbAdapter = new FileSync(artistsDBFile);
-  const db = lowdb(dbAdapter);
-  db.defaults(artistsDBDefaults)
-    .write();
+createDatabaseConnection.connect(err => {
+  if (err) {
+    console.log(err);
+    return err;
+  } else {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName, (err, result) => {
+      if (err) {
+        console.log(err);
+        return err;
+      } else {
+        console.log('Created database/exists!');
 
-  utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const searchString = utils.fixSearchString(req.query.term)
-    const terms = searchString.split(' ');
+        const mysqlConnection = mysql.createConnection({
+          host: 'mariadb',
+          user: 'root',
+          password: 'JacPV7QZ',
+          database: dbName
+        });
 
-    var artistsArray = db.get('artists').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+        mysqlConnection.connect(err => {
+          if (err) {
+            console.log(err);
+            return err;
+          } else {
+            console.log('Connected to database!');
 
-    for (var k = 1; k < terms.length; k++) {
-      artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
-    }
+            app.get(APIPREFIX + '/artists', (req, res) => {
+              const dbAdapter = new FileSync(artistsDBFile);
+              const db = lowdb(dbAdapter);
+              db.defaults(artistsDBDefaults)
+                .write();
 
-    for (var i = 0; i < artistsArray.length; i++) {
-      artistsArray[i].similarity = utils.similarity(artistsArray[i].search, searchString);
-    }
+              utils.fixSkipAndLimit(req.query, function(skip, limit) {
+                const artistsArray = db.get('artists').sortBy('sortId').slice(skip, skip + limit).value();
 
-    artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+                for (var i = 0; i < artistsArray.length; i++) {
+                  delete artistsArray[i]['sortId'];
+                  delete artistsArray[i]['search'];
+                }
 
-    for (var i = 0; i < artistsArray.length; i++) {
-      delete artistsArray[i]['sortId'];
-      delete artistsArray[i]['similarity'];
-      delete artistsArray[i]['search'];
-    }
+                var returnObject = {
+                  results: artistsArray
+                };
 
-    const returnObject = {
-      results: artistsArray.slice(skip, skip + limit)
-    }
+                res.send(returnObject);
+              });
+            });
 
-    res.send(returnObject);
-  });
-});
+            app.get(APIPREFIX + '/artists/search', (req, res) => {
+              const dbAdapter = new FileSync(artistsDBFile);
+              const db = lowdb(dbAdapter);
+              db.defaults(artistsDBDefaults)
+                .write();
 
-app.listen(PORT, () => {
-  console.log('Server started on port ' + PORT);
+              utils.fixSkipAndLimit(req.query, function(skip, limit) {
+                const searchString = utils.fixSearchString(req.query.term)
+                const terms = searchString.split(' ');
+
+                var artistsArray = db.get('artists').filter(release => new RegExp(terms[0], 'i').test(release.search)).value();
+
+                for (var k = 1; k < terms.length; k++) {
+                  artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
+                }
+
+                for (var i = 0; i < artistsArray.length; i++) {
+                  artistsArray[i].similarity = utils.similarity(artistsArray[i].search, searchString);
+                }
+
+                artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+
+                for (var i = 0; i < artistsArray.length; i++) {
+                  delete artistsArray[i]['sortId'];
+                  delete artistsArray[i]['similarity'];
+                  delete artistsArray[i]['search'];
+                }
+
+                const returnObject = {
+                  results: artistsArray.slice(skip, skip + limit)
+                }
+
+                res.send(returnObject);
+              });
+            });
+
+            app.listen(PORT, () => {
+              console.log('Server started on port ' + PORT);
+            });
+          }
+        });
+      }
+    });
+  }
 });
