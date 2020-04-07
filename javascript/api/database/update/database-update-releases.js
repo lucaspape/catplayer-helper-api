@@ -52,7 +52,7 @@ function initializeDatabase(mysqlConnection) {
     } else {
       console.log('Created releases table');
 
-      initCatalog(mysqlConnection, function() {
+      initReleases(mysqlConnection, function() {
         console.log('Done!');
       });
     }
