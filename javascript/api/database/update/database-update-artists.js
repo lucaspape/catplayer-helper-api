@@ -6,8 +6,8 @@ const dbName = 'monstercatDB';
 
 const mysqlConnection = mysql.createConnection({
   host: 'mariadb',
-  user: 'monstercatUser',
-  password: 'j4b58mYq',
+  user: 'root',
+  password: 'JacPV7QZ',
   database: dbName
 });
 
