@@ -150,7 +150,7 @@ createDatabaseConnection.connect(err => {
                         });
                       } else {
                         var returnObject = {
-                          results: result
+                          results: trackArray
                         };
 
                         res.send(returnObject);
