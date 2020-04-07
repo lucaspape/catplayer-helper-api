@@ -54,6 +54,11 @@ function initializeDatabase(mysqlConnection) {
 
       initCatalog(mysqlConnection, function() {
         console.log('Done!');
+
+        //wait 5 minutes
+        setTimeout(function() {
+          initializeDatabase(mysqlConnection);
+        }, 300000);
       });
     }
   });
