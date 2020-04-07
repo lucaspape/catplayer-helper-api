@@ -49,6 +49,12 @@ createDatabaseConnection.connect(err => {
             console.log('Connected to database!');
 
             app.get(APIPREFIX + '/catalog', (req, res) => {
+              var gold = false;
+
+              if (req.query.gold !== undefined) {
+                gold = req.query.gold;
+              }
+
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
                 const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version FROM `' + dbName + '`.`catalog`' + 'ORDER BY catalog.sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
@@ -69,6 +75,7 @@ createDatabaseConnection.connect(err => {
                           } else {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
+                            trackArray[i] = addMissingKeys(trackArray[i], gold);
                             i++;
                             releasesQueryFinished();
                           }
@@ -89,6 +96,12 @@ createDatabaseConnection.connect(err => {
             });
 
             app.get(APIPREFIX + '/catalog/search', (req, res) => {
+              var gold = false;
+
+              if (req.query.gold !== undefined) {
+                gold = req.query.gold;
+              }
+
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
                 const searchString = utils.fixSearchString(req.query.term)
                 const terms = searchString.split(' ');
@@ -123,6 +136,7 @@ createDatabaseConnection.connect(err => {
                           } else {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
+                            trackArray[i] = addMissingKeys(trackArray[i], gold);
                             i++;
                             releasesQueryFinished();
                           }
@@ -151,3 +165,25 @@ createDatabaseConnection.connect(err => {
     });
   }
 });
+
+function addMissingKeys(track, gold) {
+  if (track.inEarlyAccess) {
+    track.downloadable = false;
+
+    if (gold) {
+      track.streamable = true;
+    } else {
+      track.streamable = false;
+    }
+  } else {
+    track.streamable = true;
+
+    if (gold) {
+      track.downloadable = true;
+    } else {
+      track.downloadable = false;
+    }
+  }
+
+  return track;
+}
