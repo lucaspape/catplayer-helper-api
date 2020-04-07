@@ -166,7 +166,7 @@ createDatabaseConnection.connect(err => {
   }
 });
 
-function addMissingKeys(track, gold) {
+function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
   if (track.inEarlyAccess) {
     track.downloadable = false;
 
@@ -188,12 +188,27 @@ function addMissingKeys(track, gold) {
   var artistArray = [];
   const artists = track.artists.split(',');
 
-  for (var i = 0; i < artists.length; i++) {
-    artistArray[i] = {};
-    artistArray[i].id = artists[i];
+  var i = 0;
+
+  var sqlCallback = function() {
+    if (i < artists.length) {
+      const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
+
+      mysqlConnection.query(releaseQuery, (err, artistResults) => {
+        if (err) {
+          errorCallback(err);
+        } else {
+          artistArray[i] = artistResults;
+
+          i++;
+          sqlCallback();
+        }
+      });
+
+    } else {
+      callback(track);
+    }
   }
 
-  track.artists = artistArray;
-
-  return track;
+  sqlCallback();
 }
