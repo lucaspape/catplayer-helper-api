@@ -4,20 +4,35 @@ const mysql = require('mysql');
 
 const dbName = 'monstercatDB';
 
-const mysqlConnection = mysql.createConnection({
+const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
   user: 'root',
-  password: 'JacPV7QZ',
-  database: dbName
+  password: 'JacPV7QZ'
 });
 
-mysqlConnection.connect(err => {
+createDatabaseConnection.connect(err => {
   if (err) {
     console.log(err);
     return err;
   } else {
-    console.log('Connected to database!');
-    initializeDatabase();
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS' + dbName, (err, result) => {
+      const mysqlConnection = mysql.createConnection({
+        host: 'mariadb',
+        user: 'root',
+        password: 'JacPV7QZ',
+        database: dbName
+      });
+
+      mysqlConnection.connect(err => {
+        if (err) {
+          console.log(err);
+          return err;
+        } else {
+          console.log('Connected to database!');
+          initializeDatabase();
+        }
+      });
+    });
   }
 });
 

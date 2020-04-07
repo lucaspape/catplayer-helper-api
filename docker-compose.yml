@@ -15,7 +15,7 @@ services:
       MYSQL_DATABASE:        monstercatDB
       MYSQL_DATABASE:        monstercatUser
       MYSQL_PASSWORD:        j4b58mYq
-      MYSQL_ROOT_HOST:       %
+      MYSQL_ROOT_HOST:       "%"
     restart:                 always
     volumes:
      - ${PWD}/mariadb:/var/lib/mysql
