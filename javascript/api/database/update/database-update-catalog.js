@@ -68,7 +68,7 @@ function initCatalog(mysqlConnection, callback) {
       var i = 0;
 
       var sqlCallback = function() {
-        if (i < json.results.lengh) {
+        if (i < json.results.length) {
           if (i % 100 === 0) {
             console.log((i / total) * 100 + '%');
           }
