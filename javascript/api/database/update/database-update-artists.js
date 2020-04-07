@@ -20,6 +20,9 @@ createDatabaseConnection.connect(err => {
         console.log(err);
         return err;
       } else {
+        console.log(result);
+        console.log('Created database/exists!');
+
         const mysqlConnection = mysql.createConnection({
           host: 'mariadb',
           user: 'root',
