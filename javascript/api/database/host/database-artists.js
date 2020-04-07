@@ -71,7 +71,7 @@ createDatabaseConnection.connect(err => {
                 const searchString = utils.fixSearchString(req.query.term)
                 const terms = searchString.split(' ');
 
-                const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years FROM `' + dbName + '`.`artists` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
+                const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search FROM `' + dbName + '`.`artists` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
                 mysqlConnection.query(artistsSearchQuery, (err, result) => {
                   if (err) {
