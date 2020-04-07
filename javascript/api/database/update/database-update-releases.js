@@ -1,51 +1,65 @@
 const request = require('request');
 const fs = require('fs');
-const lowdb = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const utils = require('./utils.js');
 
-const releasesDBDefaults = {
-  releases: [],
-  releasesGold: []
-}
+const mysql = require('mysql');
 
-const releasesDBFile = 'db-releases.json';
-const releasesDBTempFile = 'db-releases-temp.json';
+const dbName = 'monstercatDB';
 
-function browseReleases(limit, skip, callback, errorCallback) {
-  request({
-      url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
+const createDatabaseConnection = mysql.createConnection({
+  host: 'mariadb',
+  user: 'root',
+  password: 'JacPV7QZ'
+});
+
+createDatabaseConnection.connect(err => {
+  if (err) {
+    console.log(err);
+    return err;
+  } else {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName, (err, result) => {
       if (err) {
-        errorCallback(err);
+        console.log(err);
+        return err;
       } else {
-        callback(JSON.parse(body));
+        console.log('Created database/exists!');
+
+        const mysqlConnection = mysql.createConnection({
+          host: 'mariadb',
+          user: 'root',
+          password: 'JacPV7QZ',
+          database: dbName
+        });
+
+        mysqlConnection.connect(err => {
+          if (err) {
+            console.log(err);
+            return err;
+          } else {
+            console.log('Connected to database!');
+            initializeDatabase(mysqlConnection);
+          }
+        });
       }
     });
-}
+  }
+});
 
-function initializeDatabase() {
-  console.log('Starting init...');
+function initializeDatabase(mysqlConnection) {
+  const createReleasesTableQuery = 'CREATE OR REPLACE TABLE `' + dbName + '`.`releases` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT);'
+  mysqlConnection.query(createReleasesTableQuery, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Created releases table');
 
-  utils.download('https://lucaspape.de/monstercat-app/' + releasesDBFile, releasesDBFile, function() {
-    initReleases(function() {
-      console.log('Database init done!');
-
-      setTimeout(function() {
-        initializeDatabase();
-      }, 3600000);
-    });
+      initCatalog(mysqlConnection, function() {
+        console.log('Done!');
+      });
+    }
   });
 }
 
 function initReleases(callback) {
-  const dbAdapter = new FileSync(releasesDBTempFile);
-  const db = lowdb(dbAdapter);
-  db.defaults(releasesDBDefaults)
-    .write();
-
   browseReleases(-1, 0,
     function(json) {
       console.log('Received release data...');
@@ -67,38 +81,14 @@ function initReleases(callback) {
         release.search += release.version;
         release.search += release.id;
 
-        release.downloadable = false;
+        const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + release.links + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
 
-        if (release.inEarlyAccess) {
-          release.streamable = false;
-        } else {
-          release.streamable = true;
-        }
-
-        db.get('releases')
-          .push(release)
-          .write();
-
-        release.streamable = true;
-
-        if (release.inEarlyAccess) {
-          release.downloadable = false;
-        } else {
-          release.downloadable = true;
-        }
-
-        db.get('releasesGold')
-          .push(release)
-          .write();
+        mysqlConnection.query(insertReleaseQuery, (err, results) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       }
-
-      fs.rename(releasesDBTempFile, releasesDBFile, function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('Releases db init done!');
-        }
-      });
 
       callback();
     },
@@ -108,4 +98,16 @@ function initReleases(callback) {
     });
 }
 
-initializeDatabase();
+function browseReleases(limit, skip, callback, errorCallback) {
+  request({
+      url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+}

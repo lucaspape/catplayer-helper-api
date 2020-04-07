@@ -72,7 +72,6 @@ services:
     build:                   javascript
     command:                 node api/database/update/database-update-catalog.js
     working_dir:             /app/
-    restart:                 always
     volumes:
       - static-content:/app
 
@@ -80,7 +79,6 @@ services:
     build:                   javascript
     command:                 node api/database/update/database-update-releases.js
     working_dir:             /app/
-    restart:                 always
     volumes:
       - static-content:/app
 
