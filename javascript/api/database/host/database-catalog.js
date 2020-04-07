@@ -68,7 +68,7 @@ createDatabaseConnection.connect(err => {
                             res.send(err);
                           } else {
                             console.log(releaseResult);
-                            trackArray[i].release = releaseResult;
+                            trackArray[i].release = releaseResult[0];
                             i++;
                             queryFinished();
                           }
