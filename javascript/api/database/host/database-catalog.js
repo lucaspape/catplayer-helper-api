@@ -192,6 +192,13 @@ function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
     }
   }
 
+  const tags = track.tags.split(',');
+  track.tags = [];
+
+  for (var i = 0; i < tags.length; i++) {
+    track.tags[i] = tags[i];
+  }
+
   var artistArray = [];
   const artists = track.artists.split(',');
 
