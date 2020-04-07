@@ -16,95 +16,74 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const createDatabaseConnection = mysql.createConnection({
+
+const mysqlConnection = mysql.createConnection({
   host: 'mariadb',
   user: 'root',
-  password: 'JacPV7QZ'
+  password: 'JacPV7QZ',
+  database: dbName
 });
 
-createDatabaseConnection.connect(err => {
+mysqlConnection.connect(err => {
   if (err) {
     console.log(err);
     return err;
   } else {
-    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName, (err, result) => {
-      if (err) {
-        console.log(err);
-        return err;
-      } else {
-        console.log('Created database/exists!');
+    console.log('Connected to database!');
 
-        const mysqlConnection = mysql.createConnection({
-          host: 'mariadb',
-          user: 'root',
-          password: 'JacPV7QZ',
-          database: dbName
-        });
+    app.get(APIPREFIX + '/artists', (req, res) => {
+      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+        const artistsQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
-        mysqlConnection.connect(err => {
+        mysqlConnection.query(artistsQuery, (err, result) => {
           if (err) {
-            console.log(err);
-            return err;
+            res.send(err);
           } else {
-            console.log('Connected to database!');
+            var returnObject = {
+              results: result
+            };
 
-            app.get(APIPREFIX + '/artists', (req, res) => {
-              utils.fixSkipAndLimit(req.query, function(skip, limit) {
-                const artistsQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
-
-                mysqlConnection.query(artistsQuery, (err, result) => {
-                  if (err) {
-                    res.send(err);
-                  } else {
-                    var returnObject = {
-                      results: result
-                    };
-
-                    res.send(returnObject);
-                  }
-                });
-              });
-            });
-
-            app.get(APIPREFIX + '/artists/search', (req, res) => {
-              utils.fixSkipAndLimit(req.query, function(skip, limit) {
-                const searchString = utils.fixSearchString(req.query.term)
-                const terms = searchString.split(' ');
-
-                const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search FROM `' + dbName + '`.`artists` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
-
-                mysqlConnection.query(artistsSearchQuery, (err, result) => {
-                  if (err) {
-                    res.send(err);
-                  } else {
-                    var artistsArray = result;
-
-                    for (var k = 1; k < terms.length; k++) {
-                      artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
-                    }
-
-                    for (var i = 0; i < artistsArray.length; i++) {
-                      artistsArray[i].similarity = utils.similarity(artistsArray[i].search, searchString);
-                    }
-
-                    artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
-
-                    const returnObject = {
-                      results: artistsArray.slice(skip, skip + limit)
-                    }
-
-                    res.send(returnObject);
-                  }
-                });
-              });
-            });
-
-            app.listen(PORT, () => {
-              console.log('Server started on port ' + PORT);
-            });
+            res.send(returnObject);
           }
         });
-      }
+      });
+    });
+
+    app.get(APIPREFIX + '/artists/search', (req, res) => {
+      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+        const searchString = utils.fixSearchString(req.query.term)
+        const terms = searchString.split(' ');
+
+        const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search FROM `' + dbName + '`.`artists` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
+
+        mysqlConnection.query(artistsSearchQuery, (err, result) => {
+          if (err) {
+            res.send(err);
+          } else {
+            var artistsArray = result;
+
+            for (var k = 1; k < terms.length; k++) {
+              artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
+            }
+
+            for (var i = 0; i < artistsArray.length; i++) {
+              artistsArray[i].similarity = utils.similarity(artistsArray[i].search, searchString);
+            }
+
+            artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+
+            const returnObject = {
+              results: artistsArray.slice(skip, skip + limit)
+            }
+
+            res.send(returnObject);
+          }
+        });
+      });
+    });
+
+    app.listen(PORT, () => {
+      console.log('Server started on port ' + PORT);
     });
   }
 });

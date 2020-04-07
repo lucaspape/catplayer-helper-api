@@ -60,6 +60,16 @@ services:
     deploy:
       replicas:              5
 
+  database-session:
+    build:                   javascript
+    command:                 node api/database/host/database-session.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
+    deploy:
+      replicas:              1
+
   database-local:
     build:                   javascript
     command:                 node api/database/local/database-local.js

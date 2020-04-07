@@ -50,7 +50,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
         var hasGold = false;
 
         if (json.user !== undefined) {
-          hasGold = json.user.hasGold;
+          hasGold = json.gold;
         }
 
         request({
@@ -83,7 +83,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
         var hasGold = false;
 
         if (json.user !== undefined) {
-          hasGold = json.user.hasGold;
+          hasGold = json.gold;
         }
 
         request({
@@ -139,7 +139,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
         var hasGold = false;
 
         if (json.user !== undefined) {
-          hasGold = json.user.hasGold;
+          hasGold = json.gold;
         }
 
         request({
@@ -175,7 +175,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
         var hasGold = false;
 
         if (json.user !== undefined) {
-          hasGold = json.user.hasGold;
+          hasGold = json.gold;
         }
 
         request({
@@ -229,11 +229,8 @@ app.listen(PORT, () => {
 function getSession(sid, callback, errorCallback) {
   if (sid !== undefined) {
     request({
-      url: 'https://connect.monstercat.com/v2/self/session',
-      method: 'GET',
-      headers: {
-        'Cookie': 'connect.sid=' + sid
-      }
+      url: 'http://database-session/session?sid=' + sid,
+      method: 'GET'
     }, function(err, resp, body) {
       if (err) {
         errorCallback(err);
