@@ -1,5 +1,34 @@
 version:                     '3'
 services:
+  proxy:
+    build:                   proxy
+    ports:
+      - "6000:80"
+
+  proxy-internal:
+    build:                   proxy-internal
+
+  mariadb:
+    image:                   mariadb:10.5.2
+    environment:
+      MYSQL_ROOT_PASSWORD:   JacPV7QZ
+      MYSQL_DATABASE:        monstercatDB
+      MYSQL_DATABASE:        monstercatUser
+      MYSQL_PASSWORD:        j4b58mYq
+    restart:                 always
+    volumes:
+     - ${PWD}/mariadb:/var/lib/mysql
+
+  web:
+    build:                   javascript
+    command:                 node api/api.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - static-content:/app
+    deploy:
+      replicas:              1
+
   database-catalog:
     build:                   javascript
     command:                 node api/database/host/database-catalog.js
@@ -61,16 +90,6 @@ services:
     volumes:
       - static-content:/app
 
-  web:
-    build:                   javascript
-    command:                 node api/api.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
-      - static-content:/app
-    deploy:
-      replicas:              1
-
   recg:
     build:                   javascript
     command:                 node image/image-recognition.js
@@ -78,25 +97,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-
-  proxy:
-    build:                   proxy
-    ports:
-      - "6000:80"
-
-  proxy-internal:
-    build:                   proxy-internal
-
-  mariadb:
-    image:                   mariadb:10.5.2
-    environment:
-      MYSQL_ROOT_PASSWORD:   changeme
-      MYSQL_DATABASE:        monstercatDB
-      MYSQL_DATABASE:        monstercatUser
-      MYSQL_PASSWORD:        j4b58mYq
-    restart:                 always
-    volumes:
-     - ${PWD}/mariadb:/var/lib/mysql
 
 volumes:
   static-content:
