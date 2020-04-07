@@ -70,7 +70,7 @@ createDatabaseConnection.connect(err => {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
                             i++;
-                            queryFinished();
+                            releasesQueryFinished();
                           }
                         });
                       } else {
@@ -124,7 +124,7 @@ createDatabaseConnection.connect(err => {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
                             i++;
-                            queryFinished();
+                            releasesQueryFinished();
                           }
                         });
                       } else {
