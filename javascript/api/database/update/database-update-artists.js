@@ -64,33 +64,42 @@ function initArtists(mysqlConnection, callback) {
       console.log('Received artists data...');
       const total = json.total;
 
-      for (var i = 0; i < json.results.length; i++) {
-        if (i % 100 === 0) {
-          console.log((i / total) * 100 + '%');
-        }
+      var i = 0;
 
-        var artist = json.results[i];
-        artist.sortId = i;
-
-        artist.search = artist.id;
-        artist.search += artist.uri;
-        artist.search += artist.name;
-        artist.search += artist.about;
-        artist.search += artist.bookingDetails;
-        artist.search += artist.managementDetails;
-        artist.search += artist.links;
-
-        const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '");';
-
-        mysqlConnection.query(insertArtistQuery, (err, results) => {
-          if (err) {
-            console.log(err);
+      var sqlCallback = function() {
+        if (i < json.results.length) {
+          if (i % 100 === 0) {
+            console.log((i / total) * 100 + '%');
           }
-        });
-      }
-      callback();
-    },
 
+          var artist = json.results[i];
+          artist.sortId = i;
+
+          artist.search = artist.id;
+          artist.search += artist.uri;
+          artist.search += artist.name;
+          artist.search += artist.about;
+          artist.search += artist.bookingDetails;
+          artist.search += artist.managementDetails;
+          artist.search += artist.links;
+
+          const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '");';
+
+          mysqlConnection.query(insertArtistQuery, (err, results) => {
+            if (err) {
+              console.log(err);
+            }
+
+            i++;
+            sqlCallback();
+          });
+        } else {
+          callback();
+        }
+      };
+
+      sqlCallback();
+    },
     function(err) {
       console.log(err);
     });
