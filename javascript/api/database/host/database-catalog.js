@@ -215,6 +215,7 @@ function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
       });
 
     } else {
+      track.artists = artistArray;
       callback(track);
     }
   }
