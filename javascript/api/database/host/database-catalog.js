@@ -56,16 +56,22 @@ createDatabaseConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
+                    var trackArray = result;
                     var i = 0;
 
                     var queryFinished = function() {
                       if (i < result.length) {
-                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, tags, title, type FROM `' + dbName + '`.`releases` WHERE id=' + result[i].releaseId + ';';
+                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, tags, title, type FROM `' + dbName + '`.`releases` WHERE id=' + trackArray[i].releaseId + ';';
 
                         mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                          result[i].release = releaseResult;
-                          i++;
-                          queryFinished()
+                          if (err) {
+                            res.send(err);
+                          } else {
+                            console.log(releaseResult);
+                            trackArray[i].release = releaseResult;
+                            i++;
+                            queryFinished();
+                          }
                         });
                       } else {
                         var returnObject = {
