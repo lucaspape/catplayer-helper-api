@@ -65,32 +65,39 @@ function initReleases(mysqlConnection, callback) {
       console.log('Received release data...');
       const total = json.total;
 
-      for (var i = 0; i < json.results.length; i++) {
-        if (i % 100 === 0) {
-          console.log((i / total) * 100 + '%');
-        }
+      var i = 0;
 
-        var release = json.results[i];
-        release.sortId = i;
-
-        release.search = release.artistsTitle;
-        release.search += release.catalogId;
-        release.search += release.genrePrimary;
-        release.search += release.genreSecondary;
-        release.search += release.title;
-        release.search += release.version;
-        release.search += release.id;
-
-        const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + JSON.stringify(release.links).replace('"', "''") + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
-
-        mysqlConnection.query(insertReleaseQuery, (err, results) => {
-          if (err) {
-            console.log(err);
+      var sqlCallback = function() {
+        if (i < json.results.length) {
+          if (i % 100 === 0) {
+            console.log((i / total) * 100 + '%');
           }
-        });
-      }
 
-      callback();
+          var release = json.results[i];
+          release.sortId = i;
+
+          release.search = release.artistsTitle;
+          release.search += release.catalogId;
+          release.search += release.genrePrimary;
+          release.search += release.genreSecondary;
+          release.search += release.title;
+          release.search += release.version;
+          release.search += release.id;
+
+          const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + JSON.stringify(release.links).replace('"', "''") + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
+
+          mysqlConnection.query(insertReleaseQuery, (err, results) => {
+            if (err) {
+              console.log(err);
+            }
+
+            sqlCallback();
+            i++
+          });
+        } else {
+          callback();
+        }
+      }
     },
 
     function(err) {
