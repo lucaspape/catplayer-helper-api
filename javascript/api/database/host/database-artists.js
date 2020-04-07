@@ -68,7 +68,7 @@ createDatabaseConnection.connect(err => {
                     res.send(err);
                   } else {
                     var returnObject = {
-                      results: result
+                      results: JSON.parse(result);
                     };
 
                     res.send(returnObject);
