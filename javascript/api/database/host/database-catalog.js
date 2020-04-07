@@ -50,14 +50,21 @@ createDatabaseConnection.connect(err => {
 
             app.get(APIPREFIX + '/catalog', (req, res) => {
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
-                //const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version FROM `' + dbName + '`.`catalog` ORDER BY sortId ASC LIMIT ' + skip + ', ' + limit + ';';
-                const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version FROM `' + dbName + '`.`catalog` JOIN `' + dbName + '`.`releases` ON catalog.releaseId = releases.id ' + 'ORDER BY catalog.sortId ASC LIMIT ' + skip + ', ' + limit + ';';
-
+                const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version FROM `' + dbName + '`.`catalog`' + 'ORDER BY catalog.sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
                 mysqlConnection.query(catalogQuery, (err, result) => {
                   if (err) {
                     res.send(err);
                   } else {
+                    for (var i = 0; i < result.length; i++) {
+                      const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, tags, title, type FROM `' + dbName + '`.`releases` WHERE id='
+                      result[i].releaseId;
+
+                      mysqlConnection.query(releaseQuery, (err, releaseResult) => {
+                        result[i].release = releaseResult;
+                      });
+                    }
+
                     var returnObject = {
                       results: result
                     };
