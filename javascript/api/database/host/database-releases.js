@@ -77,7 +77,7 @@ createDatabaseConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    var releasesArray = result;
+                    var releaseArray = result;
 
                     for (var k = 1; k < terms.length; k++) {
                       releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
