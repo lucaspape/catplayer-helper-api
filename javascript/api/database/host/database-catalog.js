@@ -170,7 +170,7 @@ function addMissingKeys(track, gold) {
   if (track.inEarlyAccess) {
     track.downloadable = false;
 
-    if (gold) {
+    if (gold === true) {
       track.streamable = true;
     } else {
       track.streamable = false;
@@ -178,7 +178,7 @@ function addMissingKeys(track, gold) {
   } else {
     track.streamable = true;
 
-    if (gold) {
+    if (gold === true) {
       track.downloadable = true;
     } else {
       track.downloadable = false;
