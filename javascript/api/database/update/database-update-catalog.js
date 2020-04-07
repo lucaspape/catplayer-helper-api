@@ -45,7 +45,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createCatalogTableQuery = 'CREATE TABLE `' + dbName + '`.`catalog` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` BOOLEAN, `debutDate` TEXT, `duration` INT, `explicit` BOOLEAN, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `release` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `search` TEXT);'
+  const createCatalogTableQuery = 'CREATE TABLE `' + dbName + '`.`catalog` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` BOOLEAN, `debutDate` TEXT, `duration` INT, `explicit` BOOLEAN, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `mcRelease` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `search` TEXT);'
   mysqlConnection.query(createCatalogTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -91,7 +91,7 @@ function initCatalog(mysqlConnection, callback) {
           track.search += track.artists[k].name;
         }
 
-        const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,release,tags,title,trackNumber,version,search) values ("' + track.id + '","' + track.artists + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.search + '");'
+        const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,mcRelease,tags,title,trackNumber,version,search) values ("' + track.id + '","' + track.artists + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.search + '");'
 
         mysqlConnection.query(insertTrackQuery, (err, results) => {
           if (err) {
