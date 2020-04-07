@@ -88,6 +88,17 @@ services:
   proxy-internal:
     build:                   proxy-internal
 
+  mariadb:
+    image:                   mariadb:10.2
+    environment:
+      MYSQL_ROOT_PASSWORD:   changeme
+      MYSQL_DATABASE:        testDB
+      MYSQL_DATABASE:        testUser
+      MYSQL_PASSWORD:        testPassword
+    restart:                 always
+    volumes:
+     - ${PWD}/mariadb:/var/lib/mysql
+
 volumes:
   static-content:
     driver_opts:
