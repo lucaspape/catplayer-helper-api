@@ -75,9 +75,14 @@ createDatabaseConnection.connect(err => {
                           } else {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
-                            trackArray[i] = addMissingKeys(trackArray[i], gold);
-                            i++;
-                            releasesQueryFinished();
+                            addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
+                              trackArray[i] = track;
+                              i++;
+                              releasesQueryFinished();
+                            }, function(err) {
+                              res.send(err);
+                            });
+
                           }
                         });
                       } else {
@@ -136,9 +141,13 @@ createDatabaseConnection.connect(err => {
                           } else {
                             console.log(releaseResult);
                             trackArray[i].release = releaseResult[0];
-                            trackArray[i] = addMissingKeys(trackArray[i], gold);
-                            i++;
-                            releasesQueryFinished();
+                            addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
+                              trackArray[i] = track;
+                              i++;
+                              releasesQueryFinished();
+                            }, function(err) {
+                              res.send(err);
+                            });
                           }
                         });
                       } else {
