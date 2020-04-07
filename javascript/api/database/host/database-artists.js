@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
 const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '';
+const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
@@ -13,10 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
-const mysql = require('mysql');
-
-const dbName = 'monstercatDB';
 
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
