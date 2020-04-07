@@ -25,12 +25,20 @@ app.get(APIPREFIX + '/', (req, res) => {
 });
 
 app.get(APIPREFIX + '/playlist/public', (req, res) => {
-  res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
+  try {
+    res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
+  } catch (e) {
+    res.send(e);
+  }
 });
 
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
-  res.send(JSON.parse(fs.readFileSync('currentdata.json')));
+  try {
+    res.send(JSON.parse(fs.readFileSync('currentdata.json')));
+  } catch (e) {
+    res.send(e);
+  }
 });
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
@@ -52,7 +60,11 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            res.send(JSON.parse(body));
+            try {
+              res.send(JSON.parse(body));
+            } catch (e) {
+              console.log(e);
+            }
           }
         });
       },
@@ -82,7 +94,11 @@ app.get(APIPREFIX + '/releases', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(JSON.parse(body));
+              try {
+                res.send(JSON.parse(body));
+              } catch (e) {
+                res.send(e);
+              }
             }
           });
       },
@@ -102,7 +118,11 @@ app.get(APIPREFIX + '/artists', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.send(JSON.parse(body));
+          try {
+            res.send(JSON.parse(body));
+          } catch (e) {
+            res.send(e);
+          }
         }
       });
   });
@@ -130,7 +150,11 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(JSON.parse(body));
+              try {
+                res.send(JSON.parse(body));
+              } catch (e) {
+                res.send(e);
+              }
             }
           });
       },
@@ -162,7 +186,11 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
             if (err) {
               res.send(err);
             } else {
-              res.send(JSON.parse(body));
+              try {
+                res.send(JSON.parse(body));
+              } catch (e) {
+                res.send(e);
+              }
             }
           });
       },
@@ -184,7 +212,11 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.send(JSON.parse(body));
+          try {
+            res.send(JSON.parse(body));
+          } catch (e) {
+            res.send(e);
+          }
         }
       });
   });
