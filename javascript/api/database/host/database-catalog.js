@@ -203,7 +203,7 @@ function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
     if (i < artists.length) {
       const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
 
-      mysqlConnection.query(releaseQuery, (err, artistResults) => {
+      mysqlConnection.query(artistQuery, (err, artistResults) => {
         if (err) {
           errorCallback(err);
         } else {
