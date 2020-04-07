@@ -1,52 +1,65 @@
 const request = require('request');
 const fs = require('fs');
-const lowdb = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const utils = require('./utils.js');
 
-const catalogDBDefaults = {
-  tracks: [],
-  tracksGold: []
-}
+const mysql = require('mysql');
 
-const catalogDBFile = 'db-catalog.json';
-const catalogDBTempFile = 'db-catalog-temp.json';
+const dbName = 'monstercatDB';
 
-function browseTracks(limit, skip, callback, errorCallback) {
-  request({
-      url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
+const createDatabaseConnection = mysql.createConnection({
+  host: 'mariadb',
+  user: 'root',
+  password: 'JacPV7QZ'
+});
+
+createDatabaseConnection.connect(err => {
+  if (err) {
+    console.log(err);
+    return err;
+  } else {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName, (err, result) => {
       if (err) {
-        errorCallback(err);
+        console.log(err);
+        return err;
       } else {
-        callback(JSON.parse(body));
+        console.log('Created database/exists!');
+
+        const mysqlConnection = mysql.createConnection({
+          host: 'mariadb',
+          user: 'root',
+          password: 'JacPV7QZ',
+          database: dbName
+        });
+
+        mysqlConnection.connect(err => {
+          if (err) {
+            console.log(err);
+            return err;
+          } else {
+            console.log('Connected to database!');
+            initializeDatabase(mysqlConnection);
+          }
+        });
       }
     });
-}
+  }
+});
 
-function initializeDatabase() {
-  console.log('Starting init...');
+function initializeDatabase(mysqlConnection) {
+  const createCatalogTableQuery = 'CREATE TABLE `' + dbName + '`.`catalog` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` BOOLEAN, `debutDate` TEXT, `duration` INT, `explicit` BOOLEAN, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `release` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `search` TEXT);'
+  mysqlConnection.query(createCatalogTableQuery, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Created catalog table');
 
-  utils.download('https://lucaspape.de/monstercat-app/' + catalogDBFile, catalogDBFile, function() {
-    initCatalog(function() {
-      console.log('Database init done!');
-
-      setTimeout(function() {
-        initializeDatabase();
-      }, 3600000);
-    });
-
+      initCatalog(mysqlConnection, function() {
+        console.log('Done!');
+      });
+    }
   });
 }
 
-function initCatalog(callback) {
-  const dbAdapter = new FileSync(catalogDBTempFile);
-  const db = lowdb(dbAdapter);
-  db.defaults(catalogDBDefaults)
-    .write();
-
+function initCatalog(mysqlConnection, callback) {
   browseTracks(-1, 0,
     function(json) {
       console.log('Received catalog data...');
@@ -78,38 +91,14 @@ function initCatalog(callback) {
           track.search += track.artists[k].name;
         }
 
-        track.downloadable = false;
+        const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,release,tags,title,trackNumber,version,search) values ("' + track.id + '","' + track.artists + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.search + '");'
 
-        if (track.inEarlyAccess) {
-          track.streamable = false;
-        } else {
-          track.streamable = true;
-        }
-
-        db.get('tracks')
-          .push(track)
-          .write();
-
-        track.streamable = true;
-
-        if (track.inEarlyAccess) {
-          track.downloadable = false;
-        } else {
-          track.downloadable = true;
-        }
-
-        db.get('tracksGold')
-          .push(track)
-          .write();
+        mysqlConnection.query(insertTrackQuery, (err, results) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       }
-
-      fs.rename(catalogDBTempFile, catalogDBFile, function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('Catalog init done!');
-        }
-      });
 
       callback();
     },
@@ -119,4 +108,16 @@ function initCatalog(callback) {
     });
 }
 
-initializeDatabase();
+function browseTracks(limit, skip, callback, errorCallback) {
+  request({
+      url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+}
