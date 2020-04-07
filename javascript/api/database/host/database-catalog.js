@@ -65,6 +65,7 @@ createDatabaseConnection.connect(err => {
 
                         mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                           result[i].release = releaseResult;
+                          i++;
                           queryFinished()
                         });
                       } else {
@@ -74,8 +75,6 @@ createDatabaseConnection.connect(err => {
 
                         res.send(returnObject);
                       }
-
-                      i++;
                     };
 
                     queryFinished();
