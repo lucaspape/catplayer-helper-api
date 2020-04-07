@@ -92,9 +92,9 @@ services:
     image:                   mariadb:10.2
     environment:
       MYSQL_ROOT_PASSWORD:   changeme
-      MYSQL_DATABASE:        testDB
-      MYSQL_DATABASE:        testUser
-      MYSQL_PASSWORD:        testPassword
+      MYSQL_DATABASE:        monstercatDB
+      MYSQL_DATABASE:        monstercatUser
+      MYSQL_PASSWORD:        j4b58mYq
     restart:                 always
     volumes:
      - ${PWD}/mariadb:/var/lib/mysql

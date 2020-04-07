@@ -1,52 +1,42 @@
 const request = require('request');
 const fs = require('fs');
-const lowdb = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const utils = require('./utils.js');
+const mysql = require('mysql');
 
-const artistsDBDefaults = {
-  artists: []
-}
+const dbName = 'monstercatDB';
 
-const artistsDBFile = 'db-artists.json';
-const artistsDBTempFile = 'db-artists-temp.json';
+const mysqlConnection = mysql.createConnection({
+  host: 'mariadb',
+  user: 'monstercatUser',
+  password: 'j4b58mYq',
+  database: dbName
+});
 
-function browseArtists(limit, skip, callback, errorCallback) {
-  request({
-      url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
-        errorCallback(err);
-      } else {
-        callback(JSON.parse(body));
-      }
-    });
-}
+mysqlConnection.connect(err => {
+  if (err) {
+    console.log(err);
+    return err;
+  } else {
+    console.log('Connected to database!');
+    initializeDatabase();
+  }
+});
 
 function initializeDatabase() {
-  console.log('Starting init...');
+  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`artists` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT);';
+  mysqlConnection.query(createArtistsTableQuery, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Created artists table');
 
-  utils.download('https://lucaspape.de/monstercat-app/' + artistsDBFile, artistsDBFile, function() {
-    initArtists(function() {
-      console.log('Database init done!');
-
-      setTimeout(function() {
-        initializeDatabase();
-      }, 3600000);
-    });
+      initArtists(function() {
+        console.log('Done!');
+      });
+    }
   });
 }
 
 function initArtists(callback) {
-  const dbAdapter = new FileSync(artistsDBTempFile);
-  const db = lowdb(dbAdapter);
-  db.defaults(artistsDBDefaults)
-    .write();
-
-  const removeKeys = [];
-
   browseArtists(-1, 0,
     function(json) {
       console.log('Received artists data...');
@@ -68,29 +58,33 @@ function initArtists(callback) {
         artist.search += artist.managementDetails;
         artist.search += artist.links;
 
-        for (var k = 0; k < removeKeys.length; k++) {
-          delete artist[removeKeys[k]];
-        }
+        const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + artist.links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + artist.years + '","' + artist.search + '");';
 
-        db.get('artists')
-          .push(artist)
-          .write();
+        mysqlConnection.query(insertArtistQuery, (err, results) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       }
-
-      fs.rename(artistsDBTempFile, artistsDBFile, function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('Artists db init done!');
-        }
-      });
-
       callback();
     },
 
     function(err) {
       console.log(err);
     });
+
 }
 
-initializeDatabase();
+function browseArtists(limit, skip, callback, errorCallback) {
+  request({
+      url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+}
