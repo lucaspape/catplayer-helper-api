@@ -61,7 +61,7 @@ createDatabaseConnection.connect(err => {
 
                     var queryFinished = function() {
                       if (i < result.length) {
-                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id=' + trackArray[i].releaseId + ';';
+                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
                         mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                           if (err) {
