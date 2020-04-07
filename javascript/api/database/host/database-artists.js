@@ -63,6 +63,7 @@ createDatabaseConnection.connect(err => {
               utils.fixSkipAndLimit(req.query, function(skip, limit) {
                 //const artistsQuery = 'SELECT * FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + limit + ', ' + skip + ';';
                 const artistsQuery = 'SELECT * FROM `' + dbName + '`.`artists` ORDER BY sortId ASC LIMIT ' + limit + ', ' + skip + ';';
+                console.log(artistsQuery);
                 mysqlConnection.query(artistsQuery, (err, result) => {
                   if (err) {
                     res.send(err);
