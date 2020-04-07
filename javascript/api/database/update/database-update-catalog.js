@@ -87,10 +87,14 @@ function initCatalog(mysqlConnection, callback) {
           track.search += track.tags[k];
         }
 
-        var artistIds = "";
-
         for (var k = 0; k < track.artists.length; k++) {
           track.search += track.artists[k].name;
+          artistIds += track.artists[k].id + ',';
+        }
+
+        var artistIds = track.artists[0].id;
+
+        for (var k = 1; k < track.artists.length; k++) {
           artistIds += ',' + track.artists[k].id;
         }
 

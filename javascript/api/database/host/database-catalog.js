@@ -59,7 +59,7 @@ createDatabaseConnection.connect(err => {
                     var trackArray = result;
                     var i = 0;
 
-                    var queryFinished = function() {
+                    var releasesQueryFinished = function() {
                       if (i < result.length) {
                         const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
@@ -82,7 +82,7 @@ createDatabaseConnection.connect(err => {
                       }
                     };
 
-                    queryFinished();
+                    releasesQueryFinished();
                   }
                 });
               });
@@ -111,11 +111,32 @@ createDatabaseConnection.connect(err => {
 
                     trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
 
-                    const returnObject = {
-                      results: trackArray.slice(skip, skip + limit)
-                    }
+                    var i = 0;
 
-                    res.send(returnObject);
+                    var releasesQueryFinished = function() {
+                      if (i < trackArray.length) {
+                        const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
+
+                        mysqlConnection.query(releaseQuery, (err, releaseResult) => {
+                          if (err) {
+                            res.send(err);
+                          } else {
+                            console.log(releaseResult);
+                            trackArray[i].release = releaseResult[0];
+                            i++;
+                            queryFinished();
+                          }
+                        });
+                      } else {
+                        var returnObject = {
+                          results: result
+                        };
+
+                        res.send(returnObject);
+                      }
+                    };
+
+                    releasesQueryFinished();
                   }
                 });
               });
