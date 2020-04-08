@@ -47,7 +47,7 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
       function(json) {
         var hasGold = false;
 
-        if (json.user !== undefined) {
+        if (json.gold !== undefined) {
           hasGold = json.gold;
         }
 
@@ -80,7 +80,7 @@ app.get(APIPREFIX + '/releases', (req, res) => {
       function(json) {
         var hasGold = false;
 
-        if (json.user !== undefined) {
+        if (json.gold !== undefined) {
           hasGold = json.gold;
         }
 
@@ -136,7 +136,7 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
       function(json) {
         var hasGold = false;
 
-        if (json.user !== undefined) {
+        if (json.gold !== undefined) {
           hasGold = json.gold;
         }
 
@@ -172,7 +172,7 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
       function(json) {
         var hasGold = false;
 
-        if (json.user !== undefined) {
+        if (json.gold !== undefined) {
           hasGold = json.gold;
         }
 
