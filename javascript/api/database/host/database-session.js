@@ -39,9 +39,10 @@ mysqlConnection.connect(err => {
         console.log(err);
       } else {
         app.post(APIPREFIX + '/session', (req, res) => {
-          console.log(sid);
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
+
+          console.log(sid);
 
           const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
 
