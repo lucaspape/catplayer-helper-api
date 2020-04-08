@@ -57,9 +57,9 @@ mysqlConnection.connect(err => {
                       if (err) {
                         res.send(err);
                       } else {
-                        res.send(JSON.stringify({
+                        res.send({
                           gold: fixStringBoolean(json.user.hasGold)
-                        }));
+                        });
                       }
                     });
                   },
@@ -67,9 +67,9 @@ mysqlConnection.connect(err => {
                     res.send(err);
                   });
               } else {
-                res.send(JSON.strinify({
+                res.send({
                   gold: fixStringBoolean(result.gold)
-                }));
+                });
               }
             }
           });

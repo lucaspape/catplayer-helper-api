@@ -238,7 +238,7 @@ function getSession(sid, callback, errorCallback) {
         errorCallback(err);
       } else {
         console.log(body);
-        callback(JSON.parse(body));
+        callback(body);
       }
     });
   } else {
