@@ -68,7 +68,7 @@ services:
     volumes:
       - static-content:/app
     deploy:
-      replicas:              1
+      replicas:              5
 
   database-local:
     build:                   javascript
