@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const request = require('request');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
 const utils = require('./utils.js');
 
 const PORT = 80;
