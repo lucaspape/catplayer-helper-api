@@ -152,27 +152,13 @@ mysqlConnection.connect(err => {
 });
 
 function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
-  console.log(gold);
-
   if (track.inEarlyAccess === 'true') {
     track.downloadable = false;
-
-    if (gold) {
-      track.streamable = true;
-    } else {
-      track.streamable = false;
-    }
+    track.streamable = gold;
   } else {
     track.streamable = true;
-
-    if (gold) {
-      track.downloadable = true;
-    } else {
-      track.downloadable = false;
-    }
+    track.downloadable = gold;
   }
-
-  console.log(track);
 
   const tags = track.tags.split(',');
   track.tags = [];
