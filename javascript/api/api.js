@@ -227,8 +227,9 @@ app.listen(PORT, () => {
 function getSession(sid, callback, errorCallback) {
   if (sid !== undefined) {
     request({
-      url: 'http://database-session/session?sid=' + sid,
-      method: 'GET'
+      url: 'http://database-session/session',
+      method: 'POST',
+      body: 'sid=' + sid
     }, function(err, resp, body) {
       if (err) {
         errorCallback(err);
