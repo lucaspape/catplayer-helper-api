@@ -37,6 +37,8 @@ mysqlConnection.connect(err => {
         gold = req.query.gold;
       }
 
+      console.log('Gold: ' + gold);
+
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY catalog.sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 

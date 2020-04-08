@@ -237,7 +237,6 @@ function getSession(sid, callback, errorCallback) {
       if (err) {
         errorCallback(err);
       } else {
-        console.log(body);
         callback(body);
       }
     });
