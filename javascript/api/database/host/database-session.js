@@ -51,7 +51,7 @@ mysqlConnection.connect(err => {
               if (result.gold === undefined) {
                 getSession(sid,
                   function(json) {
-
+                    console.log(json);
                     const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
 
                     mysqlConnection.query(insertSessionQuery, (err, result) => {
