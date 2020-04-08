@@ -39,6 +39,7 @@ mysqlConnection.connect(err => {
         console.log(err);
       } else {
         app.post(APIPREFIX + '/session', (req, res) => {
+          console.log(req.body);
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
 
