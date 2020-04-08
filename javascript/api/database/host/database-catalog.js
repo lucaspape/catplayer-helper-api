@@ -37,8 +37,6 @@ mysqlConnection.connect(err => {
         gold = req.query.gold;
       }
 
-      console.log('Gold: ' + gold);
-
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY catalog.sortId ASC LIMIT ' + skip + ', ' + limit + ';';
 
@@ -154,6 +152,8 @@ mysqlConnection.connect(err => {
 });
 
 function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
+  console.log(gold);
+
   if (track.inEarlyAccess) {
     track.downloadable = false;
 
@@ -171,6 +171,8 @@ function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
       track.downloadable = false;
     }
   }
+
+  console.log(track);
 
   const tags = track.tags.split(',');
   track.tags = [];
