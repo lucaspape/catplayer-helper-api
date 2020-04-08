@@ -25,88 +25,89 @@ const mysqlConnection = mysql.createConnection({
 });
 
 mysqlConnection.connect(err => {
+  if (err) {
+    console.log(err);
+    return err;
+  } else {
+    console.log('Connected to database!');
+
+    const createSessionTableQuery = 'CREATE TABLE `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
+
+    mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
-        return err;
       } else {
-        console.log('Connected to database!');
 
-        const createSessionTableQuery = 'CREATE TABLE `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
+        app.get(APIPREFIX + '/session', (req, res) => {
+          const sid = req.query.sid;
+          const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
 
-        mysqlConnection.query(createSessionTableQuery, (err, result) => {
+          const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
+
+          mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
-              console.log(err);
+              res.send(err);
             } else {
-              app.get(APIPREFIX + '/session', (req, res) => {
-                  const sid = req.query.sid;
-                  const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
+              if (result.gold === undefined) {
+                getSession(sid,
+                  function(json) {
 
-                  const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
+                    const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
 
-                  mysqlConnection.query(sessionQuery, (err, result) => {
+                    mysqlConnection.query(insertSessionQuery, (err, result) => {
                       if (err) {
                         res.send(err);
                       } else {
-                        if (result.gold === undefined) {
-                          getSession(sid,
-                              function(json) {
-
-                                const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
-
-                                mysqlConnection.query(insertSessionQuery, (err, result) => {
-                                  if (err) {
-                                    res.send(err);
-                                  } else {
-                                    res.send({
-                                      gold: fixStringBoolean(json.user.hasGold)
-                                    });
-                                  }
-                                });
-                              }
-                            },
-                            function(err) {
-                              res.send(err);
-                            });
-                      } else {
                         res.send({
-                          gold: fixStringBoolean(result.gold)
+                          gold: fixStringBoolean(json.user.hasGold)
                         });
                       }
-                    }
+                    });
+                  },
+                  function(err) {
+                    res.send(err);
                   });
-
-                app.listen(PORT, () => {
-                  console.log('Server started on port ' + PORT);
+              } else {
+                res.send({
+                  gold: fixStringBoolean(result.gold)
                 });
               }
-            });
-        }
-      });
-
-    function getSession(sid, callback, errorCallback) {
-      if (sid !== undefined) {
-        request({
-          url: 'https://connect.monstercat.com/v2/self/session',
-          method: 'GET',
-          headers: {
-            'Cookie': 'connect.sid=' + sid
-          }
-        }, function(err, resp, body) {
-          if (err) {
-            errorCallback(err);
-          } else {
-            callback(JSON.parse(body));
-          }
+            }
+          });
         });
-      } else {
-        callback({});
-      }
-    }
 
-    function fixStringBoolean(string) {
-      if (string === "true" || string === true || string === 1 || string === "1") {
-        return true;
-      } else {
-        return false;
+        app.listen(PORT, () => {
+          console.log('Server started on port ' + PORT);
+        });
       }
-    }
+    });
+  }
+});
+
+function getSession(sid, callback, errorCallback) {
+  if (sid !== undefined) {
+    request({
+      url: 'https://connect.monstercat.com/v2/self/session',
+      method: 'GET',
+      headers: {
+        'Cookie': 'connect.sid=' + sid
+      }
+    }, function(err, resp, body) {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(JSON.parse(body));
+      }
+    });
+  } else {
+    callback({});
+  }
+}
+
+function fixStringBoolean(string) {
+  if (string === "true" || string === true || string === 1 || string === "1") {
+    return true;
+  } else {
+    return false;
+  }
+}
