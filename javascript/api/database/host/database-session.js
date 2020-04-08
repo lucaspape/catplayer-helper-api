@@ -39,11 +39,8 @@ mysqlConnection.connect(err => {
         console.log(err);
       } else {
         app.post(APIPREFIX + '/session', (req, res) => {
-          console.log(req.body);
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
-
-          console.log(sid);
 
           const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
 
@@ -54,16 +51,15 @@ mysqlConnection.connect(err => {
               if (result.gold === undefined) {
                 getSession(sid,
                   function(json) {
-                    console.log(json);
                     const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
 
                     mysqlConnection.query(insertSessionQuery, (err, result) => {
                       if (err) {
                         res.send(err);
                       } else {
-                        res.send({
+                        res.send(JSON.stringify({
                           gold: fixStringBoolean(json.user.hasGold)
-                        });
+                        }));
                       }
                     });
                   },
@@ -71,9 +67,9 @@ mysqlConnection.connect(err => {
                     res.send(err);
                   });
               } else {
-                res.send({
+                res.send(JSON.strinify({
                   gold: fixStringBoolean(result.gold)
-                });
+                }));
               }
             }
           });
