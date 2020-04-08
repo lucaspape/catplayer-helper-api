@@ -31,13 +31,12 @@ mysqlConnection.connect(err => {
   } else {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
-
         app.get(APIPREFIX + '/session', (req, res) => {
           const sid = req.query.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
