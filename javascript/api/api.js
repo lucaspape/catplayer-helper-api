@@ -227,7 +227,7 @@ app.listen(PORT, () => {
 function getSession(sid, callback, errorCallback) {
   if (sid !== undefined) {
     request({
-      url: 'http://database-session/session',
+      url: 'http://internal-proxy/session',
       method: 'POST',
       json: true,
       body: {
