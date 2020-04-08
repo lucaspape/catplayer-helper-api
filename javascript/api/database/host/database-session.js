@@ -58,7 +58,7 @@ mysqlConnection.connect(err => {
                         res.send(err);
                       } else {
                         res.send({
-                          gold: fixStringBoolean(json.user.hasGold)
+                          gold: JSON.parse(json.user.hasGold)
                         });
                       }
                     });
@@ -68,7 +68,7 @@ mysqlConnection.connect(err => {
                   });
               } else {
                 res.send({
-                  gold: fixStringBoolean(result.gold)
+                  gold: JSON.parse(result.gold)
                 });
               }
             }
@@ -100,13 +100,5 @@ function getSession(sid, callback, errorCallback) {
     });
   } else {
     callback({});
-  }
-}
-
-function fixStringBoolean(string) {
-  if (string === "true" || string === true || string === 1 || string === "1") {
-    return true;
-  } else {
-    return false;
   }
 }
