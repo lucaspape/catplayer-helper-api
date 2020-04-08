@@ -34,7 +34,7 @@ mysqlConnection.connect(err => {
       var gold = false;
 
       if (req.query.gold !== undefined) {
-        gold = req.query.gold;
+        gold = JSON.parse(req.query.gold);
       }
 
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
@@ -85,7 +85,7 @@ mysqlConnection.connect(err => {
       var gold = false;
 
       if (req.query.gold !== undefined) {
-        gold = req.query.gold;
+        gold = JSON.parse(req.query.gold);
       }
 
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
