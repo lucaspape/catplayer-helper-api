@@ -229,7 +229,9 @@ function getSession(sid, callback, errorCallback) {
     request({
       url: 'http://database-session/session',
       method: 'POST',
-      body: 'sid=' + sid
+      json: {
+        sid: sid
+      }
     }, function(err, resp, body) {
       if (err) {
         errorCallback(err);
