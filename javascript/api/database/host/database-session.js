@@ -105,7 +105,7 @@ function getSession(sid, callback, errorCallback) {
 }
 
 function fixStringBoolean(string) {
-  if (string === "true" || string === true) {
+  if (string === "true" || string === true || string === 1 || string === "1") {
     return true;
   } else {
     return false;
