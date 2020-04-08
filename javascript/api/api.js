@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const request = require('request');
-const fs = require('fs');
-const lowdb = require('lowdb');
 const cookieParser = require('cookie-parser');
 const utils = require('./utils.js');
 
