@@ -51,7 +51,7 @@ function downloadCoverImage(res, albumId, callback) {
             callback(err);
           } else {
             sharp(releaseDir + '/' + coverFileOriginal)
-              .resize(image_width, image_width)
+              .resize(res, res)
               .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
                 if (err) {
                   callback(err);
@@ -66,7 +66,7 @@ function downloadCoverImage(res, albumId, callback) {
     });
   } else if (!fs.existsSync(releaseDir + '/' + coverFile)) {
     sharp(releaseDir + '/' + coverFileOriginal)
-      .resize(image_width, image_width)
+      .resize(res, res)
       .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
         if (err) {
           callback(err);
