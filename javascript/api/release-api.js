@@ -44,7 +44,7 @@ function downloadCoverImage(res, albumId, callback) {
   }
 
   if (!fs.existsSync(releaseDir + '/' + coverFileFull)) {
-    utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', releaseDir + '/' + coverFileOriginal, function() {
+    utils.download('https://connect.monstercat.com/v2/release/' + albumId + '/cover?image_width=2048', releaseDir + '/' + coverFileOriginal, function() {
       sharp(releaseDir + '/' + coverFileOriginal)
         .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
           if (err) {
