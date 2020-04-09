@@ -18,8 +18,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(APIPREFIX + '/static', express.static(__dirname + '/static'));
-
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
   res.send("Hello world!!");
