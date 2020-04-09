@@ -10,15 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "https": "^1.0.0",
-    "lowdb": "^1.0.0",
-    "mysql": "^2.18.1",
-    "node-tesseract-ocr": "^1.0.0",
+    "fs": "0.0.1-security",
     "request": "^2.88.2",
     "screenshot-desktop": "^1.12.0",
-    "sharp": "^0.25.1"
+    "sharp": "^0.25.2"
   }
 }
