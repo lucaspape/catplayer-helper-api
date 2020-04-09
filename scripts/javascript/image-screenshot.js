@@ -1,7 +1,6 @@
 const screenshot = require('screenshot-desktop');
 const fs = require('fs');
 const sharp = require('sharp');
-const tesseract = require('node-tesseract-ocr');
 const request = require('request');
 
 const recognitionConfigFile = 'scripts/configs/config_recognition.json';
