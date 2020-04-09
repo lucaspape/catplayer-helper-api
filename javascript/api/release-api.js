@@ -8,7 +8,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/monstercat/v1/release/';
+const APIPREFIX = '/release/';
 
 const app = express();
 app.use(cors());
