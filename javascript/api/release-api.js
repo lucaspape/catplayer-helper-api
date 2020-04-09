@@ -23,55 +23,65 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
   const image_width = fixResolution(req.query.img_width);
   const releaseId = req.params.releaseId;
 
-  if (!fs.existsSync(__dirname + '/static/release')) {
-    fs.mkdirSync(__dirname + '/static/release');
-  }
+  downloadCoverImage(image_width, releaseId, function(resp) {
+    res.send(resp);
+  });
+});
 
-  const releaseDir = __dirname + '/static/release/' + releaseId
+app.listen(PORT, () => {
+  console.log('Server started on port ' + PORT);
+});
 
-  const coverFileFull = 'cover_2048.jpg'
-  const coverFile = 'cover_' + image_width + '.webp'
+function downloadCoverImage(res, albumId, callback) {
+  const releaseDir = __dirname + '/static/release/' + albumId;
+
+  const coverFileOriginal = 'cover_2048.jpg';
+  const coverFileFull = 'cover_2048.webp';
+  const coverFile = 'cover_' + image_width + '.webp';
 
   if (!fs.existsSync(releaseDir)) {
     fs.mkdirSync(releaseDir);
   }
 
   if (!fs.existsSync(releaseDir + '/' + coverFileFull)) {
-    utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', releaseDir + '/' + coverFileFull, function() {
-      sharp(releaseDir + '/' + coverFileFull)
-        .resize(image_width, image_width)
-        .toFile(releaseDir + '/' + coverFile, (err, info) => {
+    utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', releaseDir + '/' + coverFileOriginal, function() {
+      sharp(releaseDir + '/' + coverFileOriginal)
+        .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
           if (err) {
-            res.send(err);
+            callback(err);
           } else {
-            res.send({
-              filename: coverFile
-            });
+            sharp(releaseDir + '/' + coverFileOriginal)
+              .resize(image_width, image_width)
+              .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback({
+                    filename: coverFile
+                  });
+                }
+              });
           }
         });
     });
   } else if (!fs.existsSync(releaseDir + '/' + coverFile)) {
-    sharp(releaseDir + '/' + coverFileFull)
+    sharp(releaseDir + '/' + coverFileOriginal)
       .resize(image_width, image_width)
-      .toFile(releaseDir + '/' + coverFile, (err, info) => {
+      .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
         if (err) {
-          res.send(err);
+          callback(err);
         } else {
-          res.send({
+          callback({
             filename: coverFile
           });
         }
       });
   } else {
-    res.send({
+    callback({
       filename: coverFile
     });
   }
-});
-
-app.listen(PORT, () => {
-  console.log('Server started on port ' + PORT);
-});
+}
 
 function fixResolution(res) {
   try {
