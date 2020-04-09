@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({
 
 app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
   const image_width = fixResolution(req.query.image_width);
+  console.log(image_width);
   const releaseId = req.params.releaseId;
   const releaseDir = __dirname + '/static/' + releaseId
 
@@ -63,6 +64,7 @@ app.listen(PORT, () => {
 });
 
 function fixResolution(res) {
+  return 512;
   console.log(res);
   if (res === undefined) {
     return 512;
