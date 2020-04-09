@@ -110,7 +110,7 @@ services:
     volumes:
       - static-content:/app
     environment:
-      ENABLE_IPV6:           true
+      ENABLE_IPV6:           'true'
 
 volumes:
   static-content:
