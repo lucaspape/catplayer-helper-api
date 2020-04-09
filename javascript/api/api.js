@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.configure(function() {
-  app.use('/static', express.static(__dirname + '/static'));
+  app.use(APIPREFIX + '/static', express.static(__dirname + '/static'));
 });
 
 app.get(APIPREFIX + '/', (req, res) => {
