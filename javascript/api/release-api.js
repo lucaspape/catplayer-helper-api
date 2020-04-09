@@ -8,7 +8,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/release/';
+const APIPREFIX = '/monstercat/v1/release/';
 
 const app = express();
 app.use(cors());
@@ -29,10 +29,10 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
 
   if (!fs.existsSync(coverFile)) {
     utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', coverFile, function() {
-      coverFile
+      res.sendFile(coverFile);
     });
   } else {
-    fs.sendFile(coverFile);
+    res.sendFile(coverFile);
   }
 });
 
