@@ -22,7 +22,12 @@ app.use(bodyParser.urlencoded({
 app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
   const image_width = fixResolution(req.query.img_width);
   const releaseId = req.params.releaseId;
-  const releaseDir = __dirname + '/static/' + releaseId
+
+  if (!fs.existsSync(__dirname + '/static/release')) {
+    fs.mkdirSync(__dirname + '/static/release');
+  }
+
+  const releaseDir = __dirname + '/static/release' + releaseId
 
   const coverFileFull = 'cover_2048.jpg'
   const coverFile = 'cover_' + image_width + '.jpg'
