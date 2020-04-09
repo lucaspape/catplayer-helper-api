@@ -6,4 +6,3 @@ RUN apt-get install tesseract-ocr -y
 RUN npm install
 COPY . .
 RUN mkdir recognition/
-RUN echo "{}" > static/currentdata.json
