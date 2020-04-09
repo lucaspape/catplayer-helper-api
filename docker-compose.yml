@@ -27,8 +27,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app
-    deploy:
-      replicas:              5
 
   database-catalog:
     build:                   javascript
@@ -37,8 +35,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app
-    deploy:
-      replicas:              5
 
   database-releases:
     build:                   javascript
@@ -47,8 +43,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app
-    deploy:
-      replicas:              5
 
   database-artists:
     build:                   javascript
@@ -57,8 +51,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app
-    deploy:
-      replicas:              5
 
   database-session:
     build:                   javascript
@@ -67,8 +59,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app
-    deploy:
-      replicas:              5
 
   database-local:
     build:                   javascript
