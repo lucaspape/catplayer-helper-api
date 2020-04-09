@@ -25,42 +25,42 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
   const releaseId = req.params.releaseId;
   const releaseDir = __dirname + '/static/' + releaseId
 
-  const coverFileFull = releaseDir + '/cover_2048.jpg'
-  const coverFile = releaseDir + '/cover_' + image_width + '.jpg'
+  const coverFileFull = 'cover_2048.jpg'
+  const coverFile = 'cover_' + image_width + '.jpg'
 
   if (!fs.existsSync(releaseDir)) {
     fs.mkdirSync(releaseDir);
   }
 
-  if (!fs.existsSync(coverFileFull)) {
-    utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', coverFileFull, function() {
-      sharp(coverFileFull)
+  if (!fs.existsSync(releaseDir + '/' + coverFileFull)) {
+    utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', releaseDir + '/' + coverFileFull, function() {
+      sharp(releaseDir + '/' + coverFileFull)
         .resize(image_width, image_width)
-        .toFile(coverFile, (err, info) => {
+        .toFile(releaseDir + '/' + coverFile, (err, info) => {
           if (err) {
             res.send(err);
           } else {
             res.send({
-              filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+              filename: coverFile
             });
           }
         });
     });
-  } else if (!fs.existsSync(coverFile)) {
-    sharp(coverFileFull)
+  } else if (!fs.existsSync(releaseDir + '/' + coverFile)) {
+    sharp(releaseDir + '/' + coverFileFull)
       .resize(image_width, image_width)
-      .toFile(coverFile, (err, info) => {
+      .toFile(releaseDir + '/' + coverFile, (err, info) => {
         if (err) {
           res.send(err);
         } else {
           res.send({
-            filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+            filename: coverFile
           });
         }
       });
   } else {
     res.send({
-      filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+      filename: coverFile
     });
   }
 });
