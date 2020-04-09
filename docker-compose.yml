@@ -4,6 +4,8 @@ services:
     build:                   proxy
     ports:
       - "6000:80"
+    volumes:
+      - ${PWD}/static-content:/app/static
 
   proxy-internal:
     build:                   proxy-internal
