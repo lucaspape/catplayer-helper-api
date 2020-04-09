@@ -27,7 +27,7 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
     fs.mkdirSync(__dirname + '/static/release');
   }
 
-  const releaseDir = __dirname + '/static/release' + releaseId
+  const releaseDir = __dirname + '/static/release/' + releaseId
 
   const coverFileFull = 'cover_2048.jpg'
   const coverFile = 'cover_' + image_width + '.jpg'
