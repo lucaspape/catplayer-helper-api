@@ -21,64 +21,64 @@ services:
      - ${PWD}/mariadb:/var/lib/mysql
 
   web:
-    build:                   javascript
-    command:                 node api/api.js
+    build:                   javascript/api
+    command:                 node api.js
     working_dir:             /app/
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
 
   database-catalog:
-    build:                   javascript
-    command:                 node api/database/host/database-catalog.js
+    build:                   javascript/api
+    command:                 node database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
 
   database-releases:
-    build:                   javascript
-    command:                 node api/database/host/database-releases.js
+    build:                   javascript/api
+    command:                 node database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
 
   database-artists:
-    build:                   javascript
-    command:                 node api/database/host/database-artists.js
+    build:                   javascript/api
+    command:                 node database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
 
   database-session:
-    build:                   javascript
-    command:                 node api/database/host/database-session.js
+    build:                   javascript/api
+    command:                 node database/host/database-session.js
     working_dir:             /app/
     restart:                 always
 
   database-local:
-    build:                   javascript
-    command:                 node api/database/local/database-local.js
+    build:                   javascript/api
+    command:                 node database/local/database-local.js
     working_dir:             /app/
     restart:                 always
 
   database-update-catalog:
-    build:                   javascript
-    command:                 node api/database/update/database-update-catalog.js
+    build:                   javascript/api
+    command:                 node database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
 
   database-update-releases:
-    build:                   javascript
-    command:                 node api/database/update/database-update-releases.js
+    build:                   javascript/api
+    command:                 node database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
 
   database-update-artists:
-    build:                   javascript
-    command:                 node api/database/update/database-update-artists.js
+    build:                   javascript/api
+    command:                 node database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
 
   recg:
-    build:                   javascript
-    command:                 node image/image-recognition.js
+    build:                   javascript/image
+    command:                 node image-recognition.js
     working_dir:             /app/
     restart:                 always
     volumes:
