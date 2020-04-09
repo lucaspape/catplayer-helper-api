@@ -37,7 +37,7 @@ function downloadCoverImage(res, albumId, callback) {
 
   const coverFileOriginal = 'cover_2048.jpg';
   const coverFileFull = 'cover_2048.webp';
-  const coverFile = 'cover_' + image_width + '.webp';
+  const coverFile = 'cover_' + res + '.webp';
 
   if (!fs.existsSync(releaseDir)) {
     fs.mkdirSync(releaseDir);
