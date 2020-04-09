@@ -70,6 +70,7 @@ app.listen(PORT, () => {
 });
 
 function fixResolution(res) {
+  console.log('Input res: ' + res);
   try {
     if (res === undefined) {
       return 512;
