@@ -42,6 +42,26 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
   }
 });
 
+app.get(APIPREFIX + 'release/:releaseId/cover', (req, res) => {
+  const releaseId = req.params.releaseId;
+
+  request({
+      url: 'http://proxy-internal/release/' + releaseId + '/cover',
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
+        res.send(err);
+      } else {
+        try {
+          res.send(body);
+        } catch (e) {
+          res.send(e);
+        }
+      }
+    });
+});
+
 app.get(APIPREFIX + '/catalog', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];

@@ -28,6 +28,14 @@ services:
     volumes:
       - ${PWD}/static-content:/app/static
 
+  web:
+    build:                   javascript/api
+    command:                 node release-api.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - ${PWD}/static-content:/app/static
+
   database-catalog:
     build:                   javascript/api
     command:                 node database/host/database-catalog.js
