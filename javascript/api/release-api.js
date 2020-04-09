@@ -29,10 +29,10 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
 
   if (!fs.existsSync(coverFile)) {
     utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', coverFile, function() {
-      res.sendFile(coverFile);
+      res.redirect('https://api.lucaspape.de/monstercat/v1/static/' + releaseId + '/cover.jpg');
     });
   } else {
-    res.sendFile(coverFile);
+    res.redirect('https://api.lucaspape.de/monstercat/v1/static/' + releaseId + '/cover.jpg');
   }
 });
 
