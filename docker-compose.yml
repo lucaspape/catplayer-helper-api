@@ -1,16 +1,12 @@
-version:                     '2.1'
+version:                     '3'
 services:
   proxy:
     build:                   proxy
     ports:
       - "6000:80"
-    networks:
-      app_net:
 
   proxy-internal:
     build:                   proxy-internal
-    networks:
-      app_net:
 
   mariadb:
     image:                   mariadb:10.5.2
@@ -23,8 +19,6 @@ services:
     restart:                 always
     volumes:
      - ${PWD}/mariadb:/var/lib/mysql
-    networks:
-      app_net:
 
   web:
     build:                   javascript
@@ -33,8 +27,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
+    deploy:
+      replicas:              5
 
   database-catalog:
     build:                   javascript
@@ -43,8 +37,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
+    deploy:
+      replicas:              5
 
   database-releases:
     build:                   javascript
@@ -53,8 +47,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
+    deploy:
+      replicas:              5
 
   database-artists:
     build:                   javascript
@@ -63,8 +57,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
+    deploy:
+      replicas:              5
 
   database-session:
     build:                   javascript
@@ -73,8 +67,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
+    deploy:
+      replicas:              5
 
   database-local:
     build:                   javascript
@@ -83,8 +77,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
 
   database-update-catalog:
     build:                   javascript
@@ -93,8 +85,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
 
   database-update-releases:
     build:                   javascript
@@ -103,8 +93,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
 
   database-update-artists:
     build:                   javascript
@@ -113,8 +101,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
 
   recg:
     build:                   javascript
@@ -123,21 +109,9 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    networks:
-      app_net:
 
 volumes:
   static-content:
     driver_opts:
       type:                  tmpfs
       device:                tmpfs
-
-networks:
-  app_net:
-    enable_ipv6:             true
-    driver:                  bridge
-    ipam:
-      driver:                default
-      config:
-        - subnet:            2001:3200:3200::/64
-          gateway:           2001:3200:3200::1

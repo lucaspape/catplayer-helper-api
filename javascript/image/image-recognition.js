@@ -3,8 +3,8 @@ const request = require('request');
 const fs = require('fs');
 const utils = require('./utils.js');
 
-const titleImageUrl = 'http://[fd86:ea04:1115::2]:4000/api/v1/title';
-const artistImageUrl = 'http://[fd86:ea04:1115::2]:4000/api/v1/artist';
+const titleImageUrl = 'http://10.0.0.2:4000/api/v1/title';
+const artistImageUrl = 'http://10.0.0.2:4000/api/v1/artist';
 
 var minimumConfidence = 35.0;
 
