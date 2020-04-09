@@ -109,6 +109,8 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
+    environment:
+      ENABLE_IPV6:           true
 
 volumes:
   static-content:
