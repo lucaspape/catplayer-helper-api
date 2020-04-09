@@ -70,13 +70,15 @@ app.listen(PORT, () => {
 });
 
 function fixResolution(res) {
-  return 512;
-  console.log(res);
-  if (res === undefined) {
+  try {
+    if (res === undefined) {
+      return 512;
+    } else if (parseInt(res) > 2048) {
+      return 2048;
+    } else {
+      return parseInt(res);
+    }
+  } catch (e) {
     return 512;
-  } else if (parseInt(res) > 2048) {
-    return 2048;
-  } else {
-    return parseInt(res);
   }
 }
