@@ -9,8 +9,8 @@ services:
 
   proxy-internal:
     build:                   proxy-internal
-  networks:
-    app_net:
+    networks:
+      app_net:
 
   mariadb:
     image:                   mariadb:10.5.2
