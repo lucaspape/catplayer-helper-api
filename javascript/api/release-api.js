@@ -40,7 +40,9 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
           if (err) {
             res.send(err);
           } else {
-            res.redirect('https://api.lucaspape.de/monstercat/v1/' + coverFile);
+            res.send({
+              filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+            });
           }
         });
     });
@@ -51,11 +53,15 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.redirect('https://api.lucaspape.de/monstercat/v1/' + coverFile);
+          res.send({
+            filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+          });
         }
       });
   } else {
-    res.redirect('https://api.lucaspape.de/monstercat/v1/' + coverFile);
+    res.send({
+      filename: 'https://api.lucaspape.de/monstercat/v1/' + coverFile
+    });
   }
 });
 

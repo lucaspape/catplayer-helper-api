@@ -55,7 +55,8 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
         res.send(err);
       } else {
         try {
-          res.send(resp);
+          console.log(body);
+          res.redirect(body.filename);
         } catch (e) {
           res.send(e);
         }
