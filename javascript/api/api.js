@@ -55,7 +55,7 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
         res.send(err);
       } else {
         try {
-          res.send(body);
+          res.send(resp);
         } catch (e) {
           res.send(e);
         }
