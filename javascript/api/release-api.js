@@ -35,3 +35,7 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
     fs.sendFile(coverFile);
   }
 });
+
+app.listen(PORT, () => {
+  console.log('Server started on port ' + PORT);
+});
