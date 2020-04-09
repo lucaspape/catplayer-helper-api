@@ -26,71 +26,55 @@ services:
     working_dir:             /app/
     restart:                 always
     volumes:
-      - ${PWD}/static-content:/app
+      - ${PWD}/static-content:/app/static
 
   database-catalog:
     build:                   javascript
     command:                 node api/database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-releases:
     build:                   javascript
     command:                 node api/database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-artists:
     build:                   javascript
     command:                 node api/database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-session:
     build:                   javascript
     command:                 node api/database/host/database-session.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-local:
     build:                   javascript
     command:                 node api/database/local/database-local.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-update-catalog:
     build:                   javascript
     command:                 node api/database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-update-releases:
     build:                   javascript
     command:                 node api/database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   database-update-artists:
     build:                   javascript
     command:                 node api/database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app
 
   recg:
     build:                   javascript
@@ -98,4 +82,4 @@ services:
     working_dir:             /app/
     restart:                 always
     volumes:
-      - ${PWD}/static-content:/app
+      - ${PWD}/static-content:/app/static

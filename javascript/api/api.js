@@ -25,7 +25,7 @@ app.get(APIPREFIX + '/', (req, res) => {
 
 app.get(APIPREFIX + '/playlist/public', (req, res) => {
   try {
-    res.send(JSON.parse(fs.readFileSync('public-playlists.json')));
+    res.send(JSON.parse(fs.readFileSync('static/public-playlists.json')));
   } catch (e) {
     res.send(e);
   }
@@ -34,7 +34,7 @@ app.get(APIPREFIX + '/playlist/public', (req, res) => {
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
   try {
-    res.send(JSON.parse(fs.readFileSync('currentdata.json')));
+    res.send(JSON.parse(fs.readFileSync('static/liveinfo.json')));
   } catch (e) {
     res.send(e);
   }

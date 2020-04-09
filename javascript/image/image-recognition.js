@@ -6,6 +6,8 @@ const utils = require('./utils.js');
 const titleImageUrl = 'http://10.0.0.2:4000/api/v1/title';
 const artistImageUrl = 'http://10.0.0.2:4000/api/v1/artist';
 
+const outputFile = 'static/liveinfo.json'
+
 var minimumConfidence = 35.0;
 
 var config = {};
@@ -41,7 +43,7 @@ function recognize() {
           if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
             if (config.override[i].finalObject !== undefined) {
               console.log('Override! Using custom object.');
-              fs.writeFileSync('currentdata.json', JSON.stringify(config.override[i].finalObject));
+              fs.writeFileSync(outputFile, JSON.stringify(config.override[i].finalObject));
               return;
             }
           }
@@ -162,7 +164,7 @@ function searchTitle(tempArtist, tempTitle) {
 
       if (finalObject !== undefined) {
         if (finalObject.totalConfidence > minimumConfidence) {
-          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+          fs.writeFileSync(outputFile, JSON.stringify(finalObject));
 
           console.log('Done!');
 
@@ -191,7 +193,7 @@ function searchArtist(tempTitle, tempArtist) {
 
       if (finalObject !== undefined) {
         if (finalObject.totalConfidence > minimumConfidence) {
-          fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+          fs.writeFileSync(outputFile, JSON.stringify(finalObject));
 
           console.log('Done!');
 
@@ -240,7 +242,7 @@ function advancedSearch(tempTitle, tempArtist) {
 
           if (finalObject !== undefined) {
             if (finalObject.totalConfidence > minimumConfidence) {
-              fs.writeFileSync('currentdata.json', JSON.stringify(finalObject));
+              fs.writeFileSync(outputFile, JSON.stringify(finalObject));
 
               console.log('Done!');
 
