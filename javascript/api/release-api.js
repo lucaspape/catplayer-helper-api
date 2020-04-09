@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
+  const image_width = req.query.image_width;
   const releaseId = req.params.releaseId;
   const releaseDir = __dirname + '/static/' + releaseId
   const coverFile = releaseDir + "/cover.jpg"
@@ -29,10 +30,10 @@ app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
 
   if (!fs.existsSync(coverFile)) {
     utils.download('https://connect.monstercat.com/v2/release/' + releaseId + '/cover?image_width=2048', coverFile, function() {
-      res.redirect('https://api.lucaspape.de/monstercat/v1/static/' + releaseId + '/cover.jpg');
+      res.redirect('https://api.lucaspape.de/monstercat/v1/' + coverFile);
     });
   } else {
-    res.redirect('https://api.lucaspape.de/monstercat/v1/static/' + releaseId + '/cover.jpg');
+    res.redirect('https://api.lucaspape.de/monstercat/v1/' + coverFile);
   }
 });
 
