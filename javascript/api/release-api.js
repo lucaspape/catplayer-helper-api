@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
 
 app.get(APIPREFIX + ':releaseId/cover', (req, res) => {
   const releaseId = req.params.releaseId;
-  const releaseDir = 'static/' + releaseId
+  const releaseDir = __dirname + '/static/' + releaseId
   const coverFile = releaseDir + "/cover.jpg"
 
   if (!fs.existsSync(releaseDir)) {
