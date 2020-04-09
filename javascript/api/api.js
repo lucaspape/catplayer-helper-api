@@ -44,7 +44,7 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 
 app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
   const releaseId = req.params.releaseId;
-  const image_width = req.query.imgage_width;
+  const image_width = req.query.image_width;
 
   request({
       url: 'http://proxy-internal/release/' + releaseId + '/cover?img_width=' + image_width,
