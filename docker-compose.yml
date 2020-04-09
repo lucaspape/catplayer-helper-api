@@ -28,7 +28,7 @@ services:
     volumes:
       - ${PWD}/static-content:/app/static
 
-  web:
+  release-api:
     build:                   javascript/api
     command:                 node release-api.js
     working_dir:             /app/
