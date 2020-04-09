@@ -1,4 +1,4 @@
-version:                     '3'
+version:                     '2.1'
 services:
   proxy:
     build:                   proxy
@@ -27,8 +27,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    deploy:
-      replicas:              5
 
   database-catalog:
     build:                   javascript
@@ -37,8 +35,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    deploy:
-      replicas:              5
 
   database-releases:
     build:                   javascript
@@ -47,8 +43,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    deploy:
-      replicas:              5
 
   database-artists:
     build:                   javascript
@@ -57,8 +51,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    deploy:
-      replicas:              5
 
   database-session:
     build:                   javascript
@@ -67,8 +59,6 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    deploy:
-      replicas:              5
 
   database-local:
     build:                   javascript
@@ -109,11 +99,21 @@ services:
     restart:                 always
     volumes:
       - static-content:/app
-    environment:
-      ENABLE_IPV6:           'true'
+    networks:
+      app_net:
 
 volumes:
   static-content:
     driver_opts:
       type:                  tmpfs
       device:                tmpfs
+
+networks:
+  app_net:
+    enable_ipv6:             true
+    driver:                  bridge
+    ipam:
+      driver:                default
+      config:
+        - subnet:            2001:3200:3200::/64
+          gateway:           2001:3200:3200::1
