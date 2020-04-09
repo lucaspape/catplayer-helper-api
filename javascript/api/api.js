@@ -44,13 +44,10 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 
 app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
   const releaseId = req.params.releaseId;
-  const image_width = req.query.image_width;
-
-  console.log('Input: ' + image_width);
-  console.log(req.query);
+  const image_width = req.query.img_width;
 
   request({
-      url: 'http://proxy-internal/release/' + releaseId + '/cover?image_width=' + image_width,
+      url: 'http://proxy-internal/release/' + releaseId + '/cover?img_width=' + image_width,
       method: 'GET'
     },
     function(err, resp, body) {
