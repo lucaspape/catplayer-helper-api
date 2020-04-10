@@ -12,10 +12,10 @@ var minimumConfidence = 35.0;
 
 var config = {};
 
-const configFile = 'image/configs/config_recognition.json';
+const configFile = 'configs/config_recognition.json';
 
 function loadConfig(callback) {
-  utils.download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/' + configFile,
+  utils.download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/' + configFile,
     configFile,
     function() {
       if (fs.existsSync(configFile)) {
