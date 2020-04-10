@@ -50,6 +50,12 @@ Search for artists
 
 Arguments: term,skip,limit
 
+## GET [/release/$releaseId/cover](https://api.lucaspape.de/monstercat/v1/release/)
+
+Returns cover image of album (WEBP)
+
+Arguments: image_width
+
 ## GET [/liveinfo](https://api.lucaspape.de/monstercat/v1/liveinfo)
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
