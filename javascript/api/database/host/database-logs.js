@@ -53,6 +53,24 @@ mysqlConnection.connect(err => {
             }
           });
         });
+
+        app.get(APIPREFIX + '/log', (req, res) => {
+          const url = req.body.url;
+          const userAgent = req.body.userAgent;
+          const timestamp = Math.floor(new Date() / 1000);
+
+          const insertLogQuery = 'SELECT timestamp,url,userAgent FROM `' + dbName + '`.`log`;'
+
+          mysqlConnection.query(insertLogQuery, (err, result) => {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send({
+                logs: result
+              });
+            }
+          });
+        });
       }
     });
   }

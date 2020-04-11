@@ -31,6 +31,19 @@ app.get(APIPREFIX + '/', (req, res) => {
   res.send("Hello world!!");
 });
 
+app.get(APIPREFIX + '/stats', (req, res) => {
+  request({
+    url: 'http://proxy-internal/log',
+    method: 'GET'
+  }, function(err, resp, body) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(body);
+    }
+  });
+});
+
 app.get(APIPREFIX + '/playlist/public', (req, res) => {
   try {
     res.send(JSON.parse(fs.readFileSync('static/public-playlists.json')));
