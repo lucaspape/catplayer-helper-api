@@ -62,7 +62,7 @@ mysqlConnection.connect(err => {
                       trackIds += ',' + json.tracks[i].id;
                     }
 
-                    var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + relaseId + '","' + mcID + '");';
+                    var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mcID + '");';
 
                     mysqlConnection.query(insertIdsQuery, (err, result) => {
                       if (err) {
