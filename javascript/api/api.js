@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next) {
-  log(req.originalUrl, JSON.stringify(req.useragent), function() {
+  log(req.originalUrl, req.useragent.source, function() {
     next();
   });
 });
