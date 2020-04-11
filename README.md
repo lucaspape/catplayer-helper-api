@@ -64,6 +64,8 @@ Returns cover image of album (WEBP)
 
 Arguments: image_width
 
+Example: [https://api.lucaspape.de/monstercat/v1/release/28f65a57-a555-4c86-aa17-6f4c08e90f18/cover?image_width=512](https://api.lucaspape.de/monstercat/v1/release/28f65a57-a555-4c86-aa17-6f4c08e90f18/cover?image_width=512)
+
 ## GET [/liveinfo](https://api.lucaspape.de/monstercat/v1/liveinfo)
 
 Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
