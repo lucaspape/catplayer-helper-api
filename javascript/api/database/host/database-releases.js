@@ -100,6 +100,8 @@ mysqlConnection.connect(err => {
 function addMissingKeys(release) {
   if (release.links.length > 0) {
     release.links = release.links.split(',');
+  } else {
+    release.links = [];
   }
 
   return release;

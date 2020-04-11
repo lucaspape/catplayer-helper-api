@@ -101,10 +101,14 @@ mysqlConnection.connect(err => {
 function addMissingKeys(artist) {
   if (artist.years.length > 0) {
     artist.years = artist.years.split(',');
+  } else {
+    artist.years = [];
   }
 
   if (artist.links.length > 0) {
     artist.links = artist.links.split(',');
+  } else {
+    artist.links = [];
   }
 
   return artist;
