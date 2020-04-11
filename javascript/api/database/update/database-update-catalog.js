@@ -68,18 +68,17 @@ function initCatalog(mysqlConnection, callback) {
   browseTracks(-1, 0,
     function(json) {
       console.log('Received catalog data...');
-      const total = json.total;
+      const trackArray = json.results.reverse();
 
       var i = 0;
 
       var sqlCallback = function() {
-        if (i < json.results.length) {
+        if (i < trackArray.length) {
           if (i % 100 === 0) {
             console.log((i / total) * 100 + '%');
           }
 
-          var track = json.results[i];
-          track.sortId = i;
+          var track = trackArray[i];
 
           track.search = track.artistsTitle;
           track.search += track.genrePrimary;
