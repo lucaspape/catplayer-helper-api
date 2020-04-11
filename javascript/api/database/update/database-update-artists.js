@@ -77,23 +77,7 @@ function initArtists(mysqlConnection, callback) {
             console.log((i / artistsArray.length) * 100 + '%');
           }
 
-          var artist = artistsArray[i];
-
-          artist.search = artist.id;
-          artist.search += artist.uri;
-          artist.search += artist.name;
-          artist.search += artist.about;
-          artist.search += artist.bookingDetails;
-          artist.search += artist.managementDetails;
-          artist.search += artist.links;
-
-          const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '");';
-
-          mysqlConnection.query(insertArtistQuery, (err, results) => {
-            if (err) {
-              console.log(err);
-            }
-
+          addToDB(artistsArray[i], mysqlConnection, function() {
             i++;
             sqlCallback();
           });
@@ -108,6 +92,26 @@ function initArtists(mysqlConnection, callback) {
       console.log(err);
     });
 
+}
+
+function addToDB(artist, mysqlConnection, callback) {
+  artist.search = artist.id;
+  artist.search += artist.uri;
+  artist.search += artist.name;
+  artist.search += artist.about;
+  artist.search += artist.bookingDetails;
+  artist.search += artist.managementDetails;
+  artist.search += artist.links;
+
+  const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '");';
+
+  mysqlConnection.query(insertArtistQuery, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+
+    callback();
+  });
 }
 
 function browseArtists(limit, skip, callback, errorCallback) {
