@@ -103,24 +103,28 @@ function addToDB(artist, mysqlConnection, callback) {
   artist.search += artist.managementDetails;
   artist.search += artist.links;
 
-  var years = artist.years[0];
+  var years = '';
 
-  if (years !== undefined) {
-    for (var k = 1; k < artist.years.length; k++) {
-      years += ',' + artist.years[k];
+  if (artist.years !== undefined) {
+    var years = artist.years[0];
+
+    if (years !== undefined) {
+      for (var k = 1; k < artist.years.length; k++) {
+        years += ',' + artist.years[k];
+      }
+    } else {
+      years = '';
     }
-  } else {
-    years = '';
-  }
 
-  var links = artist.links[0];
+    var links = artist.links[0];
 
-  if (links !== undefined) {
-    for (var k = 1; k < artist.links.length; k++) {
-      links += ',' + artist.links[k];
+    if (links !== undefined) {
+      for (var k = 1; k < artist.links.length; k++) {
+        links += ',' + artist.links[k];
+      }
+    } else {
+      links = '';
     }
-  } else {
-    links = '';
   }
 
   const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ON DUPLICATE KEY UPDATE id="' + artist.id + '";';
