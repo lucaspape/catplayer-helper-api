@@ -104,7 +104,7 @@ mysqlConnection.connect(err => {
 
 function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(releaseId, function(release) {
-    getTracks(trackIds, gold, function(tracks) {
+    getTracks(trackIds, gold, release, function(tracks) {
       callback({
         release: release[0],
         tracks: tracks
@@ -117,7 +117,7 @@ function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   });
 }
 
-function getTracks(trackIdArray, gold, callback, errorCallback) {
+function getTracks(trackIdArray, releaseObject, gold, callback, errorCallback) {
   var trackArray = [];
   var i = 0;
 
@@ -130,7 +130,7 @@ function getTracks(trackIdArray, gold, callback, errorCallback) {
         if (err) {
           errorCallback(err);
         } else {
-          addMissingTrackKeys(result[0], gold, mysqlConnection, function(track) {
+          addMissingTrackKeys(result[0], gold, releaseObject, mysqlConnection, function(track) {
             trackArray[i] = track;
             i++;
             sqlCallback();
@@ -159,7 +159,7 @@ function getRelease(releaseId, callback, errorCallback) {
   });
 }
 
-function addMissingTrackKeys(track, gold, mysqlConnection, callback, errorCallback) {
+function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
   if (track !== undefined) {
     if (track.inEarlyAccess === 'true') {
       track.downloadable = false;
@@ -176,6 +176,21 @@ function addMissingTrackKeys(track, gold, mysqlConnection, callback, errorCallba
       for (var i = 0; i < tags.length; i++) {
         track.tags[i] = tags[i];
       }
+    }
+
+    if (releaseObject !== undefined) {
+      track.release = {
+        artistsTitle: releaseObject.artistsTitle,
+        catalogId: releaseObject.catalogId,
+        id: releaseObject.id,
+        releaseDate: releaseObject.releaseDate,
+        title: releaseObject.title,
+        type: releaseObject.type
+      }
+
+      track.release = releaseObject;
+    } else {
+      track.release = {};
     }
 
     if (track.artists !== undefined) {
