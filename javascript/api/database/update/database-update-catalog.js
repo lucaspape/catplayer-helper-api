@@ -78,42 +78,9 @@ function initCatalog(mysqlConnection, callback) {
             console.log((i / trackArray.length) * 100 + '%');
           }
 
-          var track = trackArray[i];
-
-          track.search = track.artistsTitle;
-          track.search += track.genrePrimary;
-          track.search += track.genreSecondary;
-          track.search += track.id;
-          track.search += track.release.artistsTitle;
-          track.search += track.release.catalogId;
-          track.search += track.release.id;
-          track.search += track.title;
-          track.search += track.version;
-
-          for (var k = 0; k < track.tags.length; k++) {
-            track.search += track.tags[k];
-          }
-
-          for (var k = 0; k < track.artists.length; k++) {
-            track.search += track.artists[k].name;
-            artistIds += track.artists[k].id + ',';
-          }
-
-          var artistIds = track.artists[0].id;
-
-          for (var k = 1; k < track.artists.length; k++) {
-            artistIds += ',' + track.artists[k].id;
-          }
-
-          const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '");'
-
-          mysqlConnection.query(insertTrackQuery, (err, results) => {
-            if (err) {
-              console.log(err);
-            }
-
-            sqlCallback();
+          addToDB(trackArray[i], mysqlConnection, function() {
             i++;
+            sqlCallback();
           });
         } else {
           callback();
@@ -126,6 +93,43 @@ function initCatalog(mysqlConnection, callback) {
     function(err) {
       console.log(err);
     });
+}
+
+function addToDB(track, mysqlConnection, callback) {
+  track.search = track.artistsTitle;
+  track.search += track.genrePrimary;
+  track.search += track.genreSecondary;
+  track.search += track.id;
+  track.search += track.release.artistsTitle;
+  track.search += track.release.catalogId;
+  track.search += track.release.id;
+  track.search += track.title;
+  track.search += track.version;
+
+  for (var k = 0; k < track.tags.length; k++) {
+    track.search += track.tags[k];
+  }
+
+  for (var k = 0; k < track.artists.length; k++) {
+    track.search += track.artists[k].name;
+    artistIds += track.artists[k].id + ',';
+  }
+
+  var artistIds = track.artists[0].id;
+
+  for (var k = 1; k < track.artists.length; k++) {
+    artistIds += ',' + track.artists[k].id;
+  }
+
+  const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '");'
+
+  mysqlConnection.query(insertTrackQuery, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+
+    callback()
+  });
 }
 
 function browseTracks(limit, skip, callback, errorCallback) {
