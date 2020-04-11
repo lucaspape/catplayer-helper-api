@@ -27,7 +27,7 @@ app.get(APIPREFIX + '/playlist/public', (req, res) => {
   try {
     res.send(JSON.parse(fs.readFileSync('static/public-playlists.json')));
   } catch (e) {
-    res.send(e);
+    res.status(500).send(e);
   }
 });
 
@@ -36,7 +36,7 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
   try {
     res.send(JSON.parse(fs.readFileSync('static/liveinfo.json')));
   } catch (e) {
-    res.send(e);
+    res.status(500).send(e);
   }
 });
 
@@ -58,18 +58,18 @@ app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
         method: 'GET'
       }, function(err, resp, body) {
         if (err) {
-          res.send(err);
+          res.status(500).send(err);
         } else {
           try {
             res.send(JSON.parse(body));
           } catch (e) {
-            console.log(e);
+            res.status(500).send(e);
           }
         }
       });
     },
     function(err) {
-      res.send(err);
+      res.status(500).send(err);
     });
 });
 
@@ -83,12 +83,12 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
     },
     function(err, resp, body) {
       if (err) {
-        res.send(err);
+        res.status(500).send(err);
       } else {
         try {
           res.redirect("https://api.lucaspape.de/monstercat/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
         } catch (e) {
-          res.send(e);
+          res.status(500).send(e);
         }
       }
     });
@@ -111,18 +111,18 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
           method: 'GET'
         }, function(err, resp, body) {
           if (err) {
-            res.send(err);
+            res.status(500).send(err);
           } else {
             try {
               res.send(JSON.parse(body));
             } catch (e) {
-              console.log(e);
+              res.status(500).send(e);
             }
           }
         });
       },
       function(err) {
-        res.send(err);
+        res.status(500).send(err);
       });
   });
 });
@@ -145,18 +145,18 @@ app.get(APIPREFIX + '/releases', (req, res) => {
           },
           function(err, resp, body) {
             if (err) {
-              res.send(err);
+              res.status(500).send(err);
             } else {
               try {
                 res.send(JSON.parse(body));
               } catch (e) {
-                res.send(e);
+                res.status(500).send(e);
               }
             }
           });
       },
       function(err) {
-        res.send(err);
+        res.status(500).send(err);
       });
   });
 });
@@ -169,12 +169,12 @@ app.get(APIPREFIX + '/artists', (req, res) => {
       },
       function(err, resp, body) {
         if (err) {
-          res.send(err);
+          res.status(500).send(err);
         } else {
           try {
             res.send(JSON.parse(body));
           } catch (e) {
-            res.send(e);
+            res.status(500).send(e);
           }
         }
       });
@@ -201,18 +201,18 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
           },
           function(err, resp, body) {
             if (err) {
-              res.send(err);
+              res.status(500).send(err);
             } else {
               try {
                 res.send(JSON.parse(body));
               } catch (e) {
-                res.send(e);
+                res.status(500).send(e);
               }
             }
           });
       },
       function(err) {
-        res.send(err);
+        res.status(500).send(err);
       });
   });
 });
@@ -237,18 +237,18 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
           },
           function(err, resp, body) {
             if (err) {
-              res.send(err);
+              res.status(500).send(err);
             } else {
               try {
                 res.send(JSON.parse(body));
               } catch (e) {
-                res.send(e);
+                res.status(500).send(e);
               }
             }
           });
       },
       function(err) {
-        res.send(err);
+        res.status(500).send(err);
       });
   });
 });
@@ -263,12 +263,12 @@ app.get(APIPREFIX + '/artists/search', (req, res) => {
       },
       function(err, resp, body) {
         if (err) {
-          res.send(err);
+          res.status(500).send(err);
         } else {
           try {
             res.send(JSON.parse(body));
           } catch (e) {
-            res.send(e);
+            res.status(500).send(e);
           }
         }
       });
