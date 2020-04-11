@@ -45,7 +45,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createReleasesTableQuery = 'CREATE OR REPLACE TABLE `' + dbName + '`.`releases` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT);'
+  const createReleasesTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`releases` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT);'
   mysqlConnection.query(createReleasesTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -104,7 +104,7 @@ function addToDB(release, mysqlConnection, callback) {
   release.search += release.version;
   release.search += release.id;
 
-  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + JSON.stringify(release.links).replace('"', "''") + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
+  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + JSON.stringify(release.links).replace('"', "''") + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id="' + release.id + '";';
 
   mysqlConnection.query(insertReleaseQuery, (err, results) => {
     if (err) {

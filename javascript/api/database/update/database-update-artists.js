@@ -44,7 +44,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createArtistsTableQuery = 'CREATE OR REPLACE TABLE `' + dbName + '`.`artists` ( `sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT);';
+  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`artists` ( `sortId` INT AUTO_INCREMENT PRIMARY KEY, `id` TEXT, `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT);';
   mysqlConnection.query(createArtistsTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -103,7 +103,7 @@ function addToDB(artist, mysqlConnection, callback) {
   artist.search += artist.managementDetails;
   artist.search += artist.links;
 
-  const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '");';
+  const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + JSON.stringify(artist.links).replace('"', "''") + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + JSON.stringify(artist.years).replace('"', "''") + '","' + artist.search + '") ON DUPLICATE KEY UPDATE id="' + artist.id + '";';
 
   mysqlConnection.query(insertArtistQuery, (err, results) => {
     if (err) {
