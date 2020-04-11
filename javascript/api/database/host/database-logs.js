@@ -60,7 +60,7 @@ mysqlConnection.connect(err => {
           const userAgent = req.body.userAgent;
           const timestamp = Math.floor(new Date() / 1000);
 
-          const insertLogQuery = 'SELECT timestamp,url,userAgent FROM `' + dbName + '`.`log`;'
+          const insertLogQuery = 'SELECT timestamp,url,userAgent FROM `' + dbName + '`.`log` ORDER BY id DESC LIMIT 50;'
 
           mysqlConnection.query(insertLogQuery, (err, result) => {
             if (err) {
