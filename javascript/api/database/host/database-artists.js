@@ -39,6 +39,10 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
+            for (var i = 0; i < result.length; i++) {
+              result[i] = addMissingKeys(result[i]);
+            }
+
             var returnObject = {
               results: result
             };
@@ -72,8 +76,14 @@ mysqlConnection.connect(err => {
 
             artistsArray = artistsArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
 
+            artistsArray = artistsArray.slice(skip, skip + limit);
+
+            for (var i = 0; i < artistsArray.length; i++) {
+              artistsArray[i] = addMissingKeys(artistsArray[i]);
+            }
+
             const returnObject = {
-              results: artistsArray.slice(skip, skip + limit)
+              results: artistsArray
             }
 
             res.send(returnObject);
@@ -87,3 +97,9 @@ mysqlConnection.connect(err => {
     });
   }
 });
+
+function addMissingKeys(artist) {
+  artist.years = artist.years.split(',');
+  artist.links = artist.links.split(',');
+  return artist;
+}
