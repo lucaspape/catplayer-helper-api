@@ -44,7 +44,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`artists` ( `sortId` INT AUTO_INCREMENT, `id` VARCHAR(36), `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT, PRIMARY KEY(`id`));';
+  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`artists` ( UNIQUE KEY(`sortId`) INT AUTO_INCREMENT, `id` VARCHAR(36), `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT, PRIMARY KEY(`id`));';
   mysqlConnection.query(createArtistsTableQuery, (err, result) => {
     if (err) {
       console.log(err);
