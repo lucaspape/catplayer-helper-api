@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const request = require('request');
 const utils = require('./utils.js');
 
 const PORT = 80;
