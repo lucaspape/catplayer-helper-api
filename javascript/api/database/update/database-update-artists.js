@@ -105,7 +105,7 @@ function addToDB(artist, mysqlConnection, callback) {
 
   var years = '';
 
-  if (artist.years !== undefined) {
+  if (Array.isArray(artist.years)) {
     var years = artist.years[0];
 
     if (years !== undefined) {
