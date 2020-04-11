@@ -38,6 +38,10 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
+            for (var i = 0; i < result.length; i++) {
+              result[i] = addMissingKeys(result[i]);
+            }
+
             var returnObject = {
               results: result
             };
@@ -71,8 +75,14 @@ mysqlConnection.connect(err => {
 
             releaseArray = releaseArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
 
+            releaseArray = releaseArray.slice(skip, skip + limit);
+
+            for (var i = 0; i < releaseArray.length; i++) {
+              releaseArray[i] = addMissingKeys(releaseArray[i]);
+            }
+
             const returnObject = {
-              results: releaseArray.slice(skip, skip + limit)
+              results: releaseArray
             }
 
             res.send(returnObject);
@@ -86,3 +96,8 @@ mysqlConnection.connect(err => {
     });
   }
 });
+
+function addMissingKeys(release) {
+  release.links = release.links.split(',');
+  return release;
+}
