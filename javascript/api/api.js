@@ -21,9 +21,13 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next) {
-  const url = req.originalUrl;
+  var url = req.originalUrl;
 
-  log(url.substring(0, url.indexOf('term=')), req.useragent.source, function() {
+  if (url.includes('term=')) {
+    url = url.substring(0, url.indexOf('term='))
+  }
+
+  log(url, req.useragent.source, function() {
     next();
   });
 });
