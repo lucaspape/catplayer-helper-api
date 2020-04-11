@@ -47,6 +47,7 @@ mysqlConnection.connect(err => {
 
           mysqlConnection.query(insertLogQuery, (err, result) => {
             if (err) {
+              console.log(err);
               res.send(err);
             } else {
               res.send({});
