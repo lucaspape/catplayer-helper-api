@@ -109,15 +109,7 @@ mysqlConnection.connect(err => {
 
             trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
 
-            console.log('length:' + trackArray.length);
-
-            if (trackArray.length > (skip + limit)) {
-              trackArray = trackArray.slice(skip, skip + limit)
-            } else if (trackArray.length > skip) {
-              trackArray = trackArray.slice(skip, trackArray.length)
-            } else {
-              trackArray = [];
-            }
+            trackArray = trackArray.slice(skip, skip + limit);
 
             var i = 0;
 
