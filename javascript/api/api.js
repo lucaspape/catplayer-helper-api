@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next) {
-  log(req.originalUrl, req.useragent, function() {
+  log(req.originalUrl, JSON.stringify(req.useragent), function() {
     next();
   });
 });
@@ -39,7 +39,11 @@ app.get(APIPREFIX + '/stats', (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.send(body);
+      try {
+        res.send(JSON.parse(body));
+      } catch (e) {
+        res.status(500).send(e);
+      }
     }
   });
 });
