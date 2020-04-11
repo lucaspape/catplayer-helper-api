@@ -68,7 +68,7 @@ mysqlConnection.connect(err => {
                       if (err) {
                         res.send(err);
                       } else {
-                        getFromDB(releaseId, trackIds, gold, function(responseObject) {
+                        getFromDB(releaseId, trackIds.split(','), gold, function(responseObject) {
                           res.send(responseObject);
                         }, function(err) {
                           res.send(err);
