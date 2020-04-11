@@ -55,8 +55,7 @@ mysqlConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    trackArray[i].release = releaseResult[0];
-                    addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
+                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function(track) {
                       trackArray[i] = track;
                       i++;
                       releasesQueryFinished();
@@ -120,8 +119,7 @@ mysqlConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    trackArray[i].release = releaseResult[0];
-                    addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
+                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function(track) {
                       trackArray[i] = track;
                       i++;
                       releasesQueryFinished();
@@ -150,48 +148,3 @@ mysqlConnection.connect(err => {
     });
   }
 });
-
-function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
-  if (track.inEarlyAccess === 'true') {
-    track.downloadable = false;
-    track.streamable = gold;
-  } else {
-    track.streamable = true;
-    track.downloadable = gold;
-  }
-
-  const tags = track.tags.split(',');
-  track.tags = [];
-
-  for (var i = 0; i < tags.length; i++) {
-    track.tags[i] = tags[i];
-  }
-
-  var artistArray = [];
-  const artists = track.artists.split(',');
-
-  var i = 0;
-
-  var sqlCallback = function() {
-    if (i < artists.length) {
-      const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
-
-      mysqlConnection.query(artistQuery, (err, artistResults) => {
-        if (err) {
-          errorCallback(err);
-        } else {
-          artistArray[i] = artistResults[0];
-
-          i++;
-          sqlCallback();
-        }
-      });
-
-    } else {
-      track.artists = artistArray;
-      callback(track);
-    }
-  };
-
-  sqlCallback();
-}

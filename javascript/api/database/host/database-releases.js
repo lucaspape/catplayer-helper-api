@@ -39,7 +39,7 @@ mysqlConnection.connect(err => {
             res.send(err);
           } else {
             for (var i = 0; i < result.length; i++) {
-              result[i] = addMissingKeys(result[i]);
+              result[i] = utils.addMissingReleaseKeys(result[i]);
             }
 
             var returnObject = {
@@ -78,7 +78,7 @@ mysqlConnection.connect(err => {
             releaseArray = releaseArray.slice(skip, skip + limit);
 
             for (var i = 0; i < releaseArray.length; i++) {
-              releaseArray[i] = addMissingKeys(releaseArray[i]);
+              releaseArray[i] = utils.addMissingReleaseKeys(releaseArray[i]);
             }
 
             const returnObject = {
@@ -96,13 +96,3 @@ mysqlConnection.connect(err => {
     });
   }
 });
-
-function addMissingKeys(release) {
-  if (release.links.length > 0) {
-    release.links = release.links.split(',');
-  } else {
-    release.links = [];
-  }
-
-  return release;
-}

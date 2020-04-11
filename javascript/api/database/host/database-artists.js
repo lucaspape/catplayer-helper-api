@@ -40,7 +40,7 @@ mysqlConnection.connect(err => {
             res.send(err);
           } else {
             for (var i = 0; i < result.length; i++) {
-              result[i] = addMissingKeys(result[i]);
+              result[i] = utils.addMissingArtistKeys(result[i]);
             }
 
             var returnObject = {
@@ -79,7 +79,7 @@ mysqlConnection.connect(err => {
             artistsArray = artistsArray.slice(skip, skip + limit);
 
             for (var i = 0; i < artistsArray.length; i++) {
-              artistsArray[i] = addMissingKeys(artistsArray[i]);
+              artistsArray[i] = utils.addMissingArtistKeys(artistsArray[i]);
             }
 
             const returnObject = {
@@ -97,19 +97,3 @@ mysqlConnection.connect(err => {
     });
   }
 });
-
-function addMissingKeys(artist) {
-  if (artist.years.length > 0) {
-    artist.years = artist.years.split(',');
-  } else {
-    artist.years = [];
-  }
-
-  if (artist.links.length > 0) {
-    artist.links = artist.links.split(',');
-  } else {
-    artist.links = [];
-  }
-
-  return artist;
-}
