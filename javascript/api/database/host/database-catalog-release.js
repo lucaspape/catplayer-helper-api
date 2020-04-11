@@ -130,8 +130,8 @@ function getTracks(trackIdArray, gold, callback, errorCallback) {
         if (err) {
           errorCallback(err);
         } else {
-          addMissingTrackKeys(result, gold, mysqlConnection, function(track) {
-            trackArray[i] = track[0];
+          addMissingTrackKeys(result[0], gold, mysqlConnection, function(track) {
+            trackArray[i] = track;
             i++;
             sqlCallback();
           }, function(err) {
