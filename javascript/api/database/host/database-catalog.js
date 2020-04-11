@@ -107,7 +107,11 @@ mysqlConnection.connect(err => {
               trackArray[i].similarity = utils.similarity(trackArray[i].search, searchString);
             }
 
-            trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+            trackArray.sort(function(a, b) {
+              if (a.similarity < b.similarity) return -1;
+              if (a.similarity > b.similarity) return 1;
+              return 0;
+            });
 
             trackArray = trackArray.slice(skip, skip + limit);
 
