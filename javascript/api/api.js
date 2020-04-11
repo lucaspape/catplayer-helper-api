@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
+const useragent = require('express-useragent');
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -14,9 +15,16 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(useragent.express());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+app.use(function(req, res, next) {
+  log(req.originalUrl, req.useragent, function() {
+    next();
+  });
+});
 
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
@@ -30,7 +38,6 @@ app.get(APIPREFIX + '/playlist/public', (req, res) => {
     res.status(500).send(e);
   }
 });
-
 
 app.get(APIPREFIX + '/liveinfo', (req, res) => {
   try {
@@ -298,4 +305,18 @@ function getSession(sid, callback, errorCallback) {
   } else {
     callback({});
   }
+}
+
+function log(url, userAgent, callback) {
+  request({
+    url: 'http://proxy-internal/log',
+    method: 'POST',
+    json: true,
+    body: {
+      url: url,
+      userAgent: userAgent
+    }
+  }, function(err, resp, body) {
+    callback(body);
+  });
 }
