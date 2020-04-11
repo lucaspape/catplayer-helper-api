@@ -126,7 +126,7 @@ function getTracks(trackIdArray, gold, callback, errorCallback) {
       const catalogId = trackIdArray[i];
       const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
 
-      mysqlConnection.query(getIdsQuery, (err, result) => {
+      mysqlConnection.query(catalogQuery, (err, result) => {
         if (err) {
           errorCallback(err);
         } else {
