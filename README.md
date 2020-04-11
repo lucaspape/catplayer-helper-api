@@ -26,6 +26,14 @@ Search for catalog songs
 
 Arguments: term,skip,limit
 
+## GET [/catalog/release/$mcID](https://api.lucaspape.de/monstercat/v1/catalog/release)
+
+Returns album with tracks
+
+Arguments: mcID
+
+Example: [https://api.lucaspape.de/monstercat/v1/catalog/release/MCIV5](https://api.lucaspape.de/monstercat/v1/catalog/release/MCIV5)
+
 ## GET [/releases](https://api.lucaspape.de/monstercat/v1/releases)
 
 Returns 50 lates releases (albums)
