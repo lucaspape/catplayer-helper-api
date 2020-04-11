@@ -68,7 +68,7 @@ mysqlConnection.connect(err => {
                       if (err) {
                         res.send(err);
                       } else {
-                        getFromDB(releaseId, trackIds, function(responseObject) {
+                        getFromDB(releaseId, trackIds, gold, function(responseObject) {
                           res.send(responseObject);
                         }, function(err) {
                           res.send(err);
@@ -83,7 +83,7 @@ mysqlConnection.connect(err => {
                 var releaseId = result[0].releaseId;
                 var trackIds = result[0].trackIds.split(',');
 
-                getFromDB(releaseId, trackIds, function(responseObject) {
+                getFromDB(releaseId, trackIds, gold, function(responseObject) {
                   res.send(responseObject);
                 }, function(err) {
                   res.send(err);
@@ -102,7 +102,7 @@ mysqlConnection.connect(err => {
   }
 });
 
-function getFromDB(releaseId, trackIds, callback, errorCallback) {
+function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(releaseId, function(release) {
     getTracks(trackIds, gold, function(tracks) {
       callback({
