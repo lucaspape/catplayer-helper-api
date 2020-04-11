@@ -106,7 +106,7 @@ function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(releaseId, function(release) {
     getTracks(trackIds, gold, release, function(tracks) {
       callback({
-        release: release[0],
+        release: release,
         tracks: tracks
       })
     }, function(err) {
@@ -154,7 +154,7 @@ function getRelease(releaseId, callback, errorCallback) {
     if (err) {
       errorCallback(err);
     } else {
-      callback(result);
+      callback(result[0]);
     }
   });
 }
