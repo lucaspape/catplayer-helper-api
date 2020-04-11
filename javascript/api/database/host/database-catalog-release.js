@@ -154,9 +154,19 @@ function getRelease(releaseId, callback, errorCallback) {
     if (err) {
       errorCallback(err);
     } else {
-      callback(result[0]);
+      callback(addMissingReleaseKeys(result[0]));
     }
   });
+}
+
+function addMissingReleaseKeys(release) {
+  if (release.links.length > 0) {
+    release.links = release.links.split(',');
+  } else {
+    release.links = [];
+  }
+
+  return release;
 }
 
 function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
