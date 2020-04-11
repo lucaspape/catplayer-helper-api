@@ -34,14 +34,14 @@ mysqlConnection.connect(err => {
       var gold = false;
 
       if (req.query.gold !== undefined) {
-        gold = req.query.gold;
+        gold = JSON.parse(req.query.gold);
       }
 
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId DESC ' + ';';
 
         mysqlConnection.query(catalogSearchQuery, (err, result) => {
           if (err) {
@@ -57,7 +57,13 @@ mysqlConnection.connect(err => {
               trackArray[i].similarity = utils.similarity(trackArray[i].search, searchString);
             }
 
-            trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+            trackArray.sort(function(a, b) {
+              if (a.similarity < b.similarity) return -1;
+              if (a.similarity > b.similarity) return 1;
+              return 0;
+            });
+
+            trackArray = trackArray.slice(skip, skip + limit);
 
             var i = 0;
 
@@ -69,9 +75,7 @@ mysqlConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    console.log(releaseResult);
-                    trackArray[i].release = releaseResult[0];
-                    addMissingKeys(trackArray[i], gold, mysqlConnection, function(track) {
+                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function(track) {
                       trackArray[i] = track;
                       i++;
                       releasesQueryFinished();
@@ -100,51 +104,3 @@ mysqlConnection.connect(err => {
     });
   }
 });
-
-function addMissingKeys(track, gold, mysqlConnection, callback, errorCallback) {
-  if (track.inEarlyAccess) {
-    track.downloadable = false;
-
-    if (gold === true) {
-      track.streamable = true;
-    } else {
-      track.streamable = false;
-    }
-  } else {
-    track.streamable = true;
-
-    if (gold === true) {
-      track.downloadable = true;
-    } else {
-      track.downloadable = false;
-    }
-  }
-
-  var artistArray = [];
-  const artists = track.artists.split(',');
-
-  var i = 0;
-
-  var sqlCallback = function() {
-    if (i < artists.length) {
-      const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
-
-      mysqlConnection.query(artistQuery, (err, artistResults) => {
-        if (err) {
-          errorCallback(err);
-        } else {
-          artistArray[i] = artistResults[0];
-
-          i++;
-          sqlCallback();
-        }
-      });
-
-    } else {
-      track.artists = artistArray;
-      callback(track);
-    }
-  };
-
-  sqlCallback();
-}

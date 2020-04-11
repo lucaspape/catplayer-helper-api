@@ -73,7 +73,11 @@ mysqlConnection.connect(err => {
               releaseArray[i].similarity = utils.similarity(releaseArray[i].search, searchString);
             }
 
-            releaseArray = releaseArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
+            releaseArray.sort(function(a, b) {
+              if (a.similarity < b.similarity) return -1;
+              if (a.similarity > b.similarity) return 1;
+              return 0;
+            });
 
             releaseArray = releaseArray.slice(skip, skip + limit);
 
