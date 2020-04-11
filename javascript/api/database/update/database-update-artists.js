@@ -67,18 +67,17 @@ function initArtists(mysqlConnection, callback) {
   browseArtists(-1, 0,
     function(json) {
       console.log('Received artists data...');
-      const total = json.total;
+      const artistsArray = json.results.reverse();
 
       var i = 0;
 
       var sqlCallback = function() {
-        if (i < json.results.length) {
+        if (i < artistsArray.length) {
           if (i % 100 === 0) {
-            console.log((i / total) * 100 + '%');
+            console.log((i / artistsArray.length) * 100 + '%');
           }
 
-          var artist = json.results[i];
-          artist.sortId = i;
+          var artist = artistsArray[i];
 
           artist.search = artist.id;
           artist.search += artist.uri;

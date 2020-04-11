@@ -68,18 +68,17 @@ function initReleases(mysqlConnection, callback) {
   browseReleases(-1, 0,
     function(json) {
       console.log('Received release data...');
-      const total = json.total;
+      const releasesArray = json.results.reverse();
 
       var i = 0;
 
       var sqlCallback = function() {
-        if (i < json.results.length) {
+        if (i < releasesArray.length) {
           if (i % 100 === 0) {
-            console.log((i / total) * 100 + '%');
+            console.log((i / releasesArray.length) * 100 + '%');
           }
 
-          var release = json.results[i];
-          release.sortId = i;
+          var release = releasesArray[i];
 
           release.search = release.artistsTitle;
           release.search += release.catalogId;
