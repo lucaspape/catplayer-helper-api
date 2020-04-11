@@ -99,7 +99,13 @@ mysqlConnection.connect(err => {
 });
 
 function addMissingKeys(artist) {
-  artist.years = artist.years.split(',');
-  artist.links = artist.links.split(',');
+  if (artist.years.length > 0) {
+    artist.years = artist.years.split(',');
+  }
+
+  if (artist.links.length > 0) {
+    artist.links = artist.links.split(',');
+  }
+
   return artist;
 }

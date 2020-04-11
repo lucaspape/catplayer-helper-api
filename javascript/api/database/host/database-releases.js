@@ -98,6 +98,9 @@ mysqlConnection.connect(err => {
 });
 
 function addMissingKeys(release) {
-  release.links = release.links.split(',');
+  if (release.links.length > 0) {
+    release.links = release.links.split(',');
+  }
+
   return release;
 }
