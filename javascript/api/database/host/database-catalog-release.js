@@ -117,7 +117,7 @@ function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   });
 }
 
-function getTracks(trackIdArray, releaseObject, gold, callback, errorCallback) {
+function getTracks(trackIdArray, gold, releaseObject, callback, errorCallback) {
   var trackArray = [];
   var i = 0;
 
@@ -186,9 +186,8 @@ function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callba
         releaseDate: releaseObject.releaseDate,
         title: releaseObject.title,
         type: releaseObject.type
-      }
+      };
 
-      track.release = releaseObject;
     } else {
       track.release = {};
     }
