@@ -75,7 +75,7 @@ function initCatalog(mysqlConnection, callback) {
       var sqlCallback = function() {
         if (i < trackArray.length) {
           if (i % 100 === 0) {
-            console.log((i / trackArray.length.total) * 100 + '%');
+            console.log((i / trackArray.length) * 100 + '%');
           }
 
           var track = trackArray[i];
