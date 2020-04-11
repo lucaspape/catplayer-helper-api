@@ -168,40 +168,46 @@ function addMissingTrackKeys(track, gold, mysqlConnection, callback, errorCallba
     track.downloadable = gold;
   }
 
-  const tags = track.tags.split(',');
-  track.tags = [];
+  if (track.tags !== undefined) {
+    const tags = track.tags.split(',');
+    track.tags = [];
 
-  for (var i = 0; i < tags.length; i++) {
-    track.tags[i] = tags[i];
+    for (var i = 0; i < tags.length; i++) {
+      track.tags[i] = tags[i];
+    }
   }
 
-  var artistArray = [];
-  const artists = track.artists.split(',');
+  if (track.artists !== undefined) {
+    var artistArray = [];
+    const artists = track.artists.split(',');
 
-  var i = 0;
+    var i = 0;
 
-  var sqlCallback = function() {
-    if (i < artists.length) {
-      const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
+    var sqlCallback = function() {
+      if (i < artists.length) {
+        const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
 
-      mysqlConnection.query(artistQuery, (err, artistResults) => {
-        if (err) {
-          errorCallback(err);
-        } else {
-          artistArray[i] = artistResults[0];
+        mysqlConnection.query(artistQuery, (err, artistResults) => {
+          if (err) {
+            errorCallback(err);
+          } else {
+            artistArray[i] = artistResults[0];
 
-          i++;
-          sqlCallback();
-        }
-      });
+            i++;
+            sqlCallback();
+          }
+        });
 
-    } else {
-      track.artists = artistArray;
-      callback(track);
-    }
-  };
+      } else {
+        track.artists = artistArray;
+        callback(track);
+      }
+    };
 
-  sqlCallback();
+    sqlCallback();
+  } else {
+    callback(track);
+  }
 }
 
 function getCatalogRelease(mcID, callback, errorCallback) {
