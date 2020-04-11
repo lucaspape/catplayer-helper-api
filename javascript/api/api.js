@@ -40,6 +40,39 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
   }
 });
 
+app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
+  const mcID = req.params.mcID;
+
+  const sid = req.cookies['connect.sid'];
+
+  getSession(sid,
+    function(json) {
+      var hasGold = false;
+
+      if (json.gold !== undefined) {
+        hasGold = json.gold;
+      }
+
+      request({
+        url: 'http://proxy-internal/catalog/release/' + mcID + '?gold=' + hasGold,
+        method: 'GET'
+      }, function(err, resp, body) {
+        if (err) {
+          res.send(err);
+        } else {
+          try {
+            res.send(JSON.parse(body));
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      });
+    },
+    function(err) {
+      res.send(err);
+    });
+});
+
 app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
   const releaseId = req.params.releaseId;
   const image_width = req.query.image_width;
