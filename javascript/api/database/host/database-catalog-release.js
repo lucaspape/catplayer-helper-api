@@ -102,7 +102,7 @@ mysqlConnection.connect(err => {
   }
 });
 
-function getFromDB(relaseId, trackIds, callback, errorCallback) {
+function getFromDB(releaseId, trackIds, callback, errorCallback) {
   getRelease(releaseId, function(release) {
     getTracks(trackIds, gold, function(tracks) {
       callback({
