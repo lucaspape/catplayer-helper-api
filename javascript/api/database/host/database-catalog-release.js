@@ -106,7 +106,7 @@ function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(releaseId, function(release) {
     getTracks(trackIds, gold, function(tracks) {
       callback({
-        release: release,
+        release: release[0],
         tracks: tracks
       })
     }, function(err) {
@@ -131,7 +131,7 @@ function getTracks(trackIdArray, gold, callback, errorCallback) {
           errorCallback(err);
         } else {
           addMissingTrackKeys(result, gold, mysqlConnection, function(track) {
-            trackArray[i] = track;
+            trackArray[i] = track[0];
             i++;
             sqlCallback();
           }, function(err) {

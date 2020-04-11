@@ -38,7 +38,7 @@ mysqlConnection.connect(err => {
       }
 
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
-        const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY catalog.sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
           if (err) {
