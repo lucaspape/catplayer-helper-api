@@ -75,8 +75,8 @@ mysqlConnection.connect(err => {
             }
 
             artistsArray.sort(function(a, b)) {
-              if (a.similarity < b.similarity) return -1;
-              if (a.similarity > b.similarity) return 1;
+              if (a.similarity < b.similarity) return 1;
+              if (a.similarity > b.similarity) return -1;
               return 0;
             }
 

@@ -132,8 +132,8 @@ function orderBySimilarity(artistText, titleText, trackArray, includeVersionConf
   }
 
   return similarityArray.sort(function(a, b) {
-    if (a.totalConfidence < b.totalConfidence) return -1;
-    if (a.totalConfidence > b.totalConfidence) return 1;
+    if (a.totalConfidence < b.totalConfidence) return 1;
+    if (a.totalConfidence > b.totalConfidence) return -1;
     return 0;
   });
 }

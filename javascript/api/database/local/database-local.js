@@ -58,8 +58,8 @@ mysqlConnection.connect(err => {
             }
 
             trackArray.sort(function(a, b) {
-              if (a.similarity < b.similarity) return -1;
-              if (a.similarity > b.similarity) return 1;
+              if (a.similarity < b.similarity) return 1;
+              if (a.similarity > b.similarity) return -1;
               return 0;
             });
 
