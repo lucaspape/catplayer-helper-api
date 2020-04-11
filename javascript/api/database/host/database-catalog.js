@@ -109,6 +109,14 @@ mysqlConnection.connect(err => {
 
             trackArray = trackArray.sort((a, b) => (a.similarity - b.similarity)).reverse();
 
+            if (trackArray.length > (skip + limit)) {
+              trackArray = trackArray.slice(skip, skip + limit)
+            } else if (trackArray.length > skip) {
+              trackArray = trackArray.slice(skip, trackArray.length)
+            } else {
+              trackArray = [];
+            }
+
             var i = 0;
 
             var releasesQueryFinished = function() {
@@ -130,7 +138,7 @@ mysqlConnection.connect(err => {
                 });
               } else {
                 var returnObject = {
-                  results: trackArray.slice(skip, skip + limit)
+                  results: trackArray
                 };
 
                 res.send(returnObject);
