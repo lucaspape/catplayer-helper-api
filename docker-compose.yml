@@ -24,7 +24,7 @@ services:
 
   web:
     build:                   javascript/api
-    command:                 node api.js
+    command:                 node api/api.js
     working_dir:             /app/
     restart:                 always
     volumes:
@@ -32,7 +32,15 @@ services:
 
   release-api:
     build:                   javascript/api
-    command:                 node release-api.js
+    command:                 node api/release-api.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - ${PWD}/static-content:/app/static
+
+  related-api:
+    build:                   javascript/api
+    command:                 node api/related-api.js
     working_dir:             /app/
     restart:                 always
     volumes:

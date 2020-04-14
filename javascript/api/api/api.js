@@ -70,6 +70,25 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
   }
 });
 
+app.post(APIPREFIX + '/related', (req, res) => {
+  request({
+    url: 'http://proxy-internal/related',
+    method: 'POST',
+    json: true,
+    body: req.body
+  }, function(err, resp, body) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      try {
+        res.send(JSON.parse(body));
+      } catch (e) {
+        res.status(500).send(e);
+      }
+    }
+  });
+});
+
 app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
   const mcID = req.params.mcID;
 
