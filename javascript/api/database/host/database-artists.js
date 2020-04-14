@@ -78,11 +78,11 @@ mysqlConnection.connect(err => {
               artistsArray[i].similarity = utils.similarity(artistsArray[i].search.replace(artistsArray[i].id, ''), searchString);
             }
 
-            artistsArray.sort(function(a, b)) {
+            artistsArray.sort(function(a, b) {
               if (a.similarity < b.similarity) return 1;
               if (a.similarity > b.similarity) return -1;
               return 0;
-            }
+            });
 
             artistsArray = artistsArray.slice(skip, skip + limit);
 
