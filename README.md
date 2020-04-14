@@ -70,6 +70,8 @@ Example: [https://api.lucaspape.de/monstercat/v1/release/28f65a57-a555-4c86-aa17
 
 Returns trackIds that are related to several given trackIds
 
+Arguments: skip,limit
+
 Example:
 
 POST:
