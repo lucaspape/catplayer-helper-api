@@ -83,11 +83,12 @@ mysqlConnection.connect(err => {
 });
 
 function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) {
-  console.log(trackArray[i]);
-  console.log(trackArray[i].id);
   var trackSearch = [];
 
   var i = 0;
+
+  console.log(trackArray[i]);
+  console.log(trackArray[i].id);
 
   var sqlCallback = function() {
     if (i < trackArray.length) {
