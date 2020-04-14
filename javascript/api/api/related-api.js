@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const utils = require('./utils.js');
 
@@ -10,6 +11,10 @@ const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 const mysqlConnection = mysql.createConnection({
   host: 'mariadb',
@@ -26,8 +31,7 @@ mysqlConnection.connect(err => {
     app.post(APIPREFIX + '/', (req, res) => {
       console.log(req.body);
 
-      const body = JSON.parse(req.body);
-      const tracks = body.tracks;
+      const tracks = req.body;
 
       getSearchFromIds(tracks, mysqlConnection, function(search) {
         const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog`'
