@@ -34,7 +34,13 @@ mysqlConnection.connect(err => {
       const tracks = req.body;
 
       getSearchFromIds(tracks, mysqlConnection, function(search) {
-        const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog`;'
+        var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
+
+        for (var i = 1; i < search.length; i++) {
+          catalogSongQuery += 'OR id != "' + search[i].id + '" ';
+        }
+
+        catalogSongQuery += ';';
 
         mysqlConnection.query(catalogSongQuery, (err, result) => {
           if (err) {
@@ -61,8 +67,6 @@ mysqlConnection.connect(err => {
                 };
               }
             }
-
-            console.log(arrayWithSimiliarity);
 
             //sort
             arrayWithSimiliarity.sort(function(a, b) {
