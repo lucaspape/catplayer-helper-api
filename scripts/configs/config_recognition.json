@@ -8,7 +8,7 @@
     },
     {
       "day": "tuesday",
-      "time": 18,
+      "time": 17,
       "length": 2,
       "title": "Listening Party",
       "config_override": "config_youtube.json"
