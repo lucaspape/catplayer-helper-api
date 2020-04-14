@@ -35,13 +35,17 @@ mysqlConnection.connect(err => {
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const artistsQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years FROM `' + dbName + '`.`artists` ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
 
+        console.log(artistsQuery);
+
         mysqlConnection.query(artistsQuery, (err, result) => {
           if (err) {
             res.send(err);
           } else {
+            console.log(result);
             for (var i = 0; i < result.length; i++) {
               result[i] = utils.addMissingArtistKeys(result[i]);
             }
+            console.log(result);
 
             var returnObject = {
               results: result
