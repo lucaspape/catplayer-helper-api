@@ -30,7 +30,7 @@ mysqlConnection.connect(err => {
   } else {
     app.post(APIPREFIX + '/', (req, res) => {
       console.log(req.body.tracks);
-      getSearchFromIds(req.body.tracks, mysqlConnection, function(search) {
+      getSearchFromIds(JSON.parse(req.body.tracks), mysqlConnection, function(search) {
         const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog`'
 
         mysqlConnection.query(catalogSongQuery, (err, result) => {
@@ -85,7 +85,7 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
   var i = 0;
 
   var sqlCallback = function() {
-    if (i < idArray.length) {
+    if (i < trackArray.length) {
       const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id=' + trackArray[i].id;
 
       mysqlConnection.query(catalogSongQuery, (err, result) => {
