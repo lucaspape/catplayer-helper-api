@@ -51,13 +51,16 @@ mysqlConnection.connect(err => {
               for (var k = 0; k < result.length; k++) {
                 //remove id from search
                 var secondSearch = result[k].search.replace(result[k].id, '');
-                result[k].similarity = similarity(firstSearch, secondSearch);
+                var similarity = similarity(firstSearch, secondSearch);
 
-                if (arrayWithSimiliarity[k] === undefined) {
-                  arrayWithSimiliarity[k] = result[k];
-                } else {
-                  arrayWithSimiliarity[k].similarity += result[k].similarity;
+                if (arrayWithSimiliarity[k] !== undefined) {
+                  similarity += arrayWithSimiliarity[k].similarity;
                 }
+
+                arrayWithSimiliarity[k] = {
+                  id: result[k].id,
+                  similarity: similarity
+                };
               }
             }
 
