@@ -38,6 +38,7 @@ mysqlConnection.connect(err => {
 
         mysqlConnection.query(catalogSongQuery, (err, result) => {
           if (err) {
+            console.log(err);
             res.send(err);
           } else {
             var arrayWithSimiliarity = [];
@@ -73,6 +74,7 @@ mysqlConnection.connect(err => {
           }
         });
       }, function(err) {
+        console.log(err);
         res.send(err);
       })
     });
