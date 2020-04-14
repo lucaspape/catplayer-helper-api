@@ -85,8 +85,7 @@ function getSearchFromIds(idArray, mysqlConnection, callback, errorCallback) {
 
   var sqlCallback = function() {
     if (i < idArray.length) {
-      const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id='
-      idArray[i];
+      const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id=' + idArray[i];
 
       mysqlConnection.query(catalogSongQuery, (err, result) => {
         if (err) {
