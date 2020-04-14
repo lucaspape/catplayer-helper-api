@@ -80,9 +80,8 @@ app.post(APIPREFIX + '/related', (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      console.log(body);
       try {
-        res.send(JSON.parse(body));
+        res.send(body);
       } catch (e) {
         res.status(500).send(e);
       }
