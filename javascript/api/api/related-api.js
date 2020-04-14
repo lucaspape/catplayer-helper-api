@@ -42,6 +42,8 @@ mysqlConnection.connect(err => {
 
         catalogSongQuery += ';';
 
+        console.log(catalogSongQuery);
+
         mysqlConnection.query(catalogSongQuery, (err, result) => {
           if (err) {
             res.send(err);
