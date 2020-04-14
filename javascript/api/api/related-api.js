@@ -38,7 +38,6 @@ mysqlConnection.connect(err => {
 
         mysqlConnection.query(catalogSongQuery, (err, result) => {
           if (err) {
-            console.log(err);
             res.send(err);
           } else {
             var arrayWithSimiliarity = [];
@@ -46,7 +45,6 @@ mysqlConnection.connect(err => {
             for (var i = 0; i < search.length; i++) {
               //remove id from search
               var firstSearch = search[i].search.replace(search[i].id, '');
-              console.log(firstSearch);
 
               for (var k = 0; k < result.length; k++) {
                 //remove id from search
@@ -64,6 +62,8 @@ mysqlConnection.connect(err => {
               }
             }
 
+            console.log(arrayWithSimiliarity);
+
             //sort
             arrayWithSimiliarity.sort(function(a, b) {
               if (a.similarity < b.similarity) return 1;
@@ -72,7 +72,7 @@ mysqlConnection.connect(err => {
             });
 
             res.send({
-              results: arrayWithSimiliarity.slice(0, 50)
+              results: arrayWithSimiliarity
             });
           }
         });
@@ -93,9 +93,6 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
 
   var i = 0;
 
-  console.log(trackArray[i]);
-  console.log(trackArray[i].id);
-
   var sqlCallback = function() {
     if (i < trackArray.length) {
       const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id="' + trackArray[i].id + '";';
@@ -111,7 +108,6 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
       });
     } else {
       //DONE
-      console.log('Searcharray: ' + trackSearch);
       callback(trackSearch);
     }
   }
