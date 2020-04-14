@@ -71,7 +71,7 @@ mysqlConnection.connect(err => {
             }
 
             for (var i = 0; i < artistsArray.length; i++) {
-              artistsArray[i].similarity = utils.similarity(artistsArray[i].search, searchString);
+              artistsArray[i].similarity = utils.similarity(artistsArray[i].search.replace(artistsArray[i].id, ''), searchString);
             }
 
             artistsArray.sort(function(a, b)) {

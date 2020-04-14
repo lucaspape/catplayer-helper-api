@@ -70,7 +70,7 @@ mysqlConnection.connect(err => {
             }
 
             for (var i = 0; i < releaseArray.length; i++) {
-              releaseArray[i].similarity = utils.similarity(releaseArray[i].search, searchString);
+              releaseArray[i].similarity = utils.similarity(releaseArray[i].search.replace(releaseArray[i].id, ''), searchString);
             }
 
             releaseArray.sort(function(a, b) {

@@ -104,7 +104,7 @@ mysqlConnection.connect(err => {
             }
 
             for (var i = 0; i < trackArray.length; i++) {
-              trackArray[i].similarity = utils.similarity(trackArray[i].search, searchString);
+              trackArray[i].similarity = utils.similarity(trackArray[i].search.replace(trackArray[i].id, ''), searchString);
             }
 
             trackArray.sort(function(a, b) {
