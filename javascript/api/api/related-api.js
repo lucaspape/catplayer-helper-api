@@ -45,6 +45,7 @@ mysqlConnection.connect(err => {
             for (var i = 0; i < search.length; i++) {
               //remove id from search
               var firstSearch = search[i].search.replace(search[i].id, '');
+              console.log(firstSearch);
 
               for (var k = 0; k < result.length; k++) {
                 //remove id from search
@@ -105,6 +106,7 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
       });
     } else {
       //DONE
+      console.log('Searcharray: ' + trackSearch);
       callback(trackSearch);
     }
   }
