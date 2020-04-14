@@ -28,7 +28,7 @@ services:
     working_dir:             /app/
     restart:                 always
     volumes:
-      - ${PWD}/static-content:/app/static
+      - ${PWD}/static-content:/app/api/static
 
   release-api:
     build:                   javascript/api
@@ -36,15 +36,13 @@ services:
     working_dir:             /app/
     restart:                 always
     volumes:
-      - ${PWD}/static-content:/app/static
+      - ${PWD}/static-content:/app/api/static
 
   related-api:
     build:                   javascript/api
     command:                 node api/related-api.js
     working_dir:             /app/
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app/static
 
   database-logs:
     build:                   javascript/api
