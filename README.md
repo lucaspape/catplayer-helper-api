@@ -66,6 +66,47 @@ Arguments: image_width
 
 Example: [https://api.lucaspape.de/monstercat/v1/release/28f65a57-a555-4c86-aa17-6f4c08e90f18/cover?image_width=512](https://api.lucaspape.de/monstercat/v1/release/28f65a57-a555-4c86-aa17-6f4c08e90f18/cover?image_width=512)
 
+## POST [/related](https://api.lucaspape.de/monstercat/v1/related)
+
+Returns trackIds that are related to several given trackIds
+
+Example:
+
+POST:
+```
+[
+   {
+      "id":"f2105bab-0be5-473f-aa9d-db628855c5b1"
+   },
+   {
+      "id":"4d268a5c-fedd-4b56-a8e4-72da4da4b017"
+   }
+]
+```
+
+Returns:
+```
+{
+    "results": [
+        {
+            "id": "d0420179-2bba-48a7-af6f-f48f6dfec1ec",
+            "similarity": 65.66194482905527
+        },
+        {
+            "id": "cc6533ea-5f20-480e-8324-345d84634725",
+            "similarity": 65.45731889693127
+        },
+        {
+            "id": "8eb23916-c0c3-41d4-a81a-63436f6d6d09",
+            "similarity": 65.43040019142191
+        },
+        ...
+    ]
+}
+```
+
+Use [/catalog/search](https://api.lucaspape.de/monstercat/v1/catalog/search) to get more info about song (use id as term)
+
 ## GET [/stats](https://api.lucaspape.de/monstercat/v1/stats)
 
 Returns logs
