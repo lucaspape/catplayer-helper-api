@@ -37,7 +37,7 @@ mysqlConnection.connect(err => {
         var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
 
         for (var i = 1; i < search.length; i++) {
-          catalogSongQuery += 'OR id != "' + search[i].id + '" ';
+          catalogSongQuery += 'AND id != "' + search[i].id + '" ';
         }
 
         catalogSongQuery += ';';
