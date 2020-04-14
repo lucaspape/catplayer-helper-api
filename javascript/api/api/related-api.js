@@ -29,8 +29,12 @@ mysqlConnection.connect(err => {
     return err;
   } else {
     app.post(APIPREFIX + '/', (req, res) => {
-      console.log(req.body.tracks);
-      getSearchFromIds(JSON.parse(req.body.tracks), mysqlConnection, function(search) {
+      console.log(req.body);
+
+      const body = req.body;
+      const tracks = body.tracks;
+
+      getSearchFromIds(tracks, mysqlConnection, function(search) {
         const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog`'
 
         mysqlConnection.query(catalogSongQuery, (err, result) => {

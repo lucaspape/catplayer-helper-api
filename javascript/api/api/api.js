@@ -75,7 +75,7 @@ app.post(APIPREFIX + '/related', (req, res) => {
     url: 'http://proxy-internal/related',
     method: 'POST',
     json: true,
-    body: req.body
+    body: JSON.stringify(req.body);
   }, function(err, resp, body) {
     if (err) {
       res.status(500).send(err);
