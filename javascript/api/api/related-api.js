@@ -36,7 +36,7 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
-            var arrayWithSimiliarity = array();
+            var arrayWithSimiliarity = [];
 
             for (var i = 0; i < search.length; i++) {
               //remove id from search
@@ -79,7 +79,7 @@ mysqlConnection.connect(err => {
 });
 
 function getSearchFromIds(idArray, mysqlConnection, callback, errorCallback) {
-  var trackSearch = array();
+  var trackSearch = [];
 
   var i = 0;
 
