@@ -109,6 +109,30 @@ Returns:
 }
 ```
 
+Warning: this request can take several seconds, please use the exclude array to exclude specific trackIds from the response to keep the track array as short as possible!
+Example:
+
+```
+{
+   "tracks":[
+      {
+         "id":"f819d830-21ba-4279-9fb1-ba41279b2d8e"
+      },
+      {
+         "id":"700e3e14-ebc8-4c29-b484-15c30d0c37be"
+      }
+   ],
+   "exclude":[
+      {
+         "id":"97216932-b75c-4620-85e8-1e1a170edf3b"  
+      },
+      {
+         "id":"c291d14a-2706-47c7-9b9b-c7fabd5f4524"
+      }
+   ]
+}
+```
+
 Use [/catalog/search](https://api.lucaspape.de/monstercat/v1/catalog/search) to get more info about song (use id as term)
 
 ## GET [/stats](https://api.lucaspape.de/monstercat/v1/stats)
