@@ -31,6 +31,8 @@ mysqlConnection.connect(err => {
     app.post(APIPREFIX + '/', (req, res) => {
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const tracks = req.body;
+        console.log(tracks);
+        console.log(req.body);
 
         getSearchFromIds(tracks, mysqlConnection, function(search) {
           var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
