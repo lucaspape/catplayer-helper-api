@@ -76,14 +76,16 @@ Example:
 
 POST:
 ```
-[
-   {
-      "id":"f2105bab-0be5-473f-aa9d-db628855c5b1"
-   },
-   {
-      "id":"4d268a5c-fedd-4b56-a8e4-72da4da4b017"
-   }
-]
+{
+  "tracks": [
+    {
+        "id":"f2105bab-0be5-473f-aa9d-db628855c5b1"
+    },
+    {
+        "id":"4d268a5c-fedd-4b56-a8e4-72da4da4b017"
+    }
+  ]
+}
 ```
 
 Returns:
