@@ -1,7 +1,7 @@
 {
   "override": [{
       "day": "monday",
-      "time": 19,
+      "time": 17,
       "length": 2,
       "title": "Listening Party",
       "config_override": "config_youtube.json"
@@ -22,7 +22,7 @@
     },
     {
       "day": "friday",
-      "time": 7,
+      "time": 17,
       "length": 2,
       "title": "Listening Party",
       "config_override": "config_youtube.json"

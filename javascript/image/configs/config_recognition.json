@@ -1,11 +1,11 @@
 {
   "override": [{
       "day": "tuesday",
-      "time": 20,
+      "time": 22,
       "length": 1,
-      "title": "MCTV Instinct Vol 5",
+      "title": "MCTV",
       "finalObject": {
-        "title": "MCTV Instinct Vol 5",
+        "title": "MCTV",
         "version": "",
         "artist": "Monstercat",
         "coverUrl": "https://connect.monstercat.com/v2/release/11fd5ef5-aa5b-47e6-bfb0-cc500caa7de3/cover"
@@ -37,11 +37,11 @@
     },
     {
       "day": "thursday",
-      "time": 20,
+      "time": 22,
       "length": 1,
-      "title": "MCTV - Vicetone",
+      "title": "MCTV",
       "finalObject": {
-        "title": "MCTV - Vicetone",
+        "title": "MCTV",
         "version": "",
         "artist": "",
         "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
