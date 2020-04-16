@@ -30,6 +30,7 @@ mysqlConnection.connect(err => {
   } else {
     app.post(APIPREFIX + '/', (req, res) => {
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
+        const skipMonstercatTracks = (req.query.skipMC === 'true');
         const tracks = req.body.tracks;
         const exclude = req.body.exclude;
 
@@ -44,6 +45,10 @@ mysqlConnection.connect(err => {
             for (var i = 0; i < exclude.length; i++) {
               catalogSongQuery += 'AND id != "' + exclude[i].id + '" ';
             }
+          }
+
+          if (skipMonstercatTracks) {
+            catalogSongQuery += 'AND artistsTitle NOT LIKE "Monstercat" ';
           }
 
           catalogSongQuery += ';';

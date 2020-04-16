@@ -71,9 +71,11 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 });
 
 app.post(APIPREFIX + '/related', (req, res) => {
+  const skipMonstercatTracks = (req.query.skipMC === 'true');
+
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
-      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit,
+      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks,
       method: 'POST',
       json: true,
       body: {
