@@ -30,13 +30,20 @@ mysqlConnection.connect(err => {
   } else {
     app.post(APIPREFIX + '/', (req, res) => {
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
-        const tracks = req.body;
+        const tracks = req.body.tracks;
+        const exclude = req.body.exclude;
 
         getSearchFromIds(tracks, mysqlConnection, function(search) {
           var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
 
           for (var i = 1; i < search.length; i++) {
             catalogSongQuery += 'AND id != "' + search[i].id + '" ';
+          }
+
+          if (exclude !== undefined) {
+            for (var i = 0; i < exclude.length; i++) {
+              catalogSongQuery += 'AND id != "' + exclude[i].id + '" ';
+            }
           }
 
           catalogSongQuery += ';';

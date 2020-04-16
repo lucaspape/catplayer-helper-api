@@ -76,7 +76,10 @@ app.post(APIPREFIX + '/related', (req, res) => {
       url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit,
       method: 'POST',
       json: true,
-      body: req.body.tracks
+      body: {
+        tracks: req.body.tracks,
+        exclude: req.body.exclude
+      }
     }, function(err, resp, body) {
       if (err) {
         res.status(500).send(err);
