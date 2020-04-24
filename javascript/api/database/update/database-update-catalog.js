@@ -124,7 +124,7 @@ function addToDB(track, mysqlConnection, callback) {
     artistIds = '';
   }
 
-  const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ON DUPLICATE KEY UPDATE id="' + track.id + '";';
+  const insertTrackQuery = 'INSERT INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + track.debutDate + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ON DUPLICATE KEY UPDATE id = VALUES("' + track.id + '");';
 
   mysqlConnection.query(insertTrackQuery, (err, results) => {
     if (err) {

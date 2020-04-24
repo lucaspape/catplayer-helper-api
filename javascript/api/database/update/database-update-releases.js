@@ -114,7 +114,7 @@ function addToDB(release, mysqlConnection, callback) {
     links = '';
   }
 
-  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id="' + release.id + '";';
+  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES("' + release.id + '");';
 
   mysqlConnection.query(insertReleaseQuery, (err, results) => {
     if (err) {
