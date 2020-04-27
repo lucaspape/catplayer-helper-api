@@ -117,7 +117,7 @@ function addToDB(release, mysqlConnection, callback) {
   const releaseDate = release.releaseDate.substr(0, release.releaseDate.indexOf('T'));
   const releaseTime = release.releaseDate.substr(release.releaseDate.indexOf('T'), release.releaseDate.length);
 
-  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
+  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
 
   mysqlConnection.query(insertReleaseQuery, (err, results) => {
     if (err) {
