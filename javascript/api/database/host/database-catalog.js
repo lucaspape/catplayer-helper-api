@@ -38,7 +38,7 @@ mysqlConnection.connect(err => {
       }
 
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
-        const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY debutDate DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
           if (err) {
@@ -91,7 +91,7 @@ mysqlConnection.connect(err => {
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId DESC ' + ';';
+        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY debutDate DESC ' + ';';
 
         mysqlConnection.query(catalogSearchQuery, (err, result) => {
           if (err) {
