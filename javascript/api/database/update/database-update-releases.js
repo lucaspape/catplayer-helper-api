@@ -114,8 +114,8 @@ function addToDB(release, mysqlConnection, callback) {
     links = '';
   }
 
-  const releaseDate = release.debutDate.substr(0, release.releaseDate.indexOf('T'));
-  const releaseTime = release.debutDate.substr(release.releaseDate.indexOf('T'), release.releaseDate.length);
+  const releaseDate = release.releaseDate.substr(0, release.releaseDate.indexOf('T'));
+  const releaseTime = release.releaseDate.substr(release.releaseDate.indexOf('T'), release.releaseDate.length);
 
   const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
 
