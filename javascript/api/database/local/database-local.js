@@ -41,7 +41,7 @@ mysqlConnection.connect(err => {
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY sortId DESC ' + ';';
+        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY debutDate DESC ' + ';';
 
         mysqlConnection.query(catalogSearchQuery, (err, result) => {
           if (err) {
