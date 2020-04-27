@@ -45,7 +45,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createReleasesTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`releases` (`sortId` INT AUTO_INCREMENT, `id` VARCHAR(36), `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT, PRIMARY KEY(`id`), UNIQUE KEY(`sortId`));'
+  const createReleasesTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`releases` (`id` VARCHAR(36), `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` DATE, `releaseTime` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT, PRIMARY KEY(`id`));'
   mysqlConnection.query(createReleasesTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -114,7 +114,10 @@ function addToDB(release, mysqlConnection, callback) {
     links = '';
   }
 
-  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + release.releaseDate + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
+  const releaseDate = release.debutDate.substr(0, release.releaseDate.indexOf('T'));
+  const releaseTime = release.debutDate.substr(release.releaseDate.indexOf('T'), release.releaseDate.length);
+
+  const insertReleaseQuery = 'INSERT INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
 
   mysqlConnection.query(insertReleaseQuery, (err, results) => {
     if (err) {

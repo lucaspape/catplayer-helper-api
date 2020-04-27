@@ -31,8 +31,8 @@ mysqlConnection.connect(err => {
   } else {
     console.log('Connected to database!');
 
-    const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`catalogReleases` ( `sortId` INT AUTO_INCREMENT, `trackIds` TEXT, `releaseId` TEXT, `mcID` VARCHAR(36), PRIMARY KEY(`mcID`), UNIQUE KEY(`sortId`));';
-    mysqlConnection.query(createArtistsTableQuery, (err, result) => {
+    const createCatalogReleasesQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`catalogReleases` (`trackIds` TEXT, `releaseId` TEXT, `mcID` VARCHAR(36), PRIMARY KEY(`mcID`));';
+    mysqlConnection.query(createCatalogReleasesQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
