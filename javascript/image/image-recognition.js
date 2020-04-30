@@ -12,10 +12,10 @@ var minimumConfidence = 35.0;
 
 var config = {};
 
-const configFile = 'configs/config_recognition.json';
+const configFile = 'config_recognition.json';
 
 function loadConfig(callback) {
-  utils.download('https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/' + configFile,
+  utils.download('https://lucaspape.de/' + configFile,
     configFile,
     function() {
       if (fs.existsSync(configFile)) {
