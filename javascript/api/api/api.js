@@ -9,7 +9,10 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 const HOSTNAME = 'http://127.0.0.1:' + PORT;
-const APIPREFIX = '/monstercat/v1';
+
+const PREFIX = '/monstercat'
+
+const APIPREFIX = PREFIX + '/v1';
 
 const app = express();
 app.use(cors());
@@ -35,6 +38,14 @@ app.use(function(req, res, next) {
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
   res.send("Hello world!!");
+});
+
+app.get(PREFIX + '/features', (req, res) => {
+  try {
+    res.send(JSON.parse(fs.readFileSync('static/api_features.json')));
+  } catch (e) {
+    res.status(500).send(e);
+  }
 });
 
 app.get(APIPREFIX + '/stats', (req, res) => {
