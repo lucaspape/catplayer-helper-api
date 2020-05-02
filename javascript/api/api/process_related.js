@@ -9,6 +9,7 @@ function processRelated(searchArray, sqlResult, callback) {
         if (i < searchArray.length) {
             const process = fork('/app/api/process_similarity.js');
             process.send({
+                removeId: true,
                 searchString: searchArray[i].search.replace(searchArray[i].id, ''),
                 searchArray: sqlResult
             });
