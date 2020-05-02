@@ -1,6 +1,8 @@
 const mysql = require('mysql');
 const utils = require('./utils.js');
 
+const dbName = 'monstercatDB';
+
 const mysqlConnection = mysql.createConnection({
     host: 'mariadb',
     user: 'root',
