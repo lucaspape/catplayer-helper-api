@@ -41,6 +41,8 @@ function processRelated(searchArray, sqlResult, callback) {
             callback(arrayWithSimiliarity)
         }
     }
+
+    loopCallback();
 }
 
 process.on('message', async (data) => {
