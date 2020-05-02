@@ -5,7 +5,8 @@ const { exec } = require("child_process");
 const utils = require('./utils.js');
 
 exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
-  const hostIp = stdout.replace(/\r?\n|\r/g, "");
+  //const hostIp = stdout.replace(/\r?\n|\r/g, "");
+  const hostIp = '10.0.0.2';
 
   const titleImageUrl = 'http://' + hostIp + ':4000/api/v1/title';
   const artistImageUrl = 'http://' + hostIp + ':4000/api/v1/artist';
