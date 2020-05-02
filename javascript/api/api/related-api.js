@@ -65,7 +65,7 @@ mysqlConnection.connect(err => {
                 if (i < search.length) {
                   var firstSearch = search[i].search.replace(search[i].id, '');
 
-                  const process = fork('./process_related.js');
+                  const process = fork('/app/api/process_related.js');
                   process.send({
                     firstSearch: firstSearch,
                     array: result
