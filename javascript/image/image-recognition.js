@@ -10,6 +10,9 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
   const titleImageUrl = 'http://' + hostIp + ':4000/api/v1/title';
   const artistImageUrl = 'http://' + hostIp + ':4000/api/v1/artist';
 
+  console.log(titleImageUrl);
+  console.log(artistImageUrl);
+
   const outputFile = 'static/liveinfo.json';
 
   var minimumConfidence = 35.0;
