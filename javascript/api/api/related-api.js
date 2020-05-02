@@ -57,51 +57,17 @@ mysqlConnection.connect(err => {
             if (err) {
               res.send(err);
             } else {
-              var arrayWithSimiliarity = [];
+              const process = fork('/app/api/process_related.js');
+              process.send({
+                searchArray: search,
+                sqlResult: result
+              });
 
-              var i = 0;
-
-              var loopCallback = function () {
-                if (i < search.length) {
-                  var firstSearch = search[i].search.replace(search[i].id, '');
-
-                  const process = fork('/app/api/process_related.js');
-                  process.send({
-                    firstSearch: firstSearch,
-                    array: result
-                  });
-
-                  process.on('message', (processResult) => {
-                    for (var k = 0; k < processResult.result.length; k++) {
-                      var similarity = processResult.result[k].similarity;
-                      const id = processResult.result[k].id;
-
-                      if (arrayWithSimiliarity[k] !== undefined) {
-                        similarity += arrayWithSimiliarity[k].similarity;
-                      }
-
-                      arrayWithSimiliarity[k] = {
-                        id: id,
-                        similarity: similarity
-                      };
-                    }
-
-                    i++;
-                    loopCallback();
-                  });
-                } else {
-                  //sort
-                  arrayWithSimiliarity.sort(function (a, b) {
-                    if (a.similarity < b.similarity) return 1;
-                    if (a.similarity > b.similarity) return -1;
-                    return 0;
-                  });
-
-                  res.send({
-                    results: arrayWithSimiliarity.slice(skip, skip + limit)
-                  });
-                }
-              }
+              process.on('message', (processResult) => {
+                res.send({
+                  processResult
+                });
+              });
 
               loopCallback();
             }
