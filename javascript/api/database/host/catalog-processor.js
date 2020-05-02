@@ -1,6 +1,6 @@
 const utils = require('./utils.js');
 
-function processCatalogSearch(terms, trackArray, skip, limit ,mysqlConnection, callback, errorCallback) {
+function processCatalogSearch(terms, trackArray, skip, limit, gold, mysqlConnection, callback, errorCallback) {
     for (var k = 1; k < terms.length; k++) {
         trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
     }
@@ -45,7 +45,7 @@ function processCatalogSearch(terms, trackArray, skip, limit ,mysqlConnection, c
 }
 
 process.on('message', async (data) => {
-    processCatalogSearch(data.terms, data.trackArray, data.skip, data.limit, data.mysqlConnection, function (result) {
+    processCatalogSearch(data.terms, data.trackArray, data.skip, data.limit, data.gold, data.mysqlConnection, function (result) {
         process.send({ result: result });
     }, function (err) { process.send({ err: err }) });
 });

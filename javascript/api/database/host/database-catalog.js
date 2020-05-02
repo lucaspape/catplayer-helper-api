@@ -103,6 +103,7 @@ mysqlConnection.connect(err => {
               trackArray: result,
               skip: skip,
               limit: limit,
+              gold: gold,
               mysqlConnection: mysqlConnection
             });
 
