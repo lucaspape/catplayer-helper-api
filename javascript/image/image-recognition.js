@@ -5,8 +5,10 @@ const { exec } = require("child_process");
 const utils = require('./utils.js');
 
 exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
-  const titleImageUrl = 'http://' + stdout + ':4000/api/v1/title';
-  const artistImageUrl = 'http://' + stdout + ':4000/api/v1/artist';
+  const hostIp = stdout;
+
+  const titleImageUrl = 'http://' + hostIp + ':4000/api/v1/title';
+  const artistImageUrl = 'http://' + hostIp + ':4000/api/v1/artist';
 
   const outputFile = 'static/liveinfo.json';
 
