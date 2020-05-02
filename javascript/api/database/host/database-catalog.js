@@ -101,6 +101,8 @@ mysqlConnection.connect(err => {
             process.send({
               terms: terms,
               trackArray: result,
+              skip: skip,
+              limit: limit,
               mysqlConnection: mysqlConnection
             });
 
