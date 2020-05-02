@@ -28,12 +28,12 @@ mysqlConnection.connect(err => {
     return err;
   } else {
     app.post(APIPREFIX + '/', (req, res) => {
-      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+      utils.fixSkipAndLimit(req.query, function (skip, limit) {
         const skipMonstercatTracks = (req.query.skipMC === 'true');
         const tracks = req.body.tracks;
         const exclude = req.body.exclude;
 
-        getSearchFromIds(tracks, mysqlConnection, function(search) {
+        getSearchFromIds(tracks, mysqlConnection, function (search) {
           var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
 
           for (var i = 1; i < search.length; i++) {
@@ -58,39 +58,54 @@ mysqlConnection.connect(err => {
             } else {
               var arrayWithSimiliarity = [];
 
-              for (var i = 0; i < search.length; i++) {
-                //remove id from search
-                var firstSearch = search[i].search.replace(search[i].id, '');
+              var i = 0;
 
-                for (var k = 0; k < result.length; k++) {
-                  //remove id from search
-                  var secondSearch = result[k].search.replace(result[k].id, '');
-                  var similarity = utils.similarity(firstSearch, secondSearch);
+              var loopCallback = function () {
+                if (i < search.length) {
+                  var firstSearch = search[i].search.replace(search[i].id, '');
 
-                  if (arrayWithSimiliarity[k] !== undefined) {
-                    similarity += arrayWithSimiliarity[k].similarity;
-                  }
+                  const process = fork('./process_related.js');
+                  process.send({
+                    firstSearch: firstSearch,
+                    array: result
+                  });
 
-                  arrayWithSimiliarity[k] = {
-                    id: result[k].id,
-                    similarity: similarity
-                  };
+                  process.on('message', (processResult) => {
+                    for (var k = 0; k < processResult.length; k++) {
+                      var similarity = processResult[k].similarity;
+                      const id = processResult[k].id;
+
+                      if (arrayWithSimiliarity[k] !== undefined) {
+                        similarity += arrayWithSimiliarity[k].similarity;
+                      }
+
+                      arrayWithSimiliarity[k] = {
+                        id: id,
+                        similarity: similarity
+                      };
+                    }
+
+                    i++;
+                    loopCallback();
+                  });
+                } else {
+                  //sort
+                  arrayWithSimiliarity.sort(function (a, b) {
+                    if (a.similarity < b.similarity) return 1;
+                    if (a.similarity > b.similarity) return -1;
+                    return 0;
+                  });
+
+                  res.send({
+                    results: arrayWithSimiliarity.slice(skip, skip + limit)
+                  });
                 }
               }
 
-              //sort
-              arrayWithSimiliarity.sort(function(a, b) {
-                if (a.similarity < b.similarity) return 1;
-                if (a.similarity > b.similarity) return -1;
-                return 0;
-              });
-
-              res.send({
-                results: arrayWithSimiliarity.slice(skip, skip + limit)
-              });
+              loopCallback();
             }
           });
-        }, function(err) {
+        }, function (err) {
           console.log(err);
           res.send(err);
         })
@@ -108,7 +123,7 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
 
   var i = 0;
 
-  var sqlCallback = function() {
+  var sqlCallback = function () {
     if (i < trackArray.length) {
       const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id="' + trackArray[i].id + '";';
 
