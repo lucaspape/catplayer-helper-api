@@ -1,3 +1,5 @@
+const { fork } = require('child_process');
+
 function processRelated(searchArray, sqlResult, callback) {
     var arrayWithSimiliarity = [];
 
