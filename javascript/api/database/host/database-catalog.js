@@ -100,12 +100,16 @@ mysqlConnection.connect(err => {
             const process = fork('/app/api/database/host/catalog-processor.js');
             process.send({
               terms: terms,
-              trackArray: trackArray,
+              trackArray: result,
               mysqlConnection: mysqlConnection
             });
 
             process.on('message', (processResult) => {
-              res.send(processResult);
+              if(processResult.err === undefined){
+                res.send(processResult);
+              }else{
+                res.err(processResult.err);
+              }
             });
           }
         });
