@@ -63,6 +63,6 @@ function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold
 
 process.on('message', async (data) => {
     processCatalogSearch(data.searchString, data.terms, data.trackArray, data.skip, data.limit, data.gold, function (result) {
-        process.send({ result: result });
+        process.send({ results: result });
     }, function (err) { process.send({ err: err }) });
 });
