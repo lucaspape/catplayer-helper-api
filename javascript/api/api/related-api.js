@@ -68,8 +68,6 @@ mysqlConnection.connect(err => {
                   processResult
                 });
               });
-
-              loopCallback();
             }
           });
         }, function (err) {
