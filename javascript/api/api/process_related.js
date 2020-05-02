@@ -1,7 +1,7 @@
 const utils = require('./utils.js');
 
 async function processRelated(searchArray, sqlResult) {
-    arrayWithSimiliarity = [];
+    var arrayWithSimiliarity = [];
 
     for (var i = 0; i < sqlResult.length; i++) {
         var firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
