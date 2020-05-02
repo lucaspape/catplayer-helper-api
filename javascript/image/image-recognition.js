@@ -3,8 +3,8 @@ const request = require('request');
 const fs = require('fs');
 const utils = require('./utils.js');
 
-const titleImageUrl = 'http://10.0.0.2:4000/api/v1/title';
-const artistImageUrl = 'http://10.0.0.2:4000/api/v1/artist';
+const titleImageUrl = 'http://172.20.0.1:4000/api/v1/title';
+const artistImageUrl = 'http://172.20.0.1:4000/api/v1/artist';
 
 const outputFile = 'static/liveinfo.json'
 
