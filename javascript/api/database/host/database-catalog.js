@@ -97,7 +97,7 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
-            const process = fork('/app/api/database/host/catalog-processor.js');
+            const process = fork('/app/database/host/catalog-processor.js');
             process.send({
               terms: terms,
               trackArray: result,
