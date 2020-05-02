@@ -3,7 +3,7 @@ const utils = require('./utils.js');
 async function processRelated(searchArray, sqlResult) {
     var arrayWithSimiliarity = [];
 
-    for (var i = 0; i < sqlResult.length; i++) {
+    for (var i = 0; i < searchArray.length; i++) {
         var firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
 
         for (var k = 0; k < sqlResult.length; k++) {
