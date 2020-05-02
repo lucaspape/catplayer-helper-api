@@ -72,9 +72,9 @@ mysqlConnection.connect(err => {
                   });
 
                   process.on('message', (processResult) => {
-                    for (var k = 0; k < processResult.length; k++) {
-                      var similarity = processResult[k].similarity;
-                      const id = processResult[k].id;
+                    for (var k = 0; k < processResult.result.length; k++) {
+                      var similarity = processResult.result[k].similarity;
+                      const id = processResult.result[k].id;
 
                       if (arrayWithSimiliarity[k] !== undefined) {
                         similarity += arrayWithSimiliarity[k].similarity;

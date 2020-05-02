@@ -22,5 +22,5 @@ process.on('message', async(data) =>{
 
     console.log('Result: ' + result);
 
-    process.send({result});
+    process.send({result:result});
 });
