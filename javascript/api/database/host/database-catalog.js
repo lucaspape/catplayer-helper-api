@@ -90,6 +90,8 @@ mysqlConnection.connect(err => {
       utils.fixSkipAndLimit(req.query, function(skip, limit) {
         const searchString = utils.fixSearchString(req.query.term);
 
+        const terms = searchString.split(' ');
+
         const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY debutDate DESC ' + ';';
 
         mysqlConnection.query(catalogSearchQuery, (err, result) => {
@@ -99,6 +101,7 @@ mysqlConnection.connect(err => {
             const process = fork('/app/database/host/catalog-processor.js');
             process.send({
               searchString: searchString,
+              terms: terms,
               trackArray: result,
               skip: skip,
               limit: limit,

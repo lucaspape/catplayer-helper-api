@@ -10,14 +10,12 @@ const mysqlConnection = mysql.createConnection({
     database: dbName
 });
 
-function processCatalogSearch(searchString, trackArray, skip, limit, gold, callback, errorCallback) {
+function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold, callback, errorCallback) {
     mysqlConnection.connect(err => {
         if (err) {
             console.log(err);
             errorCallback(err);
         } else {
-            const terms = searchString.split(' ');
-
             for (var k = 1; k < terms.length; k++) {
                 trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
             }
@@ -64,7 +62,7 @@ function processCatalogSearch(searchString, trackArray, skip, limit, gold, callb
 }
 
 process.on('message', async (data) => {
-    processCatalogSearch(data.searchString, data.trackArray, data.skip, data.limit, data.gold, function (result) {
+    processCatalogSearch(data.searchString, data.terms, data.trackArray, data.skip, data.limit, data.gold, function (result) {
         process.send({ result: result });
     }, function (err) { process.send({ err: err }) });
 });
