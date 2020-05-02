@@ -20,5 +20,7 @@ async function processRelated(firstSearch, array){
 process.on('message', async(data) =>{
     const result = await processRelated(data.firstSearch, data.array);
 
+    console.log('Result: ' + result);
+
     process.send({result});
 });
