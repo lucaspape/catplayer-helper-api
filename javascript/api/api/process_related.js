@@ -1,3 +1,5 @@
+const utils = require('./utils.js');
+
 async function processRelated(firstSearch, array){
     var arrayWithSimiliarity = [];
 
