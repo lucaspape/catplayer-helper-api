@@ -106,7 +106,7 @@ services:
 
   recg:
     build:                   javascript/image
-    command:                 node image-recognition.js $(/sbin/ip route|awk '/default/ { print $3 }')
+    command:                 node image-recognition.js
     working_dir:             /app/
     restart:                 always
     volumes:

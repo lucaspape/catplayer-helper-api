@@ -1,14 +1,14 @@
 const tesseract = require('node-tesseract-ocr');
 const request = require('request');
 const fs = require('fs');
+const { exec } = require("child_process");
 const utils = require('./utils.js');
 
-const hostIp = process.argv[2];
+exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
+  const titleImageUrl = 'http://' + stdout + ':4000/api/v1/title';
+  const artistImageUrl = 'http://' + stdout + ':4000/api/v1/artist';
 
-const titleImageUrl = 'http://' + hostIp + ':4000/api/v1/title';
-const artistImageUrl = 'http://' + hostIp + ':4000/api/v1/artist';
-
-const outputFile = 'static/liveinfo.json'
+  const outputFile = 'static/liveinfo.json'
 
 var minimumConfidence = 35.0;
 
@@ -279,3 +279,4 @@ function advancedSearch(tempTitle, tempArtist) {
 }
 
 recognize();
+});
