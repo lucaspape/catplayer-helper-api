@@ -7,7 +7,7 @@ function processRelated(searchArray, sqlResult, callback) {
 
     var loopCallback = function () {
         if (i < searchArray.length) {
-            const process = fork('/app/api/process_similarity.js');
+            const process = fork('/app/api/similarity_processor.js');
             process.send({
                 removeId: true,
                 searchString: searchArray[i].search.replace(searchArray[i].id, ''),

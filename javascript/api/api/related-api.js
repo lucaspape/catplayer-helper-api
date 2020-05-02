@@ -57,7 +57,7 @@ mysqlConnection.connect(err => {
             if (err) {
               res.send(err);
             } else {
-              const process = fork('/app/api/process_related.js');
+              const process = fork('/app/api/related_processor.js');
               process.send({
                 searchArray: search,
                 sqlResult: result
