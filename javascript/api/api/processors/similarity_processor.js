@@ -1,4 +1,4 @@
-const utils = require('./utils.js');
+const utils = require('../utils.js');
 
 async function processSimilarity(removeId, searchString, searchArray){
     var similarityArray = [];

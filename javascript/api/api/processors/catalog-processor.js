@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const utils = require('./utils.js');
+const utils = require('../../database/host/utils.js');
 
 const dbName = 'monstercatDB';
 
