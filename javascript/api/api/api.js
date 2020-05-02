@@ -8,10 +8,8 @@ const useragent = require('express-useragent');
 const utils = require('./utils.js');
 
 const PORT = 80;
-const HOSTNAME = 'http://127.0.0.1:' + PORT;
 
 const PREFIX = '/monstercat'
-
 const APIPREFIX = PREFIX + '/v1';
 
 const app = express();

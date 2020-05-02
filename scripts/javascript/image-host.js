@@ -1,10 +1,8 @@
-const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const PORT = 4000
-const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/api/v1'
 
 const app = express();

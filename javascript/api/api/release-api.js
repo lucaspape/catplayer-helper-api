@@ -1,14 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const request = require('request');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const sharp = require('sharp');
 const utils = require('./utils.js');
 
 const PORT = 80;
-const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '/release/';
 
 const app = express();

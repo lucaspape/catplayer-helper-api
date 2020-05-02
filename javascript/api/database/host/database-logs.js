@@ -2,10 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const utils = require('./utils.js');
 
 const PORT = 80;
-const HOSTNAME = 'http://127.0.0.1:' + PORT;
 const APIPREFIX = '';
 const dbName = 'monstercatDB';
 
@@ -56,13 +54,10 @@ mysqlConnection.connect(err => {
         });
 
         app.get(APIPREFIX + '/log', (req, res) => {
-          const url = req.body.url;
-          const userAgent = req.body.userAgent;
-          const timestamp = Math.floor(new Date() / 1000);
+      
+          const getLogQuery = 'SELECT timestamp,url FROM `' + dbName + '`.`log` ORDER BY id DESC LIMIT 50;'
 
-          const insertLogQuery = 'SELECT timestamp,url FROM `' + dbName + '`.`log` ORDER BY id DESC LIMIT 50;'
-
-          mysqlConnection.query(insertLogQuery, (err, result) => {
+          mysqlConnection.query(getLogQuery, (err, result) => {
             if (err) {
               res.send(err);
             } else {

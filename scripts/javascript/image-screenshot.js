@@ -9,9 +9,6 @@ var config = {};
 
 var configFile = 'scripts/configs/config.json';
 
-var currentArtist = '';
-var currentTitle = '';
-
 var positionConfigTitle = {}
 
 var positionConfigArtist = {}
