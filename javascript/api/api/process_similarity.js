@@ -5,7 +5,10 @@ async function processSimilarity(searchString, searchArray){
 
     for(var i=0; i<searchArray.length; i++){
         var secondSearch = searchArray[i].search.replace(searchArray[i].id, '');
-        similarityArray[i] = utils.similarity(searchString, secondSearch);
+        similarityArray[i] = {
+            similarity: utils.similarity(searchString, secondSearch),
+            id: searchArray[i].id
+        };
     }
 
     return similarityArray;
