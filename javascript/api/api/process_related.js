@@ -1,38 +1,48 @@
-const utils = require('./utils.js');
-
-async function processRelated(searchArray, sqlResult) {
+function processRelated(searchArray, sqlResult, callback) {
     var arrayWithSimiliarity = [];
 
-    for (var i = 0; i < searchArray.length; i++) {
-        var firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
+    var i = 0;
 
-        for (var k = 0; k < sqlResult.length; k++) {
-            //remove id from search
-            var secondSearch = sqlResult[k].search.replace(sqlResult[k].id, '');
-            var similarity = utils.similarity(firstSearch, secondSearch);
+    var loopCallback = function () {
+        if (i < searchArray.length) {
+            const process = fork('/app/api/process_similarity.js');
+            process.send({
+                searchString: searchArray[i].search.replace(searchArray[i].id, ''),
+                searchArray: sqlResult
+            });
 
-            if (arrayWithSimiliarity[k] !== undefined) {
-                similarity += arrayWithSimiliarity[k].similarity;
-            }
+            process.on('message', (processResult) => {
+                for(var k=0; k<processResult.length; k++){
+                    var similarity = processResult[k].similarity;
+                    const id = processResult[k].id;
 
-            arrayWithSimiliarity[k] = {
-                id: sqlResult[k].id,
-                similarity: similarity
-            };
+                    if (arrayWithSimiliarity[k] !== undefined) {
+                        similarity += arrayWithSimiliarity[k].similarity;
+                    }
+        
+                    arrayWithSimiliarity[k] = {
+                        id: id,
+                        similarity: similarity
+                    };
+                }
+                
+                i++;
+                loopCallback();
+            });
+        } else {
+            arrayWithSimiliarity.sort(function (a, b) {
+                if (a.similarity < b.similarity) return 1;
+                if (a.similarity > b.similarity) return -1;
+                return 0;
+            });
+
+            callback(arrayWithSimiliarity)
         }
     }
-
-    arrayWithSimiliarity.sort(function (a, b) {
-        if (a.similarity < b.similarity) return 1;
-        if (a.similarity > b.similarity) return -1;
-        return 0;
-    });
-
-    return arrayWithSimiliarity;
 }
 
 process.on('message', async (data) => {
-    const result = await processRelated(data.searchArray, data.sqlResult);
-
-    process.send({ result: result });
+    processRelated(data.searchArray, data.sqlResult, function(result){
+        process.send({ result: result });
+    });
 });
