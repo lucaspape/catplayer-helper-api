@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const { fork } = require('child_process');
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -96,53 +97,16 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
-            var trackArray = result;
-
-            for (var k = 1; k < terms.length; k++) {
-              trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
-            }
-
-            for (var i = 0; i < trackArray.length; i++) {
-              trackArray[i].similarity = utils.similarity(trackArray[i].search.replace(trackArray[i].id, ''), searchString);
-            }
-
-            trackArray.sort(function(a, b) {
-              if (a.similarity < b.similarity) return 1;
-              if (a.similarity > b.similarity) return -1;
-              return 0;
+            const process = fork('/app/api/database/host/catalog-processor.js');
+            process.send({
+              terms: terms,
+              trackArray: trackArray,
+              mysqlConnection: mysqlConnection
             });
 
-            trackArray = trackArray.slice(skip, skip + limit);
-
-            var i = 0;
-
-            var releasesQueryFinished = function() {
-              if (i < trackArray.length) {
-                const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-
-                mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                  if (err) {
-                    res.send(err);
-                  } else {
-                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function(track) {
-                      trackArray[i] = track;
-                      i++;
-                      releasesQueryFinished();
-                    }, function(err) {
-                      res.send(err);
-                    });
-                  }
-                });
-              } else {
-                var returnObject = {
-                  results: trackArray
-                };
-
-                res.send(returnObject);
-              }
-            };
-
-            releasesQueryFinished();
+            process.on('message', (processResult) => {
+              res.send(processResult);
+            });
           }
         });
       });
