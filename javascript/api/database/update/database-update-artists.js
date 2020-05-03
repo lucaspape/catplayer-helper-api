@@ -3,19 +3,6 @@ const mysql = require('mysql');
 
 const dbName = 'monstercatDB';
 
-const dbName = 'monstercatDB';
-
-const sqlhelper = require('/app/api/sqlhelper.js');
-
-sqlhelper.getConnectionEdit(
-  function (mysqlConnection) {
-
-  },
-  function (err) {
-    console.log(err);
-    return err;
-  });
-
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
   user: 'root',
