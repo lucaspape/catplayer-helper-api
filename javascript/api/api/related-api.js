@@ -64,9 +64,7 @@ mysqlConnection.connect(err => {
               });
 
               process.on('message', (processResult) => {
-                res.send({
-                  processResult
-                });
+                res.send(processResult );
               });
             }
           });
