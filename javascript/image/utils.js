@@ -33,9 +33,7 @@ module.exports = {
   download: function(url, filename, callback, errorCallback) {
     const file = fs.createWriteStream(filename);
     http.get(url, function(response){
-        response.pipe(file);
-
-        callback();
+      response.pipe(file).on('close', callback);
     }).setTimeout(1000, function(){
         errorCallback();
     })},
@@ -43,9 +41,7 @@ module.exports = {
     downloadHttps: function(url, filename, callback, errorCallback) {
       const file = fs.createWriteStream(filename);
       https.get(url, function(response){
-          response.pipe(file);
-  
-          callback();
+          response.pipe(file).on('close', callback);
       }).setTimeout(1000, function(){
           errorCallback();
       });
