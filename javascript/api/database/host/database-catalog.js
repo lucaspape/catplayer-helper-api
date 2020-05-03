@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 const { fork } = require('child_process');
 const utils = require('./utils.js');
 
 const PORT = 80;
 const APIPREFIX = '';
-const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
@@ -16,18 +14,12 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const mysqlConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ',
-  database: dbName
-});
+const dbName = 'monstercatDB';
 
-mysqlConnection.connect(err => {
-  if (err) {
-    console.log(err);
-    return err;
-  } else {
+const sqlhelper = require('/app/api/sqlhelper.js');
+
+sqlhelper.getConnection(
+  function (mysqlConnection) {
     console.log('Connected to database!');
 
     app.get(APIPREFIX + '/catalog', (req, res) => {
@@ -37,7 +29,7 @@ mysqlConnection.connect(err => {
         gold = JSON.parse(req.query.gold);
       }
 
-      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+      utils.fixSkipAndLimit(req.query, function (skip, limit) {
         const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY debutDate DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
@@ -47,7 +39,7 @@ mysqlConnection.connect(err => {
             var trackArray = result;
             var i = 0;
 
-            var releasesQueryFinished = function() {
+            var releasesQueryFinished = function () {
               if (i < result.length) {
                 const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
@@ -55,11 +47,11 @@ mysqlConnection.connect(err => {
                   if (err) {
                     res.send(err);
                   } else {
-                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function(track) {
+                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
                       trackArray[i] = track;
                       i++;
                       releasesQueryFinished();
-                    }, function(err) {
+                    }, function (err) {
                       res.send(err);
                     });
 
@@ -87,7 +79,7 @@ mysqlConnection.connect(err => {
         gold = JSON.parse(req.query.gold);
       }
 
-      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+      utils.fixSkipAndLimit(req.query, function (skip, limit) {
         const searchString = utils.fixSearchString(req.query.term);
 
         const terms = searchString.split(' ');
@@ -109,9 +101,9 @@ mysqlConnection.connect(err => {
             });
 
             process.on('message', (processResult) => {
-              if(processResult.err === undefined){
+              if (processResult.err === undefined) {
                 res.send(processResult);
-              }else{
+              } else {
                 res.err(processResult.err);
               }
             });
@@ -123,5 +115,7 @@ mysqlConnection.connect(err => {
     app.listen(PORT, () => {
       console.log('Server started on port ' + PORT);
     });
-  }
-});
+  }, function (err) {
+    console.log(err);
+    return err;
+  });

@@ -1,11 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 
 const PORT = 80;
 const APIPREFIX = '';
-const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
@@ -14,18 +12,12 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const mysqlConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ',
-  database: dbName
-});
+const dbName = 'monstercatDB';
 
-mysqlConnection.connect(err => {
-  if (err) {
-    console.log(err);
-    return err;
-  } else {
+const sqlhelper = require('/app/api/sqlhelper.js');
+
+sqlhelper.getConnection(
+  function (mysqlConnection) {
     console.log('Connected to database');
 
     const createLogTable = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`log` (`id` INT AUTO_INCREMENT PRIMARY KEY, `timestamp` TEXT, `url` TEXT, `userAgent` TEXT);'
@@ -54,7 +46,7 @@ mysqlConnection.connect(err => {
         });
 
         app.get(APIPREFIX + '/log', (req, res) => {
-      
+
           const getLogQuery = 'SELECT timestamp,url FROM `' + dbName + '`.`log` ORDER BY id DESC LIMIT 50;'
 
           mysqlConnection.query(getLogQuery, (err, result) => {
@@ -73,5 +65,7 @@ mysqlConnection.connect(err => {
         });
       }
     });
-  }
-});
+  }, function (err) {
+    console.log(err);
+    return err;
+  });

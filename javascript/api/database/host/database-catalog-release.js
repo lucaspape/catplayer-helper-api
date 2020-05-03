@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 const request = require('request');
 const utils = require('./utils.js');
 
 const PORT = 80;
 const APIPREFIX = '';
-const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
@@ -16,18 +14,12 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const mysqlConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ',
-  database: dbName
-});
+const dbName = 'monstercatDB';
 
-mysqlConnection.connect(err => {
-  if (err) {
-    console.log(err);
-    return err;
-  } else {
+const sqlhelper = require('/app/api/sqlhelper.js');
+
+sqlhelper.getConnection(
+  function (mysqlConnection) {
     console.log('Connected to database!');
 
     const createCatalogReleasesQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`catalogReleases` (`trackIds` TEXT, `releaseId` TEXT, `mcID` VARCHAR(36), PRIMARY KEY(`mcID`));';
@@ -98,8 +90,10 @@ mysqlConnection.connect(err => {
         });
       }
     });
-  }
-});
+  }, function (err) {
+    console.log(err);
+    return err;
+  });
 
 function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(releaseId, function(release) {
