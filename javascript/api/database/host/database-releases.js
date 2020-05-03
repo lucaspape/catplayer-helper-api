@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const { fork } = require('child_process');
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -62,33 +63,18 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
-            var releaseArray = result;
-
-            for (var k = 1; k < terms.length; k++) {
-              releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
-            }
-
-            for (var i = 0; i < releaseArray.length; i++) {
-              releaseArray[i].similarity = utils.similarity(releaseArray[i].search.replace(releaseArray[i].id, ''), searchString);
-            }
-
-            releaseArray.sort(function(a, b) {
-              if (a.similarity < b.similarity) return 1;
-              if (a.similarity > b.similarity) return -1;
-              return 0;
+            const process = fork('/app/api/processors/releases-processor.js');
+            process.send({
+              searchString: searchString,
+              terms: terms,
+              releaseArray: result,
+              skip: skip,
+              limit: limit
             });
 
-            releaseArray = releaseArray.slice(skip, skip + limit);
-
-            for (var i = 0; i < releaseArray.length; i++) {
-              releaseArray[i] = utils.addMissingReleaseKeys(releaseArray[i]);
-            }
-
-            const returnObject = {
-              results: releaseArray
-            }
-
-            res.send(returnObject);
+            process.on('message', (processResult) => {
+              res.send(processResult);
+            });
           }
         });
       });
