@@ -1,53 +1,39 @@
-const { fork } = require('child_process');
+const utils = require('../utils.js');
 
 function processRelated(searchArray, sqlResult, callback) {
     var arrayWithSimiliarity = [];
 
-    var i = 0;
+    for (var i = 0; i < searchArray.length; i++) {
+        const firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
 
-    var loopCallback = function () {
-        if (i < searchArray.length) {
-            const process = fork('/app/api/processors/similarity_processor.js');
-            process.send({
-                removeId: true,
-                searchString: searchArray[i].search.replace(searchArray[i].id, ''),
-                searchArray: sqlResult
-            });
+        for(var k=0; k<sqlResult.length; i++){
+            var secondSearch = sqlResult[k].search.replace(searchArray[i].id, '');
 
-            process.on('message', (processResult) => {
-                for(var k=0; k<processResult.length; k++){
-                    var similarity = processResult[k].similarity;
-                    const id = processResult[k].id;
+            var similarity = utils.similarity(firstSearch, secondSearch);
+            const id = sqlResult[k].id;
+    
+            if (arrayWithSimiliarity[k] !== undefined) {
+                similarity += arrayWithSimiliarity[k].similarity;
+            }
 
-                    if (arrayWithSimiliarity[k] !== undefined) {
-                        similarity += arrayWithSimiliarity[k].similarity;
-                    }
-        
-                    arrayWithSimiliarity[k] = {
-                        id: id,
-                        similarity: similarity
-                    };
-                }
-                
-                i++;
-                loopCallback();
-            });
-        } else {
-            arrayWithSimiliarity.sort(function (a, b) {
-                if (a.similarity < b.similarity) return 1;
-                if (a.similarity > b.similarity) return -1;
-                return 0;
-            });
-
-            callback(arrayWithSimiliarity)
+            arrayWithSimiliarity[k] = {
+                id: id,
+                similarity: similarity
+            };
         }
     }
 
-    loopCallback();
+    arrayWithSimiliarity.sort(function (a, b) {
+        if (a.similarity < b.similarity) return 1;
+        if (a.similarity > b.similarity) return -1;
+        return 0;
+    });
+
+    callback(arrayWithSimiliarity);
 }
 
 process.on('message', async (data) => {
-    processRelated(data.searchArray, data.sqlResult, function(result){
-        process.send({results: result});
+    processRelated(data.searchArray, data.sqlResult, function (result) {
+        process.send({ results: result });
     });
 });
