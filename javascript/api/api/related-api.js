@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 const { fork } = require('child_process');
 const utils = require('./utils.js');
 
 const PORT = 80;
 const APIPREFIX = '/related';
-const dbName = 'monstercatDB';
 
 const app = express();
 app.use(cors());
@@ -16,18 +14,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const mysqlConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ',
-  database: dbName
-});
+const sqlhelper = require('./sqlhelper.js');
 
-mysqlConnection.connect(err => {
-  if (err) {
-    console.log(err);
-    return err;
-  } else {
+sqlhelper.getConnection(
+  function (mysqlConnection) {
     app.post(APIPREFIX + '/', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
         const skipMonstercatTracks = (req.query.skipMC === 'true');
@@ -64,7 +54,7 @@ mysqlConnection.connect(err => {
               });
 
               process.on('message', (processResult) => {
-                res.send(processResult );
+                res.send(processResult);
               });
             }
           });
@@ -78,8 +68,10 @@ mysqlConnection.connect(err => {
     app.listen(PORT, () => {
       console.log('Server started on port ' + PORT);
     });
-  }
-});
+  },
+  function (err) {
+    return err;
+  })
 
 function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) {
   var trackSearch = [];
