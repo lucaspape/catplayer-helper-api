@@ -7,7 +7,7 @@ function processRelated(searchArray, sqlResult, callback) {
         const firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
 
         for(var k=0; k<sqlResult.length; i++){
-            var secondSearch = sqlResult[k].search.replace(searchArray[i].id, '');
+            var secondSearch = sqlResult[k].search.replace(sqlResult[k].id, '');
 
             var similarity = utils.similarity(firstSearch, secondSearch);
             const id = sqlResult[k].id;
