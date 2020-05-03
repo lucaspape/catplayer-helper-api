@@ -9,11 +9,9 @@ const mysqlConnection = mysql.createConnection({
     database: dbName
   });
 
-var connected = false;
-
 module.exports = {
     getConnection: function(callback, errorCallback){
-            if(connected === false){
+            if(mysqlConnection.state === 'disconnected'){
                 mysqlConnection.connect(err => {
                     if (err) {
                       console.log(err);
