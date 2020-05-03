@@ -48,6 +48,6 @@ function processRelated(searchArray, sqlResult, callback) {
 
 process.on('message', async (data) => {
     processRelated(data.searchArray, data.sqlResult, function(result){
-        process.send({ results: result });
+        process.send(result);
     });
 });
