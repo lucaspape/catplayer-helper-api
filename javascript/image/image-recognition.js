@@ -22,7 +22,7 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
 
   const configFile = 'config_recognition.json';
 
-  function loadConfig(callback) {
+  function loadConfig(callback, errorCallback) {
     utils.downloadHttps('https://lucaspape.de/' + configFile,
       configFile,
       function () {
@@ -30,6 +30,8 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
           config = JSON.parse(fs.readFileSync(configFile));
           callback();
         }
+      }, function(){
+          errorCallback()
       });
   }
 
@@ -79,6 +81,8 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
         }, function(){
           recognize();
         });
+      }, function(){
+        recognize();
       });
     }, 100);
   }
