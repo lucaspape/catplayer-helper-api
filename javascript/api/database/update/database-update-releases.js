@@ -22,22 +22,16 @@ createDatabaseConnection.connect(err => {
       } else {
         console.log('Created database/exists!');
 
-        const mysqlConnection = mysql.createConnection({
-          host: 'mariadb',
-          user: 'root',
-          password: 'JacPV7QZ',
-          database: dbName
-        });
+        const sqlhelper = require('/app/api/sqlhelper.js');
 
-        mysqlConnection.connect(err => {
-          if (err) {
+        sqlhelper.getConnection(
+          function (mysqlConnection) {
+            initializeDatabase(mysqlConnection);
+          },
+          function (err) {
             console.log(err);
             return err;
-          } else {
-            console.log('Connected to database!');
-            initializeDatabase(mysqlConnection);
-          }
-        });
+          });
       }
     });
   }
@@ -51,11 +45,11 @@ function initializeDatabase(mysqlConnection) {
     } else {
       console.log('Created releases table');
 
-      initReleases(mysqlConnection, function() {
+      initReleases(mysqlConnection, function () {
         console.log('Done!');
 
         //wait 5 minutes
-        setTimeout(function() {
+        setTimeout(function () {
           initializeDatabase(mysqlConnection);
         }, 300000);
       });
@@ -65,19 +59,19 @@ function initializeDatabase(mysqlConnection) {
 
 function initReleases(mysqlConnection, callback) {
   browseReleases(-1, 0,
-    function(json) {
+    function (json) {
       console.log('Received release data...');
       const releasesArray = json.results.reverse();
 
       var i = 0;
 
-      var sqlCallback = function() {
+      var sqlCallback = function () {
         if (i < releasesArray.length) {
           if (i % 100 === 0) {
             console.log((i / releasesArray.length) * 100 + '%');
           }
 
-          addToDB(releasesArray[i], mysqlConnection, function() {
+          addToDB(releasesArray[i], mysqlConnection, function () {
             i++;
             sqlCallback();
           });
@@ -89,7 +83,7 @@ function initReleases(mysqlConnection, callback) {
       sqlCallback();
     },
 
-    function(err) {
+    function (err) {
       console.log(err);
     });
 }
@@ -129,10 +123,10 @@ function addToDB(release, mysqlConnection, callback) {
 
 function browseReleases(limit, skip, callback, errorCallback) {
   request({
-      url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
+    url: 'https://connect.monstercat.com/v2/releases?limit=' + limit + '&skip=' + skip,
+    method: 'GET'
+  },
+    function (err, resp, body) {
       if (err) {
         errorCallback(err);
       } else {

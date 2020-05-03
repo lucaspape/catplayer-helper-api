@@ -21,22 +21,16 @@ createDatabaseConnection.connect(err => {
       } else {
         console.log('Created database/exists!');
 
-        const mysqlConnection = mysql.createConnection({
-          host: 'mariadb',
-          user: 'root',
-          password: 'JacPV7QZ',
-          database: dbName
-        });
+        const sqlhelper = require('/app/api/sqlhelper.js');
 
-        mysqlConnection.connect(err => {
-          if (err) {
+        sqlhelper.getConnection(
+          function (mysqlConnection) {
+            initializeDatabase(mysqlConnection);
+          },
+          function (err) {
             console.log(err);
             return err;
-          } else {
-            console.log('Connected to database!');
-            initializeDatabase(mysqlConnection);
-          }
-        });
+          });
       }
     });
   }
@@ -50,11 +44,11 @@ function initializeDatabase(mysqlConnection) {
     } else {
       console.log('Created catalog table');
 
-      initCatalog(mysqlConnection, function() {
+      initCatalog(mysqlConnection, function () {
         console.log('Done!');
 
         //wait 5 minutes
-        setTimeout(function() {
+        setTimeout(function () {
           initializeDatabase(mysqlConnection);
         }, 300000);
       });
@@ -64,19 +58,19 @@ function initializeDatabase(mysqlConnection) {
 
 function initCatalog(mysqlConnection, callback) {
   browseTracks(-1, 0,
-    function(json) {
+    function (json) {
       console.log('Received catalog data...');
       const trackArray = json.results.reverse();
 
       var i = 0;
 
-      var sqlCallback = function() {
+      var sqlCallback = function () {
         if (i < trackArray.length) {
           if (i % 100 === 0) {
             console.log((i / trackArray.length) * 100 + '%');
           }
 
-          addToDB(trackArray[i], mysqlConnection, function() {
+          addToDB(trackArray[i], mysqlConnection, function () {
             i++;
             sqlCallback();
           });
@@ -88,7 +82,7 @@ function initCatalog(mysqlConnection, callback) {
       sqlCallback();
     },
 
-    function(err) {
+    function (err) {
       console.log(err);
     });
 }
@@ -138,10 +132,10 @@ function addToDB(track, mysqlConnection, callback) {
 
 function browseTracks(limit, skip, callback, errorCallback) {
   request({
-      url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
+    url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
+    method: 'GET'
+  },
+    function (err, resp, body) {
       if (err) {
         errorCallback(err);
       } else {

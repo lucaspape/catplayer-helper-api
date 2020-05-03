@@ -3,6 +3,19 @@ const mysql = require('mysql');
 
 const dbName = 'monstercatDB';
 
+const dbName = 'monstercatDB';
+
+const sqlhelper = require('/app/api/sqlhelper.js');
+
+sqlhelper.getConnectionEdit(
+  function (mysqlConnection) {
+
+  },
+  function (err) {
+    console.log(err);
+    return err;
+  });
+
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
   user: 'root',
@@ -21,22 +34,16 @@ createDatabaseConnection.connect(err => {
       } else {
         console.log('Created database/exists!');
 
-        const mysqlConnection = mysql.createConnection({
-          host: 'mariadb',
-          user: 'root',
-          password: 'JacPV7QZ',
-          database: dbName
-        });
+        const sqlhelper = require('/app/api/sqlhelper.js');
 
-        mysqlConnection.connect(err => {
-          if (err) {
+        sqlhelper.getConnection(
+          function (mysqlConnection) {
+            initializeDatabase(mysqlConnection);
+          },
+          function (err) {
             console.log(err);
             return err;
-          } else {
-            console.log('Connected to database!');
-            initializeDatabase(mysqlConnection);
-          }
-        });
+          });
       }
     });
   }
@@ -50,11 +57,11 @@ function initializeDatabase(mysqlConnection) {
     } else {
       console.log('Created artists table');
 
-      initArtists(mysqlConnection, function() {
+      initArtists(mysqlConnection, function () {
         console.log('Done!');
 
         //wait 5 minutes
-        setTimeout(function() {
+        setTimeout(function () {
           initializeDatabase(mysqlConnection);
         }, 300000);
       });
@@ -64,19 +71,19 @@ function initializeDatabase(mysqlConnection) {
 
 function initArtists(mysqlConnection, callback) {
   browseArtists(-1, 0,
-    function(json) {
+    function (json) {
       console.log('Received artists data...');
       const artistsArray = json.results.reverse();
 
       var i = 0;
 
-      var sqlCallback = function() {
+      var sqlCallback = function () {
         if (i < artistsArray.length) {
           if (i % 100 === 0) {
             console.log((i / artistsArray.length) * 100 + '%');
           }
 
-          addToDB(artistsArray[i], mysqlConnection, function() {
+          addToDB(artistsArray[i], mysqlConnection, function () {
             i++;
             sqlCallback();
           });
@@ -87,7 +94,7 @@ function initArtists(mysqlConnection, callback) {
 
       sqlCallback();
     },
-    function(err) {
+    function (err) {
       console.log(err);
     });
 
@@ -139,10 +146,10 @@ function addToDB(artist, mysqlConnection, callback) {
 
 function browseArtists(limit, skip, callback, errorCallback) {
   request({
-      url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
-      method: 'GET'
-    },
-    function(err, resp, body) {
+    url: 'https://connect.monstercat.com/v2/artists?limit=' + limit + '&skip=' + skip,
+    method: 'GET'
+  },
+    function (err, resp, body) {
       if (err) {
         errorCallback(err);
       } else {
