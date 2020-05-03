@@ -14,7 +14,9 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const sqlhelper = require('./sqlhelper.js');
+const dbName = 'monstercatDB';
+
+const sqlhelper = require('/app/api/sqlhelper.js');
 
 sqlhelper.getConnection(
   function (mysqlConnection) {
