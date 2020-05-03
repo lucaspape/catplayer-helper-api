@@ -38,7 +38,7 @@ module.exports = {
         callback();
     }).setTimeout(1000, function(){
         errorCallback();
-    }),
+    })},
 
     downloadHttps: function(url, filename, callback, errorCallback) {
       const file = fs.createWriteStream(filename);
