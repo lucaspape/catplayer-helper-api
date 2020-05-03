@@ -76,17 +76,23 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
           }, function () {
             recognize();
           });
+        }, function(){
+          recognize();
         });
       });
     }, 100);
   }
 
-  function downloadImages(titleFileName, artistFileName, downloadFinishedCallback) {
+  function downloadImages(titleFileName, artistFileName, downloadFinishedCallback, errorCallback) {
     utils.download(titleImageUrl, titleFileName, function () {
       utils.download(artistImageUrl, artistFileName, function () {
         downloadFinishedCallback();
-      });
-    });
+      }), function(){
+          errorCallback();
+      };
+    }), function(){
+        errorCallback();
+    };
   }
 
   const tesseractOptions = {

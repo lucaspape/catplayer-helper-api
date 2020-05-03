@@ -1,4 +1,4 @@
-const request = require('request');
+const http = require('http');
 const fs = require('fs');
 
 function editDistance(s1, s2) {
@@ -29,9 +29,14 @@ function editDistance(s1, s2) {
 }
 
 module.exports = {
-  download: function(uri, filename, callback) {
-    request.head(uri, function(err, res, body) {
-      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  download: function(url, filename, callback, errorCallback) {
+    const file = fs.createWriteStream(filename);
+    http.get(url, function(response){
+        response.pipe(file);
+
+        callback();
+    }).setTimeout(1000, function(){
+        errorCallback();
     });
   },
 
