@@ -21,7 +21,7 @@ function processReleasesSearch(searchString, terms, releaseArray, skip, limit, c
         releaseArray[i] = utils.addMissingReleaseKeys(releaseArray[i]);
     }
 
-    callback({ results: releaseArray });
+    callback(releaseArray);
 }
 
 process.on('message', async (data) => {

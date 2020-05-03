@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const { fork } = require('child_process');
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -63,33 +64,18 @@ mysqlConnection.connect(err => {
           if (err) {
             res.send(err);
           } else {
-            var artistsArray = result;
-
-            for (var k = 1; k < terms.length; k++) {
-              artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
-            }
-
-            for (var i = 0; i < artistsArray.length; i++) {
-              artistsArray[i].similarity = utils.similarity(artistsArray[i].search.replace(artistsArray[i].id, ''), searchString);
-            }
-
-            artistsArray.sort(function(a, b) {
-              if (a.similarity < b.similarity) return 1;
-              if (a.similarity > b.similarity) return -1;
-              return 0;
+            const process = fork('/app/api/processors/artist-processor.js');
+            process.send({
+              searchString: searchString,
+              terms: terms,
+              artistsArray: result,
+              skip: skip,
+              limit: limit
             });
 
-            artistsArray = artistsArray.slice(skip, skip + limit);
-
-            for (var i = 0; i < artistsArray.length; i++) {
-              artistsArray[i] = utils.addMissingArtistKeys(artistsArray[i]);
-            }
-
-            const returnObject = {
-              results: artistsArray
-            }
-
-            res.send(returnObject);
+            process.on('message', (processResult) => {
+              res.send(processResult);
+            });
           }
         });
       });
