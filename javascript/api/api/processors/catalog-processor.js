@@ -1,43 +1,34 @@
-const mysql = require('mysql');
 const utils = require('../../database/host/utils.js');
 
 const dbName = 'monstercatDB';
 
-const mysqlConnection = mysql.createConnection({
-    host: 'mariadb',
-    user: 'root',
-    password: 'JacPV7QZ',
-    database: dbName
-});
+const sqlhelper = require('/app/api/sqlhelper.js');
 
 function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold, callback, errorCallback) {
-    mysqlConnection.connect(err => {
-        if (err) {
-            console.log(err);
-            errorCallback(err);
-        } else {
+    sqlhelper.getConnection(
+        function (mysqlConnection) {
             for (var k = 1; k < terms.length; k++) {
                 trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
             }
-        
+
             for (var i = 0; i < trackArray.length; i++) {
                 trackArray[i].similarity = utils.similarity(trackArray[i].search.replace(trackArray[i].id, ''), searchString);
             }
-        
+
             trackArray.sort(function (a, b) {
                 if (a.similarity < b.similarity) return 1;
                 if (a.similarity > b.similarity) return -1;
                 return 0;
             });
-        
+
             trackArray = trackArray.slice(skip, skip + limit);
-        
+
             var i = 0;
-        
+
             var releasesQueryFinished = function () {
                 if (i < trackArray.length) {
                     const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-        
+
                     mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                         if (err) {
                             errorCallback(err);
@@ -55,10 +46,12 @@ function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold
                     callback(trackArray);
                 }
             };
-        
+
             releasesQueryFinished();
-        }
-    });
+        }, function (err) {
+            console.log(err);
+            errorCallback(err);
+        });
 }
 
 process.on('message', async (data) => {
