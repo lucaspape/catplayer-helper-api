@@ -1,4 +1,5 @@
 const http = require('http');
+const http = require('https');
 const fs = require('fs');
 
 function editDistance(s1, s2) {
@@ -37,7 +38,17 @@ module.exports = {
         callback();
     }).setTimeout(1000, function(){
         errorCallback();
-    });
+    }),
+
+    downloadHttps: function(url, filename, callback, errorCallback) {
+      const file = fs.createWriteStream(filename);
+      https.get(url, function(response){
+          response.pipe(file);
+  
+          callback();
+      }).setTimeout(1000, function(){
+          errorCallback();
+      });
   },
 
   similarity: function(s1, s2) {

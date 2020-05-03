@@ -23,7 +23,7 @@ exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
   const configFile = 'config_recognition.json';
 
   function loadConfig(callback) {
-    utils.download('https://lucaspape.de/' + configFile,
+    utils.downloadHttps('https://lucaspape.de/' + configFile,
       configFile,
       function () {
         if (fs.existsSync(configFile)) {
