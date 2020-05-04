@@ -83,7 +83,7 @@ function downloadCoverImage(res, albumId, callback) {
 
 function fixResolution(res) {
   try {
-    if (res === undefined) {
+    if (res === undefined || isNaN(res)) {
       return 512;
     } else if (parseInt(res) > 2048) {
       return 2048;
