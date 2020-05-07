@@ -6,9 +6,11 @@ services:
       - "6000:80"
     volumes:
       - ${PWD}/static-content:/app/static
+    restart:                 always
 
   proxy-internal:
     build:                   proxy-internal
+    restart:                 always
 
   mariadb:
     image:                   mariadb:10.5.2
