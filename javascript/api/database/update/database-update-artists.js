@@ -120,7 +120,7 @@ function addToDB(artist, mysqlConnection, callback) {
     }
   }
 
-  const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ON DUPLICATE KEY UPDATE id = VALUES(id);';
+  const insertArtistQuery = 'INSERT INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + artist.about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ON DUPLICATE KEY UPDATE years = "' + years + '";';
 
   mysqlConnection.query(insertArtistQuery, (err, results) => {
     if (err) {
