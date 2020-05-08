@@ -91,7 +91,6 @@ function addToDB(artist, mysqlConnection, callback) {
   artist.search = artist.id;
   artist.search += artist.uri;
   artist.search += artist.name;
-  artist.search += artist.about;
   artist.search += artist.bookingDetails;
   artist.search += artist.managementDetails;
   artist.search += artist.links;
