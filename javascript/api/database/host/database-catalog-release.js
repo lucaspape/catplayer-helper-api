@@ -59,7 +59,7 @@ sqlhelper.getConnection(
                       if (err) {
                         res.send(err);
                       } else {
-                        getFromDB(releaseId, trackIds.split(','), gold, function(responseObject) {
+                        getFromDB(mysqlConnection,releaseId, trackIds.split(','), gold, function(responseObject) {
                           res.send(responseObject);
                         }, function(err) {
                           res.send(err);
@@ -74,7 +74,7 @@ sqlhelper.getConnection(
                 var releaseId = result[0].releaseId;
                 var trackIds = result[0].trackIds.split(',');
 
-                getFromDB(releaseId, trackIds, gold, function(responseObject) {
+                getFromDB(mysqlConnection, releaseId, trackIds, gold, function(responseObject) {
                   res.send(responseObject);
                 }, function(err) {
                   res.send(err);
@@ -95,8 +95,8 @@ sqlhelper.getConnection(
     return err;
   });
 
-function getFromDB(releaseId, trackIds, gold, callback, errorCallback) {
-  getRelease(releaseId, function(release) {
+function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCallback) {
+  getRelease(mysqlConnection, releaseId, function(release) {
     getTracks(trackIds, gold, release, function(tracks) {
       callback({
         release: release,
@@ -140,7 +140,7 @@ function getTracks(trackIdArray, gold, releaseObject, callback, errorCallback) {
   sqlCallback();
 }
 
-function getRelease(releaseId, callback, errorCallback) {
+function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
   var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
 
   mysqlConnection.query(getReleaseQuery, (err, result) => {
