@@ -1,3 +1,4 @@
+'use strict';
 const dbName = 'monstercatDB';
 
 function editDistance(s1, s2) {
