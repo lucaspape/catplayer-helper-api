@@ -97,7 +97,7 @@ sqlhelper.getConnection(
 
 function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCallback) {
   getRelease(mysqlConnection, releaseId, function(release) {
-    getTracks(trackIds, gold, release, function(tracks) {
+    getTracks(mysqlConnection, trackIds, gold, release, function(tracks) {
       callback({
         release: release,
         tracks: tracks
@@ -110,7 +110,7 @@ function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCa
   });
 }
 
-function getTracks(trackIdArray, gold, releaseObject, callback, errorCallback) {
+function getTracks(mysqlConnection,trackIdArray, gold, releaseObject, callback, errorCallback) {
   var trackArray = [];
   var i = 0;
 
