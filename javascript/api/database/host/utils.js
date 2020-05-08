@@ -169,7 +169,7 @@ module.exports = {
       artist.links = [];
     }
 
-    artist.about = Buffer(artist.about, 'base64').toString('ascii');
+    artist.about = Buffer.from(artist.about, 'base64').toString('ascii');
 
     return artist;
   }

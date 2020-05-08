@@ -122,7 +122,7 @@ function addToDB(artist, mysqlConnection, callback) {
   }
 
   //about can contain HTML -> convert to base64
-  const about = new Buffer(artist.about).toString('base64');
+  const about = Buffer.from(artist.about).toString('base64');
   const insertArtistQuery = 'REPLACE INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ;';
 
   mysqlConnection.query(insertArtistQuery, (err, results) => {
