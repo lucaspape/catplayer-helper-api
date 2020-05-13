@@ -134,7 +134,9 @@ module.exports = {
               if (err) {
                 errorCallback(err);
               } else {
-                artistArray[i] = artistResults[0];
+                if(artistResults[0] != null){
+                  artistArray[i] = artistResults[0];
+                }
 
                 i++;
                 sqlCallback();
