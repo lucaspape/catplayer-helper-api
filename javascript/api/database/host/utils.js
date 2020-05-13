@@ -144,7 +144,7 @@ module.exports = {
           } else {
             track.artists = artistArray;
 
-            if(track.artists === undefined || track.artists === null || track.artists === ''){
+            if(track.artists == null || track.artists === ''){
               track.artists = [];
             }
 
