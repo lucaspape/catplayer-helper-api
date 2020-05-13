@@ -120,7 +120,7 @@ module.exports = {
         track.release = {};
       }
 
-      if (track.artists !== undefined) {
+      if (track.artists !== undefined && track.artists !== null && track.artists !== '') {
         var artistArray = [];
         const artists = track.artists.split(',');
 
@@ -143,6 +143,11 @@ module.exports = {
 
           } else {
             track.artists = artistArray;
+
+            if(track.artists !== undefined && track.artists !== null && track.artists !== ''){
+              track.artists = [];
+            }
+
             callback(track);
           }
         };
