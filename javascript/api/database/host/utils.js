@@ -149,6 +149,7 @@ module.exports = {
 
         sqlCallback();
       } else {
+        track.artists = [];
         callback(track);
       }
     } else {
