@@ -106,14 +106,18 @@ function addToDB(track, mysqlConnection, callback) {
     track.search += track.artists[k].name;
   }
 
-  var artistIds = track.artists[0].id;
+  var artistIds = '';
 
-  if (artistIds !== undefined) {
-    for (var k = 1; k < track.artists.length; k++) {
-      artistIds += ',' + track.artists[k].id;
+  if(track.artists[0] !== undefined){
+    artistIds = track.artists[0].id;
+
+    if (artistIds !== undefined) {
+      for (var k = 1; k < track.artists.length; k++) {
+        artistIds += ',' + track.artists[k].id;
+      }
+    } else {
+      artistIds = '';
     }
-  } else {
-    artistIds = '';
   }
 
   const debutDate = track.debutDate.substr(0, track.debutDate.indexOf('T'));
