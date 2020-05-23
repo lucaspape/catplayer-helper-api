@@ -5,11 +5,6 @@ var HTMLParser = require('node-html-parser');
 var serviceAccount = require("./config/firebase_config.json");
 var mailConfig = require("./config/mail_config.json")
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://player-for-monsterdcat.firebaseio.com"
-})
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var oldSubjects = [];
@@ -48,6 +43,11 @@ var loop = function(){
             var root = HTMLParser.parse(body);
             console.log(root);
 
+            admin.initializeApp({
+              credential: admin.credential.cert(serviceAccount),
+              databaseURL: "https://player-for-monsterdcat.firebaseio.com"
+            });
+
             var message = {
               data: {
                title: 'Monstercat Newsletter',
@@ -64,6 +64,9 @@ var loop = function(){
             .catch((error) => {
               console.log('Error sending message:', error);
             });
+
+            process.exit();
+
           }
 
           connection.end();
