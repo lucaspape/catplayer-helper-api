@@ -113,3 +113,10 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+
+  news-notifications:
+    build:                notifications/
+    command:       node news-notifications.js
+    working_dir:    /app/
+    volumes:
+      - ${PWD}/firebase:/app/firebase
