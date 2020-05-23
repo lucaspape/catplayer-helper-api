@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase-admin": "^8.12.1"
+    "firebase-admin": "^8.12.1",
+    "imap": "^0.8.19",
+    "imap-simple": "^5.0.0",
+    "node-html-parser": "^1.2.16",
+    "node-imap": "^0.9.3"
   }
 }

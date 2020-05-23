@@ -119,4 +119,4 @@ services:
     command:       node news-notifications.js
     working_dir:    /app/
     volumes:
-      - ${PWD}/firebase:/app/firebase
+      - ${PWD}/notification_config:/app/config
