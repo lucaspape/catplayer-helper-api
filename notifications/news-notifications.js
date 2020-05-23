@@ -60,20 +60,18 @@ var loop = function(){
           .then((response) => {
               // Response is a message ID string.
               console.log('Successfully sent message:', response);
+              process.exit();
             })
             .catch((error) => {
               console.log('Error sending message:', error);
             });
+          }else{
+            connection.end();
 
-            process.exit();
-
+            setTimeout(function(){
+              loop();
+            }, 1000);
           }
-
-          connection.end();
-
-          setTimeout(function(){
-            loop();
-          }, 1000);
       });
   });
 });
