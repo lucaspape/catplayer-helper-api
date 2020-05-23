@@ -120,3 +120,4 @@ services:
     working_dir:    /app/
     volumes:
       - ${PWD}/notification_config:/app/config
+    restart:                 always
