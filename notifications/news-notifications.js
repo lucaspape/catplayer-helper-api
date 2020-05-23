@@ -68,7 +68,9 @@ var loop = function(){
 
           connection.end();
 
-          loop();
+          setTimeout(function(){
+            loop();
+          }, 1000);
       });
   });
 });
