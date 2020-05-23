@@ -64,6 +64,7 @@ var loop = function(){
             })
             .catch((error) => {
               console.log('Error sending message:', error);
+              process.exit();
             });
           }else{
             connection.end();
