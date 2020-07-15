@@ -1,24 +1,15 @@
 {
   "artist": {
-    "width": 750,
-    "height": 45,
-    "left": 330,
-    "top": 402
+    "width": 1500,
+    "height": 60,
+    "left": 240,
+    "top": 880
   },
 
   "title": {
-    "width": 700,
-    "height": 65,
-    "left": 330,
-    "top": 452
-  },
-
-  "cover": {
-    "width": 108,
-    "height": 108,
-    "left": 140,
-    "top": 510
-  },
-
-  "display": 1
+    "width": 1500,
+    "height": 50,
+    "left": 240,
+    "top": 940
+  }
 }

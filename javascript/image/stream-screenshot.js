@@ -3,12 +3,12 @@ const fs = require('fs');
 const sharp = require('sharp');
 const request = require('request');
 
-const githubRecognitionConfigFile = 'https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config_recognition.json'
-const recognitionConfigFile = 'configs/config_recognition.json';
+const scheduleConfigUrl = 'https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config_schedule.json'
+const scheduleConfigFile = 'configs/config_schedule.json';
 
 var config = {};
 
-var githubConfigFile = 'https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config.json'
+//var configFileUrl = 'https://raw.githubusercontent.com/lucaspape/catplayer-helper-api/master/javascript/image/configs/config.json'
 var configFile = 'configs/config.json';
 
 var positionConfigTitle = {}
@@ -21,7 +21,7 @@ function screenshotStream() {
     const imgPath = 'screenshots/stream-screenshot.png'
 
     setTimeout(function(){
-      exec('ffmpeg -i ' + streamUrl + ' -f image2 -vframes 1 ' + imgPath, (error, stdout, stderr) => {
+      exec('ffmpeg -y -i ' + streamUrl + ' -f image2 -vframes 1 ' + imgPath, (error, stdout, stderr) => {
           loadConfig(function () {
               sharp(imgPath).extract(positionConfigArtist).toFile('screenshots/artist.png').then(() => {
                   sharp(imgPath).extract(positionConfigTitle).toFile('screenshots/title.png').then(() => {
@@ -34,11 +34,11 @@ function screenshotStream() {
 }
 
 function loadConfig(callback) {
-    download(githubRecognitionConfigFile,
-        recognitionConfigFile,
+    download(scheduleConfigUrl,
+        scheduleConfigFile,
         function () {
-            if (fs.existsSync(recognitionConfigFile)) {
-                config = JSON.parse(fs.readFileSync(recognitionConfigFile));
+            if (fs.existsSync(scheduleConfigFile)) {
+                config = JSON.parse(fs.readFileSync(scheduleConfigFile));
             }
 
             var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -56,15 +56,23 @@ function loadConfig(callback) {
                 }
             }
 
-            download(githubConfigFile, configFile, function () {
-                if (fs.existsSync(configFile)) {
-                    positionConfigTitle = JSON.parse(fs.readFileSync(configFile)).title;
-                    positionConfigArtist = JSON.parse(fs.readFileSync(configFile)).artist;
-                    displayConfig = JSON.parse(fs.readFileSync(configFile)).display;
-                }
+            if (fs.existsSync(configFile)) {
+                positionConfigTitle = JSON.parse(fs.readFileSync(configFile)).title;
+                positionConfigArtist = JSON.parse(fs.readFileSync(configFile)).artist;
+                displayConfig = JSON.parse(fs.readFileSync(configFile)).display;
+            }
 
-                callback();
-            });
+            callback();
+
+        //    download(configFileUrl, configFile, function () {
+        //        if (fs.existsSync(configFile)) {
+      //              positionConfigTitle = JSON.parse(fs.readFileSync(configFile)).title;
+      //              positionConfigArtist = JSON.parse(fs.readFileSync(configFile)).artist;
+      //              displayConfig = JSON.parse(fs.readFileSync(configFile)).display;
+      //          }
+
+      //          callback();
+      //      });
         });
 }
 
