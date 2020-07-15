@@ -2,7 +2,7 @@ FROM node:latest
 WORKDIR /app
 COPY package*.json ./
 RUN apt-get update
-RUN apt-get install tesseract-ocr -y
+RUN apt-get install tesseract-ocr ffmpeg -y
 RUN npm install
 COPY . .
 RUN mkdir recognition/
