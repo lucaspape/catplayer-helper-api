@@ -23,8 +23,8 @@ function screenshotStream() {
     setTimeout(function(){
       exec('ffmpeg -y -i ' + streamUrl + ' -f image2 -vframes 1 ' + imgPath, (error, stdout, stderr) => {
           loadConfig(function () {
-              sharp(imgPath).extract(positionConfigArtist).toFile('screenshots/artist.png').then(() => {
-                  sharp(imgPath).extract(positionConfigTitle).toFile('screenshots/title.png').then(() => {
+              sharp(imgPath).extract(positionConfigArtist).toColourspace('b-w').toFile('screenshots/artist.png').then(() => {
+                  sharp(imgPath).extract(positionConfigTitle).toColourspace('b-w').toFile('screenshots/title.png').then(() => {
 
                   });
               });
