@@ -113,18 +113,11 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
-
-  screenshot-host:
-    build:                   javascript/image
-    command:                 node screenshot-host.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
       - ${PWD}/screenshots:/app/screenshots
 
   screenshot-host:
     build:                   javascript/image
-    command:                 node stream-screenshot.js
+    command:                 node screenshot-host.js
     working_dir:             /app/
     restart:                 always
     volumes:
