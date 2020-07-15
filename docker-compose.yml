@@ -113,7 +113,8 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
-
+      - ${PWD}/screenshots:/app/screenshots
+      
   stream-screenshot:
     build:                   javascript/image
     command:                 node stream-screenshot.js
