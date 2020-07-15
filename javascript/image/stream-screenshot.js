@@ -35,7 +35,7 @@ function screenshotStream() {
 
 function loadConfig(callback) {
     download(githubRecognitionConfigFile,
-        'configs/config_recognition.json',
+        recognitionConfigFile,
         function () {
             if (fs.existsSync(recognitionConfigFile)) {
                 config = JSON.parse(fs.readFileSync(recognitionConfigFile));
