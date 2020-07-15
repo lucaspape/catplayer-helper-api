@@ -1,51 +1,31 @@
 {
   "override": [{
+      "day": "monday",
+      "time": 17,
+      "length": 2,
+      "title": "Listening Party",
+      "config_override": "config_youtube.json"
+    },
+    {
       "day": "tuesday",
-      "time": 22,
-      "length": 1,
-      "title": "MCTV",
-      "finalObject": {
-        "title": "MCTV",
-        "version": "",
-        "artist": "Monstercat",
-        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
-      }
-    },
-    {
-      "day": "wednesday",
-      "time": 7,
-      "length": 1,
-      "title": "COTWRadio Rebroadcast",
-      "finalObject": {
-        "title": "Monstercat Call Of the Wild Radio Rebroadcast",
-        "version": "",
-        "artist": "Monstercat",
-        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
-      }
-    },
-    {
-      "day": "wednesday",
-      "time": 20,
-      "length": 1,
-      "title": "COTWRadio",
-      "finalObject": {
-        "title": "Monstercat Call Of the Wild Radio",
-        "version": "",
-        "artist": "Monstercat",
-        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
-      }
+      "time": 17,
+      "length": 2,
+      "title": "Listening Party",
+      "config_override": "config_youtube.json"
     },
     {
       "day": "thursday",
-      "time": 22,
-      "length": 1,
-      "title": "MCTV",
-      "finalObject": {
-        "title": "MCTV",
-        "version": "",
-        "artist": "",
-        "coverUrl": "https://assets.monstercat.com/artwork-fallback.jpg"
-      }
+      "time": 17,
+      "length": 2,
+      "title": "Listening Party",
+      "config_override": "config_youtube.json"
+    },
+    {
+      "day": "friday",
+      "time": 17,
+      "length": 2,
+      "title": "Listening Party",
+      "config_override": "config_youtube.json"
     }
   ]
 }
