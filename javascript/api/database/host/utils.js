@@ -92,7 +92,7 @@ module.exports = {
       if (track.inEarlyAccess === 'true') {
         track.downloadable = false;
         track.streamable = gold;
-      } else if (track.tags !== undefined && track.tags.contains('streamingonly')){
+      } else if (track.tags !== undefined && track.tags.includes('streamingonly')){
         track.streamable = true;
         track.downloadable = false;
       }else{
