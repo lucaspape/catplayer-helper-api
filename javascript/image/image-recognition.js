@@ -58,9 +58,6 @@ function recognize() {
           console.log('Recognized text: ' + artistText + " / " + titleText);
 
           searchTitle(artistText, titleText);
-
-          fs.unlinkSync(titleFileName);
-          fs.unlinkSync(artistFileName);
         }, function () {
           recognize();
         });
@@ -84,7 +81,6 @@ function recognizeText(imagePath, finishedCallback, errorCallback) {
       finishedCallback(text.replace(/\n/g, " ").replace(/[^ -~]+/g, ""));
     }).catch((error) => {
       console.log(error);
-      fs.unlinkSync(imagePath);
       errorCallback();
     });
 }
