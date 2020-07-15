@@ -18,12 +18,12 @@ var positionConfigArtist = {}
 function screenshotStream() {
     //TODO use Twitch API
     const streamUrl = 'https://video-weaver.fra05.hls.ttvnw.net/v1/playlist/CtcDavjx21NLRcNhOofK9zE9KRzJGZEDrk9TyAgWtgEeK9cD1QmmX4X5klUuqaDdlaCJUlWRg4XSbDEghFeCCdMmaIZpuzyu6zHZOjusRPcXwNrBmcwSNJgG67LSgtPQN6pfjXCCie6KKFKg9TgDu89nWTfoyaNk4b-d2HpjNx3jPk5zF7kf1miPeK9O4GX0nxhHVTijWD1uKTFoCdY_Qjj_P_fP0T2hH3iIqrhdp4cYvMYnMoeO-91tLOHq7R7e_U6GhpZrT6yW0qDpjvo9bCtNtzfanwEe6JvQyl-l6tkyr_QgS9rPU55dD0NZ0DDrT983Di4pXFYFMlIzVw1PGXrBX8dHXPFgRr0mfyZFRJIk_BFIPtfSsXPmEA1_bA0joG9bNT2628odi7FTKNdSo29Bccil0Pht5IukWT3ExRt8uwe1dxsEIOK2k9IesV19U1YibwwNSx1zFmUFDS5jm3DKRyUEUxiG1IMHoaI1XvhRN99ley9KFWFJXwuOqYMAGxzOgfcjZFwoc9WRr1iEvEFaWLBBD4c4NOwR2KLmh648LrU4jyzOBR4EAPNaVlZWIrNojaS0Q2WKviQSWVp5aUYyLFs4wC0VXnm41GDLb3S5TG_obWRZ7MEIEhCD_fDL0xp0WMeMoGg0t-ylGgxzKIkmlvC-fQmbG4E.m3u8';
-    const imgPath = 'stream-screenshot.png'
+    const imgPath = 'screenshots/stream-screenshot.png'
 
     exec('ffmpeg -i ' + streamUrl + ' -f image2 -vframes 1 ' + imgPath, (error, stdout, stderr) => {
         loadConfig(function () {
-            sharp(imgPath).extract(positionConfigArtist).toFile('artist.png').then(() => {
-                sharp(imgPath).extract(positionConfigTitle).toFile('title.png').then(() => {
+            sharp(imgPath).extract(positionConfigArtist).toFile('screenshots/artist.png').then(() => {
+                sharp(imgPath).extract(positionConfigTitle).toFile('screenshots/title.png').then(() => {
                     fs.unlinkSync(imgPath, function (err) {
                         if (err) {
                             console.log(err);
