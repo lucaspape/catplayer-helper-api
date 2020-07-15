@@ -8,16 +8,16 @@ const outputFile = 'static/liveinfo.json';
 
 var minimumConfidence = 35.0;
 
-var config = {};
+var schedule = {};
 
-const configFile = 'config_recognition.json';
+const scheduleFile = 'config_schedule.json';
 
-function loadConfig(callback, errorCallback) {
-  utils.downloadHttps('https://lucaspape.de/' + configFile,
-    configFile,
+function loadSchedule(callback, errorCallback) {
+  utils.downloadHttps('https://lucaspape.de/' + scheduleFile,
+    scheduleFile,
     function () {
-      if (fs.existsSync(configFile)) {
-        config = JSON.parse(fs.readFileSync(configFile));
+      if (fs.existsSync(scheduleFile)) {
+        schedule = JSON.parse(fs.readFileSync(scheduleFile));
         callback();
       }
     }, function () {
@@ -27,8 +27,8 @@ function loadConfig(callback, errorCallback) {
 
 function recognize() {
   setTimeout(function () {
-    loadConfig(function () {
-      console.log('Config loaded!');
+    loadSchedule(function () {
+      console.log('Schedule loaded!');
 
       //download the screenshots
       const dateNow = Date.now() / 1000;
@@ -36,14 +36,14 @@ function recognize() {
       var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
       var dayName = days[new Date().getDay()];
 
-      for (var i = 0; i < config.override.length; i++) {
-        if (config.override[i].day === dayName) {
+      for (var i = 0; i < schedule.override.length; i++) {
+        if (schedule.override[i].day === dayName) {
           const currentHour = new Date().getHours();
 
-          if (currentHour >= config.override[i].time && currentHour < config.override[i].time + config.override[i].length) {
-            if (config.override[i].finalObject !== undefined) {
+          if (currentHour >= schedule.override[i].time && currentHour < schedule.override[i].time + schedule.override[i].length) {
+            if (schedule.override[i].finalObject !== undefined) {
               console.log('Override! Using custom object.');
-              fs.writeFileSync(outputFile, JSON.stringify(config.override[i].finalObject));
+              fs.writeFileSync(outputFile, JSON.stringify(schedule.override[i].finalObject));
               return;
             }
           }
