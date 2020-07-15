@@ -114,6 +114,22 @@ services:
     volumes:
       - ${PWD}/static-content:/app/static
 
+  screenshot-host:
+    build:                   javascript/image
+    command:                 node screenshot-host.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - ${PWD}/screenshots:/app/screenshots
+
+  screenshot-host:
+    build:                   javascript/image
+    command:                 node stream-screenshot.js
+    working_dir:             /app/
+    restart:                 always
+    volumes:
+      - ${PWD}/screenshots:/app/screenshots
+
   news-notifications:
     build:                notifications/
     command:       node news-notifications.js
