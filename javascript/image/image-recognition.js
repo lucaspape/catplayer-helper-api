@@ -134,7 +134,8 @@ function searchQuery(searchTerm, callback, errorCallback) {
 
   request({
     url: 'http://database-local/catalog/search?term=' + searchTerm + '&gold=false',
-    method: 'GET'
+    method: 'GET',
+    timeout: 5000
   }, function (err, resp, body) {
     if (err) {
       errorCallback(err);
