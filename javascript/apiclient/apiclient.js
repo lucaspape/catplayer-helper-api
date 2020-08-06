@@ -4,7 +4,7 @@ const args = require('minimist')(process.argv.slice(2));
 switch(args.a){
   case 'catalog':
     if(args.json !== undefined){
-      addToCatalog(args.json);
+      addToCatalog(JSON.parse(args.json));
     }else{
         console.log('json not defined');
     }

@@ -9,7 +9,7 @@ const utils = require('./utils.js');
 
 const PORT = 80;
 
-const PREFIX = '/monstercat'
+const PREFIX = '/custom'
 const APIPREFIX = PREFIX + '/v1';
 
 const app = express();
