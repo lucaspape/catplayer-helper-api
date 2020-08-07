@@ -200,9 +200,9 @@ function addSong(metadata){
 
                                   convert(args.i, trackDownloadMP3FileLocation, '-f mp3 -vn -ab 320k', function(){
                                     console.log('OK');
-                                    convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
+                                    convert(args.i, trackDownloadFLACFileLocation, '-f flac -vn', function(){
                                       console.log('OK');
-                                      convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
+                                      convert(args.i, trackDownloadWAVFileLocation, '-f wav -vn', function(){
                                         console.log('OK');
 
                                         console.log('All done!');
