@@ -39,6 +39,7 @@ app.use(function(req, res, next) {
 });
 
 app.post(APIV2PREFIX + '/signin', async(req,res) =>{
+  console.log('Signin!');
   const sid = await authorize(req.body.email, req.body.password);
 
   if(sid){
