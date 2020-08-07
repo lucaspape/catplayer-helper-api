@@ -170,7 +170,7 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
 
   const songFile = __dirname + '/static/release/' + releaseId + '/track-stream/' + songId;
 
-  const {size} = await fileInfo(songFile);
+  const {size} = fileInfo(songFile);
 
   const range = req.headers.range;
 
