@@ -250,7 +250,7 @@ app.get(APIPREFIX + '/release/:releaseId/track-download/:songId', (req, res) =>{
 
     res.writeHead(200, {
       "Content-Length": size,
-      "Content-Type": "audio/mp3"
+      "Content-Type": "audio/" + format
     });
 
     let readable = createReadStream(songFile);
