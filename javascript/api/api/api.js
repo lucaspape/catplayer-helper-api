@@ -166,7 +166,7 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
   const releaseId = req.params.releaseId;
   const songId = req.params.songId;
 
-  const songFile = __dirname + '/static/release/' + releaseId + '/track-stream/' + songId;
+  const songFile = __dirname + '/../static/release/' + releaseId + '/track-stream/' + songId;
 
   fs.stat(songFile, (err, stat) => {
     if(err){
