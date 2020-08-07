@@ -213,10 +213,6 @@ function addSong(metadata){
 
 function convert(input, output, format, callback){
   exec('ffmpeg -i ' + input + ' -f ' + format +  ' -vn ' + output, (err, out, stderr) => {
-    if(stderr){
-      console.log(stderr);
-    }else{
-      callback();
-    }
+    callback();
   });
 }

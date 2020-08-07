@@ -228,6 +228,38 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
   });
 });
 
+app.get(APIPREFIX + '/release/:releaseId/track-download/:songId', (req, res) =>{
+  const releaseId = req.params.releaseId;
+  const songId = req.params.songId;
+
+  var format = req.query.format;
+
+  if(!format){
+    format = 'mp3';
+  }
+
+  const songFile = __dirname + '/../static-private/release/' + releaseId + '/track-download/' + songId + '.' + format;
+
+  fs.stat(songFile, (err, stat) => {
+    if(err){
+      console.log(err);
+      res.status(404).send(err);
+    }
+
+    const size = stat.size;
+
+    res.writeHead(200, {
+      "Content-Length": size,
+      "Content-Type": "audio/mp3"
+    });
+
+    let readable = createReadStream(songFile);
+    pipeline(readable, res, err => {
+      console.log(err);
+    });
+  });
+});
+
 app.get(APIPREFIX + '/catalog', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     const sid = req.cookies['connect.sid'];
