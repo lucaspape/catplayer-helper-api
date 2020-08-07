@@ -172,7 +172,7 @@ app.get(APIPREFIX + '/release/:releaseId/cover', async (req, res) => {
         } else {
           try {
             //TODO change this URL
-            res.redirect(config.public_api_address + config.apiprefix + "/custom/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
+            res.redirect(config.public_api_address + config.apiprefix + "/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
           } catch (e) {
             res.status(500).send(e);
           }
