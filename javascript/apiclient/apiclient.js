@@ -198,7 +198,7 @@ function addSong(metadata){
                                   const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
                                   const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
 
-                                  convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
+                                  convert(args.i, trackDownloadMP3FileLocation, '-f mp3 -vn -ab 320k', function(){
                                     console.log('OK');
                                     convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
                                       console.log('OK');
@@ -231,8 +231,8 @@ function addSong(metadata){
   addArtists();
 }
 
-function convert(input, output, format, callback){
-  exec('ffmpeg -i ' + input + ' -f ' + format +  ' -vn ' + output, (err, out, stderr) => {
+function convert(input, output, args, callback){
+  exec('ffmpeg -i ' + input + args + ' '+ output, (err, out, stderr) => {
     callback();
   });
 }
