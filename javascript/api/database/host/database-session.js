@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const request = require('request');
+const cookieParser = require('cookie-parser');
 
 const PORT = 80;
 const APIPREFIX = '';
@@ -10,6 +11,7 @@ const APIPREFIX = '';
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -33,7 +35,15 @@ sqlhelper.getConnection(
         });
 
         app.post(APIPREFIX + '/register', (req, res) => {
-          res.status(200)send('OK');
+          res.status(200).send('OK');
+        });
+
+        app.get(APIPREFIX + '/session', (req, res) => {
+          if(req.cookies['connect.sid'] === 'testsid'){
+            res.status(200).send({basicAuthentication: true});
+          }else{
+            res.status(200).send({basicAuthentication: false});
+          }
         });
 
         app.post(APIPREFIX + '/session', (req, res) => {

@@ -519,16 +519,11 @@ function getSession(sid, callback, errorCallback) {
 
 //basic authentication level
 async function authenticated(cookies){
-  //placeholder check
-  if(cookies.sid === 'testsid'){
-    return true;
-  }else{
-    return false
-  }
+  return (await doGetRequest('http://proxy-internal/session/login', cookies['connect.sid'])).basicAuthentication;
 }
 
 async function authorize(username, password){
-  const sid = await doRequest('http://proxy-internal/session/login', {username:username, password:password})
+  const sid = await doPostRequest('http://proxy-internal/session/login', {username:username, password:password});
 
   return sid;
 }
@@ -547,7 +542,25 @@ function log(url, userAgent, callback) {
   });
 }
 
-function doRequest(url, json) {
+function doGetRequest(url, sid) {
+  return new Promise(function (resolve, reject) {
+    request({
+      url: url,
+      method: 'GET',
+      headers: {
+        'Cookie': 'connect.sid=' + sid
+      }
+      }, function (error, res, body) {
+      if (!error && res.statusCode == 200) {
+        resolve(body);
+      } else {
+        reject(error);
+      }
+    });
+  });
+}
+
+function doPostRequest(url, json) {
   return new Promise(function (resolve, reject) {
     request({
       url: url,
