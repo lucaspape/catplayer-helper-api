@@ -38,7 +38,7 @@ app.use(function(req, res, next) {
   });
 });
 
-app.post(APIV2PREFIX + '/signin' async(req,res) =>{
+app.post(APIV2PREFIX + '/signin', async(req,res) =>{
 
 });
 
