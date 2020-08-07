@@ -27,125 +27,130 @@ function addSong(metadata){
 
   const artists = [];
 
-  const artistRequestPromiseArray = [];
+  var todoArtists = metadata.common.artists.length;
+  var artistsDone = 0;
 
-  for(var i=0; metadata.common.artists.length<i; i++){
-    artists[i] = {
-      id: uuidv4(),
-      about: '',
-      bookingDetails: '',
-      imagePositionX: 0,
-      imagePositionY: 0,
-      links: [],
-      managementDetails: '',
-      name: metadata.common.artists[i],
-      uri: '',
-      years: [],
-    };
+  function addArtists(){
+    if(artistsDone < todoArtists){
+      artists[artistsDone] = {
+        id: uuidv4(),
+        about: '',
+        bookingDetails: '',
+        imagePositionX: 0,
+        imagePositionY: 0,
+        links: [],
+        managementDetails: '',
+        name: metadata.common.artists[i],
+        uri: '',
+        years: [],
+      };
 
-    artistRequestPromiseArray.push(new Promise((resolve, reject) => {
+        request({
+          url: 'http://database-update-artists/artists',
+          method: 'POST',
+          json: true,
+          body: artists[artistsDone]
+        }, function(err, resp, body) {
+          if (err) {
+            console.log(err);
+          } else {
+            try {
+              console.log(body);
+
+              artistsDone++;
+
+              addArtists();
+            } catch (e) {
+              console.log(e);
+            }
+          }
+        });
+    }else{
+      var genrePrimary = metadata.common.genre[0];
+      var genreSecondary = metadata.common.genre[1];
+      var isrc = metadata.common.isrc[0];
+
+      if(!genrePrimary){
+        genrePrimary = '';
+      }
+
+      if(!genreSecondary){
+        genreSecondary = '';
+      }
+
+      if(!isrc){
+        isrc = '';
+      }
+
+      const releasePostObject = {
+        id: uuidv4(),
+        catalogId: uuidv4(),
+        artistsTitle: metadata.common.artist,
+        genrePrimary: genrePrimary,
+        genreSecondary: genreSecondary,
+        links: [],
+        releaseDate: '2020-08-07T00:00:00.000Z',
+        title: metadata.common.album,
+        type: '',
+        version: ''
+      };
+
+      const catalogPostObject = {
+        id: id,
+        artists: artists,
+        artistsTitle: metadata.common.artist,
+        bpm: 0,
+        creatorFriendly: true,
+        debutDate: '2020-08-07T00:00:00.000Z',
+        duration: metadata.format.duration,
+        explicit: false,
+        genrePrimary: genrePrimary,
+        genreSecondary: genreSecondary,
+        isrc: isrc,
+        playlistSort: 0,
+        release: releasePostObject,
+        tags: [],
+        title: metadata.common.title,
+        trackNumber: 0,
+        version: '',
+        inEarlyAccess: false,
+      };
+
       request({
-        url: 'http://database-update-artists/artists',
+        url: 'http://database-update-releases/release',
         method: 'POST',
         json: true,
-        body: artists[i]
+        body: releasePostObject
       }, function(err, resp, body) {
         if (err) {
           console.log(err);
         } else {
           try {
             console.log(body);
+
+            request({
+              url: 'http://database-update-catalog/catalog',
+              method: 'POST',
+              json: true,
+              body: catalogPostObject
+            }, function(err, resp, body) {
+              if (err) {
+                console.log(err);
+              } else {
+                try {
+                  console.log(body);
+                } catch (e) {
+                  console.log(e);
+                }
+              }
+            });
           } catch (e) {
             console.log(e);
           }
         }
       });
-    }));
+    }
   }
 
-  Promise.all(artistRequestPromiseArray).then(function(){
-    var genrePrimary = metadata.common.genre[0];
-    var genreSecondary = metadata.common.genre[1];
-    var isrc = metadata.common.isrc[0];
-
-    if(!genrePrimary){
-      genrePrimary = '';
-    }
-
-    if(!genreSecondary){
-      genreSecondary = '';
-    }
-
-    if(!isrc){
-      isrc = '';
-    }
-
-    const releasePostObject = {
-      id: uuidv4(),
-      catalogId: uuidv4(),
-      artistsTitle: metadata.common.artist,
-      genrePrimary: genrePrimary,
-      genreSecondary: genreSecondary,
-      links: [],
-      releaseDate: '2020-08-07T00:00:00.000Z',
-      title: metadata.common.album,
-      type: '',
-      version: ''
-    };
-
-    const catalogPostObject = {
-      id: id,
-      artists: artists,
-      artistsTitle: metadata.common.artist,
-      bpm: 0,
-      creatorFriendly: true,
-      debutDate: '2020-08-07T00:00:00.000Z',
-      duration: metadata.format.duration,
-      explicit: false,
-      genrePrimary: genrePrimary,
-      genreSecondary: genreSecondary,
-      isrc: isrc,
-      playlistSort: 0,
-      release: releasePostObject,
-      tags: [],
-      title: metadata.common.title,
-      trackNumber: 0,
-      version: '',
-      inEarlyAccess: false,
-    };
-
-    request({
-      url: 'http://database-update-releases/release',
-      method: 'POST',
-      json: true,
-      body: releasePostObject
-    }, function(err, resp, body) {
-      if (err) {
-        console.log(err);
-      } else {
-        try {
-          console.log(body);
-
-          request({
-            url: 'http://database-update-catalog/catalog',
-            method: 'POST',
-            json: true,
-            body: catalogPostObject
-          }, function(err, resp, body) {
-            if (err) {
-              console.log(err);
-            } else {
-              try {
-                console.log(body);
-              } catch (e) {
-                console.log(e);
-              }
-            }
-          });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    });
-  });
+  addArtists();
 }
