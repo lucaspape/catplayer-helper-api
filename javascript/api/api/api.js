@@ -39,7 +39,7 @@ app.use(function(req, res, next) {
 });
 
 app.post(APIV2PREFIX + '/signin', async(req,res) =>{
-  const sid = await authorize();
+  const sid = await authorize(req.body.email, req.body.password);
 
   if(sid){
     res.cookie('sid', sid, { maxAge: 900000});
