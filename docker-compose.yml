@@ -111,5 +111,5 @@ services:
   webui:
     build:                   javascript/webui
     command:                 npm run
-    working_dir:             /app/
+    working_dir:             /app/webui
     restart:                 always
