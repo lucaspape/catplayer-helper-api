@@ -2,6 +2,7 @@ const request = require('request');
 const mm = require('music-metadata');
 const { v4: uuidv4 } = require('uuid');
 const args = require('minimist')(process.argv.slice(2));
+const sharp = require('sharp');
 
 switch(args.a){
   case 'catalog':
@@ -139,6 +140,27 @@ function addSong(metadata){
               } else {
                 try {
                   console.log(body);
+
+                  //cover image
+                  const releaseDir = __dirname + '../static/release/' + releasePostObject.id;
+
+                  sharp(metadata.common.picture.data)
+                    .resize(2048, 2048)
+                    .toFile(releaseDir + '/cover_2048.webp', (err,info)=>{
+                      if(err){
+                        console.log(err);
+                      }else{
+                        sharp(metadata.common.picture.data)
+                          .resize(2048, 2048)
+                          .toFile(releaseDir + '/cover_2048.jpg', (err,info)=>{
+                            if(err){
+                              console.log(err);
+                            }else{
+                              console.log('OK');
+                            }
+                          });
+                      }
+                    });
                 } catch (e) {
                   console.log(e);
                 }
