@@ -166,40 +166,28 @@ function addSong(metadata){
                             }else{
                               console.log('OK');
 
-                              const trackStreamLocation = __dirname + '/../static-private/release/' + releasePostObject.id + '/track-stream';
-                              if (!fs.existsSync(trackStreamLocation)) {
-                                fs.mkdirSync(trackStreamLocation);
+                              const privateReleaseLocation = __dirname + '/../static-private/release/' + releasePostObject.id;
+                              if (!fs.existsSync(privateReleaseLocation)) {
+                                fs.mkdirSync(privateReleaseLocation);
                               }
 
-                              const trackStreamFileLocation = trackStreamLocation + '/' + id;
+                              const trackDownloadLocation = privateReleaseLocation + '/track-download';
+                              if (!fs.existsSync(trackDownloadLocation)) {
+                                fs.mkdirSync(trackDownloadLocation);
+                              }
 
-                              convert(args.i, trackStreamFileLocation, 'mp3', function(){
+                              const trackDownloadMP3FileLocation = trackDownloadLocation + '/' + id + '.mp3';
+                              const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
+                              const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
+
+                              convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
                                 console.log('OK');
-
-                                const privateReleaseLocation = __dirname + '/../static-private/release/' + releasePostObject.id;
-                                if (!fs.existsSync(privateReleaseLocation)) {
-                                  fs.mkdirSync(privateReleaseLocation);
-                                }
-
-
-                                const trackDownloadLocation = privateReleaseLocation + '/track-download';
-                                if (!fs.existsSync(trackDownloadLocation)) {
-                                  fs.mkdirSync(trackDownloadLocation);
-                                }
-
-                                const trackDownloadMP3FileLocation = trackDownloadLocation + '/' + id + '.mp3';
-                                const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
-                                const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
-
-                                convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
+                                convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
                                   console.log('OK');
-                                  convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
+                                  convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
                                     console.log('OK');
-                                    convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
-                                      console.log('OK');
 
-                                      console.log('All done!');
-                                    });
+                                    console.log('All done!');
                                   });
                                 });
                               });
