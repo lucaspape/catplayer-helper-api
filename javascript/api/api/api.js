@@ -179,22 +179,26 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
     const range = req.headers.range;
 
     if(range){
+      /** Extracting Start and End value from Range Header */
       let [start, end] = range.replace(/bytes=/, "").split("-");
       start = parseInt(start, 10);
       end = end ? parseInt(end, 10) : size - 1;
 
-      if(!isNaN(start) && isNaN(end)){
+      if (!isNaN(start) && isNaN(end)) {
         start = start;
         end = size - 1;
       }
-
-      if(isNaN(start) && !isNaN(end)){
+      if (isNaN(start) && !isNaN(end)) {
         start = size - end;
         end = size - 1;
       }
 
-      if(start >= size || end >= size){
-        res.writeHead(416, {'Content-Range': `bytes */${size}`});
+      // Handle unavailable range request
+      if (start >= size || end >= size) {
+        // Return the 416 Range Not Satisfiable.
+        res.writeHead(416, {
+          "Content-Range": `bytes */${size}`
+        });
         return res.end();
       }
 
