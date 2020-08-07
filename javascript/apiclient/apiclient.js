@@ -87,7 +87,7 @@ function addSong(metadata){
       genrePrimary: genrePrimary,
       genreSecondary: genreSecondary,
       links: [],
-      releaseDate: '',
+      releaseDate: '2020-08-07T00:00:00.000Z',
       title: metadata.common.album,
       type: '',
       version: ''
@@ -99,7 +99,7 @@ function addSong(metadata){
       artistsTitle: metadata.common.artist,
       bpm: 0,
       creatorFriendly: true,
-      debutDate: '',
+      debutDate: '2020-08-07T00:00:00.000Z',
       duration: metadata.format.duration,
       explicit: false,
       genrePrimary: genrePrimary,
