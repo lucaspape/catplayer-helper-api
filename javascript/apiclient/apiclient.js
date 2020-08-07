@@ -232,7 +232,7 @@ function addSong(metadata){
 }
 
 function convert(input, output, args, callback){
-  exec('ffmpeg -i ' + input + args + ' '+ output, (err, out, stderr) => {
+  exec('ffmpeg -i ' + input + ' ' + args + ' '+ output, (err, out, stderr) => {
     callback();
   });
 }
