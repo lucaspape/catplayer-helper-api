@@ -33,7 +33,7 @@ services:
       - ${PWD}/static-content:/app/static
       - ${PWD}/private-static-content:/app/static-private
       - ${PWD}/javascript/apiclient:/app/apiclient
-      - ${PWD}/server_config.json:/app/api/server_config.json
+      - ${PWD}/server_config.json:/app/server_config.json
 
   release-api:
     build:                   javascript/api
