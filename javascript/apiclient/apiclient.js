@@ -159,6 +159,8 @@ function addSong(metadata){
                     if (err) {
                       console.log(err);
                     } else {
+                      console.log(body);
+
                       //cover image
                       const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
 
