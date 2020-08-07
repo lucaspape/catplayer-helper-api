@@ -9,11 +9,13 @@ const utils = require('./utils.js');
 const {stat, createReadStream} = require('fs');
 const {pipeline} = require('stream');
 
+const config = JSON.parse(fs.readFileSync('server_config.json', 'utf8'));
+
 const PORT = 80;
 
-const public = true;
+const public = config.public;
 
-const PREFIX = '/custom'
+const PREFIX = config.apiprefix;
 const APIPREFIX = PREFIX + '/v1';
 const APIV2PREFIX = PREFIX + '/v2';
 
@@ -170,7 +172,7 @@ app.get(APIPREFIX + '/release/:releaseId/cover', async (req, res) => {
         } else {
           try {
             //TODO change this URL
-            res.redirect("https://api.lucaspape.de/custom/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
+            res.redirect(config.public_api_address + PREFIX + "/custom/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
           } catch (e) {
             res.status(500).send(e);
           }
