@@ -149,13 +149,15 @@ function addSong(metadata){
                     fs.mkdirSync(releaseDir);
                   }
 
-                  sharp(metadata.common.picture[0].data)
+                  const coverImageBuffer = Buffer.from(metadata.common.picture[0].data.toString('base64'), 'base64');
+
+                  sharp(coverImageBuffer)
                     .resize(2048, 2048)
                     .toFile(releaseDir + '/cover_2048.webp', (err,info)=>{
                       if(err){
                         console.log(err);
                       }else{
-                        sharp(metadata.common.picture.data)
+                        sharp(coverImageBuffer)
                           .resize(2048, 2048)
                           .toFile(releaseDir + '/cover_2048.jpg', (err,info)=>{
                             if(err){
