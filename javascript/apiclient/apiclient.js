@@ -166,7 +166,7 @@ function addSong(metadata){
                             }else{
                               console.log('OK');
 
-                              const trackStreamLocation = releaseDir + '/track-stream';
+                              const trackStreamLocation = __dirname + '/../static-private/release/' + releasePostObject.id + '/track-stream';
                               if (!fs.existsSync(trackStreamLocation)) {
                                 fs.mkdirSync(trackStreamLocation);
                               }

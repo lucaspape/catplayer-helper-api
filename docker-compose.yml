@@ -31,6 +31,8 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+      - ${PWD}/private-static-content:/app/static-private
+      - ${PWD}/javascript/apiclient:/app/apiclient
 
   release-api:
     build:                   javascript/api
