@@ -142,9 +142,8 @@ function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
 }
 
 function insertTracks(releaseId, catalogId, tracks, callback, errorCallback ){
-  var trackIds = json.tracks[0].id;
-  for (var i = 1; i < json.tracks.length; i++) {
-    trackIds += ',' + json.tracks[i].id;
+  for (var i = 1; i < tracks.length; i++) {
+    trackIds += ',' + tracks[i].id;
   }
 
   var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + catalogId + '");';
