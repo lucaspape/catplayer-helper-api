@@ -173,13 +173,29 @@ function addSong(metadata){
 
                               const trackStreamFileLocation = trackStreamLocation + '/' + id;
 
-                              exec('ffmpeg -i ' + args.i + ' -f mp3 ' + trackStreamFileLocation, (err, out, stderr) => {
-                                if(stderr){
-                                  console.log(stderr);
-                                }else{
-                                  console.log(out);
-                                  console.log('OK');
+                              convert(args.i, trackStreamFileLocation, 'mp3', function(){
+                                console.log('OK');
+
+                                const trackDownloadLocation = __dirname + '/../static-private/release/' + releasePostObject.id + '/track-download';
+                                if (!fs.existsSync(trackDownloadLocation)) {
+                                  fs.mkdirSync(trackDownloadLocation);
                                 }
+
+                                const trackDownloadMP3FileLocation = trackDownloadLocation + '/' + id + '.mp3';
+                                const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
+                                const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
+
+                                convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
+                                  console.log('OK');
+                                  convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
+                                    console.log('OK');
+                                    convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
+                                      console.log('OK');
+
+                                      console.log('All done!');
+                                    });
+                                  });
+                                });
                               });
                             }
                           });
@@ -199,4 +215,14 @@ function addSong(metadata){
   }
 
   addArtists();
+}
+
+function convert(input, output, format, callback){
+  exec('ffmpeg -i ' + input + ' -f ' + format +  ' ' + output, (err, out, stderr) => {
+    if(stderr){
+      console.log(stderr);
+    }else{
+      callback();
+    }
+  );
 }
