@@ -224,5 +224,5 @@ function convert(input, output, format, callback){
     }else{
       callback();
     }
-  );
+  });
 }
