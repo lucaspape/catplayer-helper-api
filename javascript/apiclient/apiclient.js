@@ -143,58 +143,76 @@ function addSong(metadata){
                 try {
                   console.log(body);
 
-                  //cover image
-                  const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
-
-                  if (!fs.existsSync(releaseDir)) {
-                    fs.mkdirSync(releaseDir);
+                  const albumTracksPostBody = {
+                    tracks: [
+                      {id: catalogPostObject.id}
+                    ],
+                    releaseId: releasePostObject.id
                   }
 
-                  const coverImageBuffer = Buffer.from(metadata.common.picture[0].data.toString('base64'), 'base64');
+                  request({
+                    url: 'http://database-catalog-releases/catalog/release/' + releasePostObject.catalogId,
+                    method: 'POST',
+                    json: true,
+                    body: albumTracksPostBody
+                  }, function(err, resp, body) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      //cover image
+                      const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
 
-                  sharp(coverImageBuffer)
-                    .resize(2048, 2048)
-                    .toFile(releaseDir + '/cover_2048.webp', (err,info)=>{
-                      if(err){
-                        console.log(err);
-                      }else{
-                        sharp(coverImageBuffer)
-                          .resize(2048, 2048)
-                          .toFile(releaseDir + '/cover_2048.jpg', (err,info)=>{
-                            if(err){
-                              console.log(err);
-                            }else{
-                              console.log('OK');
-
-                              const privateReleaseLocation = __dirname + '/../static-private/release/' + releasePostObject.id;
-                              if (!fs.existsSync(privateReleaseLocation)) {
-                                fs.mkdirSync(privateReleaseLocation);
-                              }
-
-                              const trackDownloadLocation = privateReleaseLocation + '/track-download';
-                              if (!fs.existsSync(trackDownloadLocation)) {
-                                fs.mkdirSync(trackDownloadLocation);
-                              }
-
-                              const trackDownloadMP3FileLocation = trackDownloadLocation + '/' + id + '.mp3';
-                              const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
-                              const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
-
-                              convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
-                                console.log('OK');
-                                convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
-                                  console.log('OK');
-                                  convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
-                                    console.log('OK');
-
-                                    console.log('All done!');
-                                  });
-                                });
-                              });
-                            }
-                          });
+                      if (!fs.existsSync(releaseDir)) {
+                        fs.mkdirSync(releaseDir);
                       }
-                    });
+
+                      const coverImageBuffer = Buffer.from(metadata.common.picture[0].data.toString('base64'), 'base64');
+
+                      sharp(coverImageBuffer)
+                        .resize(2048, 2048)
+                        .toFile(releaseDir + '/cover_2048.webp', (err,info)=>{
+                          if(err){
+                            console.log(err);
+                          }else{
+                            sharp(coverImageBuffer)
+                              .resize(2048, 2048)
+                              .toFile(releaseDir + '/cover_2048.jpg', (err,info)=>{
+                                if(err){
+                                  console.log(err);
+                                }else{
+                                  console.log('OK');
+
+                                  const privateReleaseLocation = __dirname + '/../static-private/release/' + releasePostObject.id;
+                                  if (!fs.existsSync(privateReleaseLocation)) {
+                                    fs.mkdirSync(privateReleaseLocation);
+                                  }
+
+                                  const trackDownloadLocation = privateReleaseLocation + '/track-download';
+                                  if (!fs.existsSync(trackDownloadLocation)) {
+                                    fs.mkdirSync(trackDownloadLocation);
+                                  }
+
+                                  const trackDownloadMP3FileLocation = trackDownloadLocation + '/' + id + '.mp3';
+                                  const trackDownloadFLACFileLocation = trackDownloadLocation + '/' + id + '.flac';
+                                  const trackDownloadWAVFileLocation = trackDownloadLocation + '/' + id + '.wav';
+
+                                  convert(args.i, trackDownloadMP3FileLocation, 'mp3', function(){
+                                    console.log('OK');
+                                    convert(args.i, trackDownloadFLACFileLocation, 'flac', function(){
+                                      console.log('OK');
+                                      convert(args.i, trackDownloadWAVFileLocation, 'wav', function(){
+                                        console.log('OK');
+
+                                        console.log('All done!');
+                                      });
+                                    });
+                                  });
+                                }
+                              });
+                          }
+                        });
+                    }
+                  });
                 } catch (e) {
                   console.log(e);
                 }
