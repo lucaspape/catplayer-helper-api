@@ -40,7 +40,7 @@ function addSong(metadata){
         imagePositionY: 0,
         links: [],
         managementDetails: '',
-        name: metadata.common.artists[i],
+        name: metadata.common.artists[artistsDone],
         uri: '',
         years: [],
       };
