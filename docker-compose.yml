@@ -110,6 +110,6 @@ services:
 
   webui:
     build:                   javascript/webui
-    command:                 npm run
+    command:                 npm start
     working_dir:             /app/webui
     restart:                 always
