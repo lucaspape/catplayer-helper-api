@@ -42,7 +42,7 @@ app.post(APIV2PREFIX + '/signin', async(req,res) =>{
   const sid = await authorize(req.body.email, req.body.password);
 
   if(sid){
-    res.cookie('sid', sid, { maxAge: 900000});
+    res.cookie('connect.sid', sid, { maxAge: 900000});
     res.status(200).send('OK');
   }else{
     res.status(401).send('Error');
@@ -523,7 +523,7 @@ async function authenticated(cookies){
 }
 
 async function authorize(username, password){
-  const sid = await doPostRequest('http://proxy-internal/login', {username:username, password:password});
+  const sid = JSON.parse(await doPostRequest('http://proxy-internal/login', {username:username, password:password})).sid;
 
   return sid;
 }
