@@ -174,7 +174,12 @@ function addSong(metadata){
                               const trackStreamFileLocation = trackStreamLocation + '/' + id;
 
                               exec('ffmpeg -i ' + args.i + ' -f mp3 ' + trackStreamFileLocation, (err, out, stderr) => {
-                                console.log('OK');
+                                if(stderr){
+                                  console.log(stderr);
+                                }else{
+                                  console.log(out);
+                                  console.log('OK');
+                                }
                               });
                             }
                           });
