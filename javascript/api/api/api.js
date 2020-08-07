@@ -151,7 +151,8 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
         res.status(500).send(err);
       } else {
         try {
-          res.redirect("https://api.lucaspape.de/monstercat/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
+          //TODO change this URL
+          res.redirect("https://api.lucaspape.de/custom/v1/static/release/" + releaseId + '/' + JSON.parse(body).filename);
         } catch (e) {
           res.status(500).send(e);
         }
