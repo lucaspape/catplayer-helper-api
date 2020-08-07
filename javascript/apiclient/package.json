@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fs": "0.0.1-security",
     "minimist": "^1.2.5",
     "music-metadata": "^7.0.0",
     "request": "^2.88.2",

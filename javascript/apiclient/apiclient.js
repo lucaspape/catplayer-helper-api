@@ -3,6 +3,7 @@ const mm = require('music-metadata');
 const { v4: uuidv4 } = require('uuid');
 const args = require('minimist')(process.argv.slice(2));
 const sharp = require('sharp');
+const fs = require('fs');
 
 switch(args.a){
   case 'catalog':
@@ -143,6 +144,10 @@ function addSong(metadata){
 
                   //cover image
                   const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
+
+                  if (!fs.existsSync(releaseDir)) {
+                    fs.mkdirSync(releaseDir);
+                  }
 
                   sharp(metadata.common.picture[0].data)
                     .resize(2048, 2048)
