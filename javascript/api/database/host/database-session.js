@@ -57,23 +57,17 @@ sqlhelper.getConnection(
               res.send(err);
             } else {
               if (result.gold === undefined) {
-                getSession(sid,
-                  function(json) {
-                    const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
+                const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
 
-                    mysqlConnection.query(insertSessionQuery, (err, result) => {
-                      if (err) {
-                        res.send(err);
-                      } else {
-                        res.send({
-                          gold: JSON.parse(json.user.hasGold)
-                        });
-                      }
-                    });
-                  },
-                  function(err) {
+                mysqlConnection.query(insertSessionQuery, (err, result) => {
+                  if (err) {
                     res.send(err);
-                  });
+                  } else {
+                    res.send({
+                      gold: JSON.parse(json.user.hasGold)
+                    });
+                  }
+                });
               } else {
                 res.send({
                   gold: JSON.parse(result.gold)
@@ -92,23 +86,3 @@ sqlhelper.getConnection(
     console.log(err);
     return err;
   });
-
-function getSession(sid, callback, errorCallback) {
-  if (sid !== undefined) {
-    request({
-      url: 'https://connect.monstercat.com/v2/self/session',
-      method: 'GET',
-      headers: {
-        'Cookie': 'connect.sid=' + sid
-      }
-    }, function(err, resp, body) {
-      if (err) {
-        errorCallback(err);
-      } else {
-        callback(JSON.parse(body));
-      }
-    });
-  } else {
-    callback({});
-  }
-}
