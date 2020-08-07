@@ -24,54 +24,63 @@ sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `username` TEXT, `sid` TEXT, `expires` INT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        app.post(APIPREFIX + '/login', (req, res) => {
-          res.status(200).send('{"sid": "testsid"}');
-        });
-
-        app.post(APIPREFIX + '/register', (req, res) => {
-          res.status(200).send('OK');
-        });
-
         app.get(APIPREFIX + '/session', (req, res) => {
-          if(req.cookies['connect.sid'] === 'testsid'){
-            res.status(200).send({basicAuthentication: true});
-          }else{
-            res.status(200).send({basicAuthentication: false});
-          }
+          const username = req.query.username;
+          const sid = crypto.createHash('sha256').update('').digest('base64');
+          const expires = '';
+
+          const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (username, sid, expires) values ("' + username + '","' + sid + '","' + expires + '");';
+
+          mysqlConnection.query(insertSessionQuery, (err, result) => {
+            if (err) {
+              res.send(err);
+            } else {
+              res.status(200).send({sid:sid});
+            }
+          });
         });
 
         app.post(APIPREFIX + '/session', (req, res) => {
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
 
-          const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
+          const sessionQuery = 'SELECT username,expires FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
               res.send(err);
             } else {
-              if (result.gold === undefined) {
-                const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
-
-                mysqlConnection.query(insertSessionQuery, (err, result) => {
-                  if (err) {
-                    res.send(err);
+              if(result.username){
+                request({
+                  url: 'http://database-authentication/privlevel?username=' + result.username,
+                  method: 'GET',
+                  }, function (error, res, body) {
+                  if (!error && res.statusCode == 200) {
+                    switch(body.privilegeLevel){
+                      case 0:
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: false, adminActions: false});
+                        break;
+                      case 1:
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: false});
+                        break;
+                      case 2:
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: true});
+                        break;
+                      default:
+                        res.status(401).send('Could not find user');
+                    }
                   } else {
-                    res.send({
-                      gold: JSON.parse(json.user.hasGold)
-                    });
+                    res.status(500).send(error);
                   }
                 });
-              } else {
-                res.send({
-                  gold: JSON.parse(result.gold)
-                });
+              }else{
+                res.status(401).send('Could not find user');
               }
             }
           });

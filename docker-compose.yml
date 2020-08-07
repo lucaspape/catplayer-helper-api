@@ -114,3 +114,9 @@ services:
     command:                 npm start
     working_dir:             /app/webui
     restart:                 always
+
+  database-authentication:
+    build:                   javascript/api
+    command:                 node database/database-authentication.js
+    working_dir:             /app/
+    restart:                 always
