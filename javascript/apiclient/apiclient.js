@@ -144,7 +144,7 @@ function addSong(metadata){
                   console.log(body);
 
                   //cover image
-                  const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
+                  const releaseDir = __dirname + '/../static-private/release/' + releasePostObject.id;
 
                   if (!fs.existsSync(releaseDir)) {
                     fs.mkdirSync(releaseDir);
