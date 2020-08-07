@@ -142,6 +142,7 @@ function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
 }
 
 function insertTracks(releaseId, catalogId, tracks, callback, errorCallback ){
+  var trackIds = tracks[0].id;
   for (var i = 1; i < tracks.length; i++) {
     trackIds += ',' + tracks[i].id;
   }
