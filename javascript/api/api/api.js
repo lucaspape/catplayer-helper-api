@@ -11,10 +11,11 @@ const {pipeline} = require('stream');
 
 const PORT = 80;
 
-const public = true;
+const public = false;
 
 const PREFIX = '/custom'
 const APIPREFIX = PREFIX + '/v1';
+const APIV2PREFIX = PREFIX + '/v2';
 
 const app = express();
 app.use(cors());
@@ -35,6 +36,10 @@ app.use(function(req, res, next) {
   log(url, req.useragent.source, function() {
     next();
   });
+});
+
+app.post(APIV2PREFIX + '/signin' async(req,res) =>{
+
 });
 
 app.get(APIPREFIX + '/', async (req, res) => {
@@ -265,6 +270,9 @@ app.get(APIPREFIX + '/release/:releaseId/track-download/:songId', async (req, re
 });
 
 app.get(APIPREFIX + '/catalog', async (req, res) => {
+  console.log(await authenticated(req.cookies));
+  console.log(public);
+
   if(public || await authenticated(req.cookies)){
     utils.fixSkipAndLimit(req.query, function(skip, limit) {
       const sid = req.cookies['connect.sid'];
@@ -296,6 +304,8 @@ app.get(APIPREFIX + '/catalog', async (req, res) => {
           res.status(500).send(err);
         });
     });
+  }else{
+    res.status(500).send('Error')
   }
 });
 
