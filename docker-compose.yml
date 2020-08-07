@@ -117,6 +117,6 @@ services:
 
   database-authentication:
     build:                   javascript/api
-    command:                 node database/database-authentication.js
+    command:                 node database/host/database-authentication.js
     working_dir:             /app/
     restart:                 always
