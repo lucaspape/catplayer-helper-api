@@ -11,7 +11,7 @@ const {pipeline} = require('stream');
 
 const PORT = 80;
 
-const public = false;
+const public = true;
 
 const PREFIX = '/custom'
 const APIPREFIX = PREFIX + '/v1';
