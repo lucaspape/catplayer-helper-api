@@ -39,7 +39,14 @@ app.use(function(req, res, next) {
 });
 
 app.post(APIV2PREFIX + '/signin', async(req,res) =>{
+  const sid = await authorize();
 
+  if(sid){
+    res.cookie('sid', sid, { maxAge: 900000});
+    res.status(200).send('OK');
+  }else{
+    res.status(401).send('Error');
+  }
 });
 
 app.get(APIPREFIX + '/', async (req, res) => {
@@ -512,7 +519,18 @@ function getSession(sid, callback, errorCallback) {
 
 //basic authentication level
 async function authenticated(cookies){
-  return false;
+  //placeholder check
+  if(cookies.sid === 'testsid'){
+    return true;
+  }else{
+    return false
+  }
+}
+
+async function authorize(username, password){
+  const sid = await doRequest('http://proxy-internal/session/login', {username:username, password:password})
+
+  return sid;
 }
 
 function log(url, userAgent, callback) {
@@ -526,5 +544,22 @@ function log(url, userAgent, callback) {
     }
   }, function(err, resp, body) {
     callback(body);
+  });
+}
+
+function doRequest(url, json) {
+  return new Promise(function (resolve, reject) {
+    request({
+      url: url,
+      method: 'POST',
+      json: true,
+      body: json
+      }, function (error, res, body) {
+      if (!error && res.statusCode == 200) {
+        resolve(body);
+      } else {
+        reject(error);
+      }
+    });
   });
 }

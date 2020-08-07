@@ -28,6 +28,14 @@ sqlhelper.getConnection(
       if (err) {
         console.log(err);
       } else {
+        app.post(APIPREFIX + '/login', (req, res) => {
+          res.status(200).send({sid: 'testsid'});
+        });
+
+        app.post(APIPREFIX + '/register', (req, res) => {
+          res.status(200)send('OK');
+        });
+
         app.post(APIPREFIX + '/session', (req, res) => {
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
