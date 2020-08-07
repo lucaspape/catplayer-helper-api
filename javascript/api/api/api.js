@@ -525,7 +525,7 @@ async function authenticated(cookies){
 async function authorize(username, password){
   const response = await doPostRequest('http://proxy-internal/login', {username:username, password:password});
   console.log(response);
-  return JSON.parse(response).sid;
+  return response.sid;
 }
 
 function log(url, userAgent, callback) {
