@@ -15,7 +15,7 @@ const PORT = 80;
 
 const public = config.public;
 
-const PREFIX = '';
+const PREFIX = '/';
 const APIPREFIX = PREFIX + '/v1';
 const APIV2PREFIX = PREFIX + '/v2';
 
