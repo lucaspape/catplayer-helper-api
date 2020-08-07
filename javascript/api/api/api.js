@@ -171,6 +171,7 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
   fs.stat(songFile, (err, stat) => {
     if(err){
       console.log(err);
+      res.status(404).send(err);
     }
 
     const size = stat.size;
@@ -206,6 +207,16 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
 
       let readable = createReadStream(songFile, {start:start, end:end});
 
+      pipeline(readable, res, err => {
+        console.log(err);
+      });
+    }else{
+      res.writeHead(200, {
+        "Content-Length": size,
+        "Content-Type": "audio/mp3"
+      });
+
+      let readable = createReadStream(songFile);
       pipeline(readable, res, err => {
         console.log(err);
       });
