@@ -105,6 +105,8 @@ app.post(APIPREFIX + '/related', async (req, res) => {
         }
       });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -140,6 +142,8 @@ app.get(APIPREFIX + '/catalog/release/:mcID', async (req, res) => {
       function(err) {
         res.status(500).send(err);
       });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -164,6 +168,8 @@ app.get(APIPREFIX + '/release/:releaseId/cover', async (req, res) => {
           }
         }
       });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -232,6 +238,8 @@ app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', async (req, res)
         });
       }
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -266,13 +274,12 @@ app.get(APIPREFIX + '/release/:releaseId/track-download/:songId', async (req, re
         console.log(err);
       });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
 app.get(APIPREFIX + '/catalog', async (req, res) => {
-  console.log(await authenticated(req.cookies));
-  console.log(public);
-
   if(public || await authenticated(req.cookies)){
     utils.fixSkipAndLimit(req.query, function(skip, limit) {
       const sid = req.cookies['connect.sid'];
@@ -305,7 +312,7 @@ app.get(APIPREFIX + '/catalog', async (req, res) => {
         });
     });
   }else{
-    res.status(500).send('Error')
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -342,6 +349,8 @@ app.get(APIPREFIX + '/releases', async (req, res) => {
           res.status(500).send(err);
         });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -364,6 +373,8 @@ app.get(APIPREFIX + '/artists', async (req, res) => {
           }
         });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -402,6 +413,8 @@ app.get(APIPREFIX + '/catalog/search', async (req, res) => {
           res.status(500).send(err);
         });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -440,6 +453,8 @@ app.get(APIPREFIX + '/releases/search', async (req, res) => {
           res.status(500).send(err);
         });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -464,6 +479,8 @@ app.get(APIPREFIX + '/artists/search', async (req, res) => {
           }
         });
     });
+  }else{
+    res.status(401).send('Unauthorized');
   }
 });
 
