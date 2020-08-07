@@ -166,10 +166,12 @@ function addSong(metadata){
                             }else{
                               console.log('OK');
 
-                              const trackStreamFileLocation = releaseDir + '/' + id + '/track-stream'
-                              if (!fs.existsSync(trackStreamFileLocation)) {
-                                fs.mkdirSync(trackStreamFileLocation);
+                              const trackStreamLocation = releaseDir + '/' + id;
+                              if (!fs.existsSync(trackStreamLocation)) {
+                                fs.mkdirSync(trackStreamLocation);
                               }
+
+                              const trackStreamFileLocation = trackStreamLocation + '/track-stream';
 
                               exec('ffmpeg -i ' + args.i + ' -f mp3 ' + trackStreamFileLocation, (err, out, stderr) => {
                                 console.log('OK');
