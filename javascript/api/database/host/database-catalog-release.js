@@ -35,7 +35,7 @@ sqlhelper.getConnection(
           const tracks = req.body.tracks;
           const releaseId = req.body.releaseId;
 
-          insertTracks(releaseId, catalogID, tracks, () =>{
+          insertTracks(mysqlConnection, releaseId, catalogID, tracks, () =>{
             res.status(200).send('OK');
           }, (err)=>{
             res.status(500).send(err);
@@ -141,7 +141,7 @@ function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
   });
 }
 
-function insertTracks(releaseId, catalogId, tracks, callback, errorCallback ){
+function insertTracks(mysqlConnection, releaseId, catalogId, tracks, callback, errorCallback ){
   var trackIds = tracks[0].id;
   for (var i = 1; i < tracks.length; i++) {
     trackIds += ',' + tracks[i].id;
