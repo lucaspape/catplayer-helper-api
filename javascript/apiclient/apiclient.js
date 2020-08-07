@@ -142,9 +142,9 @@ function addSong(metadata){
                   console.log(body);
 
                   //cover image
-                  const releaseDir = __dirname + '../static/release/' + releasePostObject.id;
+                  const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
 
-                  sharp(metadata.common.picture.data)
+                  sharp(metadata.common.picture[0].data)
                     .resize(2048, 2048)
                     .toFile(releaseDir + '/cover_2048.webp', (err,info)=>{
                       if(err){
