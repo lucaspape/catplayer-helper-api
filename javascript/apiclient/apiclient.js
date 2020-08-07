@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const args = require('minimist')(process.argv.slice(2));
 const sharp = require('sharp');
 const fs = require('fs');
+const { exec } = require("child_process");
 
 switch(args.a){
   case 'catalog':
@@ -164,6 +165,15 @@ function addSong(metadata){
                               console.log(err);
                             }else{
                               console.log('OK');
+
+                              const trackStreamFileLocation = releaseDir + '/' + id + '/track-stream'
+                              if (!fs.existsSync(trackStreamFileLocation)) {
+                                fs.mkdirSync(trackStreamFileLocation);
+                              }
+
+                              exec('ffmpeg -i ' + args.i + ' -f mp3 ' + trackStreamFileLocation, (err, out, stderr) => {
+                                console.log('OK');
+                              });
                             }
                           });
                       }
