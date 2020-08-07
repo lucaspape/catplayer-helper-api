@@ -31,7 +31,7 @@ sqlhelper.getConnection(
         console.log(err);
       } else {
         app.post(APIPREFIX + '/login', (req, res) => {
-          res.status(200).send({sid: 'testsid'});
+          res.status(200).send('{"sid": "testsid"}');
         });
 
         app.post(APIPREFIX + '/register', (req, res) => {

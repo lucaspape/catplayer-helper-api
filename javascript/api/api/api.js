@@ -523,9 +523,7 @@ async function authenticated(cookies){
 }
 
 async function authorize(username, password){
-  const sid = JSON.parse(await doPostRequest('http://proxy-internal/login', {username:username, password:password})).sid;
-
-  return sid;
+  return JSON.parse(await doPostRequest('http://proxy-internal/login', {username:username, password:password})).sid;
 }
 
 function log(url, userAgent, callback) {
