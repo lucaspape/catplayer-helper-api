@@ -151,7 +151,7 @@ function addSong(metadata){
                   }
 
                   request({
-                    url: 'http://database-catalog-releases/catalog/release/' + releasePostObject.catalogId,
+                    url: 'http://database-catalog-release/catalog/release/' + releasePostObject.catalogId,
                     method: 'POST',
                     json: true,
                     body: albumTracksPostBody

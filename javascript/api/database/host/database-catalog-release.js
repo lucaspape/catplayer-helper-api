@@ -157,5 +157,5 @@ function insertTracks(releaseId, catalogId, tracks, callback, errorCallback ){
     } else {
         callback();
     }
-  );
+  });
 }
