@@ -6,6 +6,10 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const useragent = require('express-useragent');
 const utils = require('./utils.js');
+const {stat, createReadStream} = require('fs');
+const {promisify} = require('util');
+const {pipeline} = require('stream');
+const fileinfo = promisify(stat);
 
 const PORT = 80;
 
@@ -158,6 +162,51 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
         }
       }
     });
+});
+
+app.get(APIPREFIX + '/release/:releaseId/track-stream/:songId', (req, res) =>{
+  const releaseId = req.params.releaseId;
+  const songId = req.params.songId;
+
+  const songFile = __dirname + '/static/release/' + releaseId + '/track-stream/' + songId;
+
+  const {size} = await fileInfo(songFile);
+
+  const range = req.headers.range;
+
+  if(range){
+    let [start, end] = range.replace(/bytes=/, "").split("-");
+    start = parseInt(start, 10);
+    end = end ? parseInt(end, 10) : size - 1;
+
+    if(!isNaN(start) && isNaN(end)){
+      start = start;
+      end = size - 1;
+    }
+
+    if(isNaN(start) && !isNaN(end)){
+      start = size - end;
+      end = size - 1;
+    }
+
+    if(start >= size || end >= size){
+      res.writeHead(416, {'Content-Range': `bytes */${size}`});
+      return res.end();
+    }
+
+    res.writeHead(206, {
+      'Content-Range': `bytes ${start}-${end}/${size}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': end - start + 1,
+      'Content-Type': 'audio/mp3'
+    });
+
+    let readable = createReadStream(songFile, {start:start, end:end});
+
+    pipeline(readable, res, err => {
+      console.log(err);
+    });
+  }
 });
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
