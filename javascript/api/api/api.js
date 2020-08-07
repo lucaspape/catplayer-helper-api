@@ -519,11 +519,11 @@ function getSession(sid, callback, errorCallback) {
 
 //basic authentication level
 async function authenticated(cookies){
-  return JSON.parse(await doGetRequest('http://proxy-internal/session/session', cookies['connect.sid'])).basicAuthentication;
+  return JSON.parse(await doGetRequest('http://proxy-internal/session', cookies['connect.sid'])).basicAuthentication;
 }
 
 async function authorize(username, password){
-  const sid = await doPostRequest('http://proxy-internal/session/login', {username:username, password:password});
+  const sid = await doPostRequest('http://proxy-internal/login', {username:username, password:password});
 
   return sid;
 }
