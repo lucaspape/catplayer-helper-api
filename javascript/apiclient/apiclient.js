@@ -144,7 +144,7 @@ function addSong(metadata){
                   console.log(body);
 
                   //cover image
-                  const releaseDir = __dirname + '/../static-private/release/' + releasePostObject.id;
+                  const releaseDir = __dirname + '/../static/release/' + releasePostObject.id;
 
                   if (!fs.existsSync(releaseDir)) {
                     fs.mkdirSync(releaseDir);
@@ -176,7 +176,13 @@ function addSong(metadata){
                               convert(args.i, trackStreamFileLocation, 'mp3', function(){
                                 console.log('OK');
 
-                                const trackDownloadLocation = __dirname + '/../static-private/release/' + releasePostObject.id + '/track-download';
+                                const privateReleaseLocation = __dirname + '/../static-private/release/' + releasePostObject.id;
+                                if (!fs.existsSync(privateReleaseLocation)) {
+                                  fs.mkdirSync(privateReleaseLocation);
+                                }
+
+
+                                const trackDownloadLocation = privateReleaseLocation + '/track-download';
                                 if (!fs.existsSync(trackDownloadLocation)) {
                                   fs.mkdirSync(trackDownloadLocation);
                                 }
