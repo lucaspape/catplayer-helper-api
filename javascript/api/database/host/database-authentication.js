@@ -28,17 +28,17 @@ sqlhelper.getConnection(
     //            1->downloading
     //            2->admin
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `username` TEXT, `password` TEXT, `privilegeLevel` INT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT, `password` TEXT, `privilegeLevel` INT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
         app.post(APIPREFIX + '/login', (req, res) => {
-          const username = req.body.username;
+          const email = req.body.email;
           const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
 
-          const loginQuery = 'SELECT password FROM `' + dbName + '`.`auth` WHERE username="' + username + '";'
+          const loginQuery = 'SELECT password FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
@@ -63,12 +63,24 @@ sqlhelper.getConnection(
         });
 
         app.post(APIPREFIX + '/register', (req, res) => {
-          res.status(200).send('OK');
+          const email = req.body.email;
+          const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
+          const privilegeLevel = req.body.privilegeLevel;
+
+          const insertUserQuery = 'INSERT INTO `' + dbName + '`.`auth` (email, password, privilegeLevel) values ("' + email + '","' + password + '","' + privilegeLevel + '");';
+
+          mysqlConnection.query(insertUserQuery, (err, result) => {
+            if (err) {
+              res.status(500).send(err);
+            } else {
+              res.status(200).send('OK');
+            }
+          });
         });
 
         app.get(APIPREFIX + '/privlevel', (req, res) => {
-          const username = req.query.username;
-          const userquery = 'SELECT privilegeLevel FROM `' + dbName + '`.`auth` WHERE username="' + username + '";'
+          const username = req.query.email;
+          const userquery = 'SELECT privilegeLevel FROM `' + dbName + '`.`auth` WHERE email="' + username + '";'
 
           mysqlConnection.query(userquery, (err, result) => {
             if (err) {

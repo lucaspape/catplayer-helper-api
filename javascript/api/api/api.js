@@ -52,6 +52,17 @@ app.post(APIV2PREFIX + '/signin', async(req,res) =>{
   }
 });
 
+app.post(APIV2PREFIX + '/register', async(req,res) =>{
+  console.log('Register!');
+  const response = await register(req.body.email, req.body.password);
+
+  if(response){
+    res.status(200).send(response);
+  }else{
+    res.status(401).send('Error');
+  }
+});
+
 app.get(APIPREFIX + '/', async (req, res) => {
   res.status(418);
   res.send("Hello world!!");
@@ -525,10 +536,16 @@ async function authenticated(cookies){
   return JSON.parse(await doPostRequest('http://proxy-internal/session', {sid: cookies['connect.sid']})).basicAuthentication;
 }
 
-async function authorize(username, password){
-  const response = await doPostRequest('http://proxy-internal/login', {username:username, password:password});
+async function authorize(email, password){
+  const response = await doPostRequest('http://proxy-internal/login', {email:email, password:password});
   console.log(response);
   return response.sid;
+}
+
+async function register(email, password){
+  const response = await doPostRequest('http://proxy-internal/register', {email:email, password:password});
+  console.log(response);
+  return response;
 }
 
 function log(url, userAgent, callback) {

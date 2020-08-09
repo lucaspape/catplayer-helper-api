@@ -24,22 +24,22 @@ sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `username` TEXT, `sid` TEXT, `expires` INT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT, `sid` TEXT, `expires` INT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
         app.get(APIPREFIX + '/session', (req, res) => {
-          const username = req.query.username;
+          const email = req.query.email;
           const sid = crypto.createHash('sha256').update('').digest('base64');
           const expires = '';
 
-          const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (username, sid, expires) values ("' + username + '","' + sid + '","' + expires + '");';
+          const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (email, sid, expires) values ("' + email + '","' + sid + '","' + expires + '");';
 
           mysqlConnection.query(insertSessionQuery, (err, result) => {
             if (err) {
-              res.send(err);
+              res.status(500).send(err);
             } else {
               res.status(200).send({sid:sid});
             }
@@ -50,11 +50,11 @@ sqlhelper.getConnection(
           const sid = req.body.sid;
           const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
 
-          const sessionQuery = 'SELECT username,expires FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
+          const sessionQuery = 'SELECT email,expires FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
-              res.send(err);
+              res.status(500).send(err);
             } else {
               if(result.username){
                 request({
