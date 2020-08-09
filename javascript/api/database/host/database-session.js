@@ -34,10 +34,11 @@ sqlhelper.getConnection(
         app.get(APIPREFIX + '/session', (req, res) => {
           console.log('New session key request!');
           const email = req.query.email;
-          const sid = crypto.createHash('sha256').update(uuidv4()).digest('base64');
+          const sid = uuidv4();
+          const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
           const expires = 0;
 
-          const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (email, sid, expires) values ("' + email + '","' + sid + '","' + expires + '");';
+          const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (email, sid, expires) values ("' + email + '","' + sidHash + '","' + expires + '");';
 
           mysqlConnection.query(insertSessionQuery, (err, result) => {
             if (err) {
@@ -58,6 +59,7 @@ sqlhelper.getConnection(
             if (err) {
               res.status(500).send(err);
             } else {
+              console.log(JSON.stringify(result));
               if(result.username){
                 request({
                   url: 'http://database-authentication/privlevel?username=' + result.username,
