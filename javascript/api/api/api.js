@@ -559,6 +559,7 @@ function authenticated(cookies){
       if (!error && res.statusCode == 200) {
         if(body){
           if(body.basicAuthentication){
+            console.log('client has basic authentication');
             resolve(body.basicAuthentication);
           }else{
             resolve(false);
