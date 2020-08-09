@@ -42,25 +42,41 @@ app.use(function(req, res, next) {
 
 app.post(APIV2PREFIX + '/signin', async(req,res) =>{
   console.log('Signin!');
-  const sid = await authorize(req.body.email, req.body.password);
 
-  if(sid){
-    res.cookie('connect.sid', sid, { maxAge: 900000});
-    res.status(200).send('OK');
-  }else{
-    res.status(401).send('Error');
-  }
+  request({
+    url: 'http://proxy-internal/login',
+    method: 'POST',
+    json: true,
+    body: {email:req.body.email, password:req.body.password}
+    }, function (error, res, body) {
+    if (!error && res.statusCode == 200) {
+      const sid = body.sid;
+
+      if(sid){
+        res.cookie('connect.sid', sid, { maxAge: 900000});
+        res.status(200).send('OK');
+      }else{
+        res.status(401).send('Error');
+      }
+    } else {
+      res.status(401).send(error);
+    }
+  });
 });
 
 app.post(APIV2PREFIX + '/register', async(req,res) =>{
-  console.log('Register!');
-  const response = await register(req.body.email, req.body.password);
-
-  if(response){
-    res.status(200).send(response);
-  }else{
-    res.status(401).send('Error');
-  }
+  request({
+    url: 'http://proxy-internal/register',
+    method: 'POST',
+    json: true,
+    body: {email:req.body.email, password:req.body.password}
+    }, function (error, res, body) {
+    if (!error && res.statusCode == 200) {
+      res.status(200).send(body);
+    } else {
+      res.status(500).send(error);
+    }
+  });
 });
 
 app.get(APIPREFIX + '/', async (req, res) => {
@@ -532,20 +548,31 @@ function getSession(sid, callback, errorCallback) {
 
 
 //basic authentication level
-async function authenticated(cookies){
-  return JSON.parse(await doPostRequest('http://proxy-internal/session', {sid: cookies['connect.sid']})).basicAuthentication;
-}
+function authenticated(cookies){
+  return new Promise(function (resolve, reject) {
+    request({
+      url: 'http://proxy-internal/session',
+      method: 'POST',
+      json: true,
+      body: {sid: cookies['connect.sid']}
+      }, function (error, res, body) {
+      if (!error && res.statusCode == 200) {
+        if(body){
+          const json = JSON.parse(body);
 
-async function authorize(email, password){
-  const response = await doPostRequest('http://proxy-internal/login', {email:email, password:password});
-  console.log(response);
-  return response.sid;
-}
-
-async function register(email, password){
-  const response = await doPostRequest('http://proxy-internal/register', {email:email, password:password});
-  console.log(response);
-  return response;
+          if(json.basicAuthentication){
+            resolve(json.basicAuthentication);
+          }else{
+            resolve(false);
+          }
+        }else{
+          resolve(false);
+        }
+      } else {
+        resolve(false);
+      }
+    });
+  });
 }
 
 function log(url, userAgent, callback) {
@@ -559,40 +586,5 @@ function log(url, userAgent, callback) {
     }
   }, function(err, resp, body) {
     callback(body);
-  });
-}
-
-function doGetRequest(url, sid) {
-  return new Promise(function (resolve, reject) {
-    request({
-      url: url,
-      method: 'GET',
-      headers: {
-        'Cookie': 'connect.sid=' + sid
-      }
-      }, function (error, res, body) {
-      if (!error && res.statusCode == 200) {
-        resolve(body);
-      } else {
-        reject(error);
-      }
-    });
-  });
-}
-
-function doPostRequest(url, json) {
-  return new Promise(function (resolve, reject) {
-    request({
-      url: url,
-      method: 'POST',
-      json: true,
-      body: json
-      }, function (error, res, body) {
-      if (!error && res.statusCode == 200) {
-        resolve(body);
-      } else {
-        reject(error);
-      }
-    });
   });
 }
