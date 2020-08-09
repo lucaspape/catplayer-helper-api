@@ -34,6 +34,14 @@ services:
       - ${PWD}/private-static-content:/app/static-private
       - ${PWD}/javascript/apiclient:/app/apiclient
       - ${PWD}/server_config.json:/app/server_config.json
+    depends_on:
+      - database-logs
+      - database-catalog-release
+      - database-catalog
+      - database-releases
+      - database-artists
+      - database-session
+      - database-authentication
 
   release-api:
     build:                   javascript/api
@@ -48,75 +56,93 @@ services:
     command:                 node api/related-api.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-logs:
     build:                   javascript/api
     command:                 node database/host/database-logs.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-catalog-release:
     build:                   javascript/api
     command:                 node database/host/database-catalog-release.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-catalog:
     build:                   javascript/api
     command:                 node database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-releases:
     build:                   javascript/api
     command:                 node database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-artists:
     build:                   javascript/api
     command:                 node database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-session:
     build:                   javascript/api
     command:                 node database/host/database-session.js
     working_dir:             /app/
     restart:                 always
-
-  database-local:
-    build:                   javascript/api
-    command:                 node database/local/database-local.js
-    working_dir:             /app/
-    restart:                 always
-
-  database-update-catalog:
-    build:                   javascript/api
-    command:                 node database/update/database-update-catalog.js
-    working_dir:             /app/
-    restart:                 always
-
-  database-update-releases:
-    build:                   javascript/api
-    command:                 node database/update/database-update-releases.js
-    working_dir:             /app/
-    restart:                 always
-
-  database-update-artists:
-    build:                   javascript/api
-    command:                 node database/update/database-update-artists.js
-    working_dir:             /app/
-    restart:                 always
-
-  webui:
-    build:                   javascript/webui
-    command:                 npm start
-    working_dir:             /app/webui
-    restart:                 always
+    depends_on:
+      - mariadb
 
   database-authentication:
     build:                   javascript/api
     command:                 node database/host/database-authentication.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
+
+  database-update-catalog:
+    build:                   javascript/api
+    command:                 node database/update/database-update-catalog.js
+    working_dir:             /app/
+    restart:                 always
+    depends_on:
+      - mariadb
+
+  database-update-releases:
+    build:                   javascript/api
+    command:                 node database/update/database-update-releases.js
+    working_dir:             /app/
+    restart:                 always
+    depends_on:
+      - mariadb
+
+  database-update-artists:
+    build:                   javascript/api
+    command:                 node database/update/database-update-artists.js
+    working_dir:             /app/
+    restart:                 always
+    depends_on:
+      - mariadb
+
+  webui:
+    build:                   javascript/webui
+    command:                 npm start
+    working_dir:             /app/webui
+    restart:                 always
+    depends_on:
+      - web
