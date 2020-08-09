@@ -25,7 +25,7 @@ sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT, `sid` TEXT, `expires` INT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT, `sid` TEXT UNIQUE KEY, `expires` INT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
