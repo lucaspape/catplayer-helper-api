@@ -64,8 +64,8 @@ sqlhelper.getConnection(
                 request({
                   url: 'http://database-authentication/privlevel?username=' + result[0].username,
                   method: 'GET',
-                  }, function (error, res, body) {
-                  if (!error && res.statusCode == 200) {
+                }, function (error, response, body) {
+                  if (!error && response.statusCode == 200) {
                     console.log('auth level for user ' + result[0].username + ' : ' + body.privilegeLevel);
 
                     switch(body.privilegeLevel){
@@ -82,10 +82,12 @@ sqlhelper.getConnection(
                         res.status(401).send('Could not find user');
                     }
                   } else {
+                    console.log('Privlevel request failed');
                     res.status(500).send(error);
                   }
                 });
               }else{
+                console.log('Could not find user');
                 res.status(401).send('Could not find user');
               }
             }
