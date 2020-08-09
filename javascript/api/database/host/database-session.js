@@ -60,12 +60,14 @@ sqlhelper.getConnection(
               res.status(500).send(err);
             } else {
               console.log(JSON.stringify(result));
-              if(result.username){
+              if(result[0].username){
                 request({
-                  url: 'http://database-authentication/privlevel?username=' + result.username,
+                  url: 'http://database-authentication/privlevel?username=' + result[0].username,
                   method: 'GET',
                   }, function (error, res, body) {
                   if (!error && res.statusCode == 200) {
+                    console.log('auth level for user ' + result[0].username + ' : ' + body.privilegeLevel);
+
                     switch(body.privilegeLevel){
                       case 0:
                         res.status(200).send({basicAuthentication: true, downloadAllowed: false, adminActions: false});
