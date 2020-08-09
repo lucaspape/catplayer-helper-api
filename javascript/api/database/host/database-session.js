@@ -67,9 +67,9 @@ sqlhelper.getConnection(
                 }, function (error, response, body) {
                   if (!error && response.statusCode == 200) {
                     console.log(body);
-                    console.log('auth level for user ' + result[0].email + ' : ' + body.privilegeLevel);
+                    console.log('auth level for user ' + result[0].email + ' : ' + JSON.parse(body).privilegeLevel);
 
-                    switch(body.privilegeLevel){
+                    switch(JSON.parse(body).privilegeLevel){
                       case 0:
                         res.status(200).send({basicAuthentication: true, downloadAllowed: false, adminActions: false});
                         break;
