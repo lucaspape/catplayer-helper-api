@@ -60,13 +60,13 @@ sqlhelper.getConnection(
               res.status(500).send(err);
             } else {
               console.log(JSON.stringify(result));
-              if(result[0].username){
+              if(result[0].email){
                 request({
-                  url: 'http://database-authentication/privlevel?username=' + result[0].username,
+                  url: 'http://database-authentication/privlevel?username=' + result[0].email,
                   method: 'GET',
                 }, function (error, response, body) {
                   if (!error && response.statusCode == 200) {
-                    console.log('auth level for user ' + result[0].username + ' : ' + body.privilegeLevel);
+                    console.log('auth level for user ' + result[0].email + ' : ' + body.privilegeLevel);
 
                     switch(body.privilegeLevel){
                       case 0:
