@@ -40,7 +40,7 @@ sqlhelper.getConnection(
 
           const loginQuery = 'SELECT password FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
 
-          mysqlConnection.query(sessionQuery, (err, result) => {
+          mysqlConnection.query(loginQuery, (err, result) => {
             if (err) {
               res.send(err);
             } else {
