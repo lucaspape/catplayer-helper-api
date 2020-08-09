@@ -38,6 +38,7 @@ sqlhelper.getConnection(
           console.log('Login!');
 
           const email = req.body.email;
+          console.log('Password before hash: ' + req.body.password);
           const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
 
           const loginQuery = 'SELECT password FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
@@ -63,6 +64,8 @@ sqlhelper.getConnection(
                   }
                 });
               }else{
+                console.log('DB password: ' + result.password);
+                console.log('Received password: ' + password)
                 console.log('Wrong password!');
                 res.status(401).send('Wrong password');
               }
