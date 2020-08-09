@@ -558,10 +558,8 @@ function authenticated(cookies){
       }, function (error, res, body) {
       if (!error && res.statusCode == 200) {
         if(body){
-          const json = JSON.parse(body);
-
-          if(json.basicAuthentication){
-            resolve(json.basicAuthentication);
+          if(body.basicAuthentication){
+            resolve(body.basicAuthentication);
           }else{
             resolve(false);
           }
