@@ -90,6 +90,70 @@ app.get(APIV2PREFIX + '/session', async (req, res) => {
   }
 });
 
+app.patch(APIV2PREFIX + '/playlist/:playlistId/record', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.delete(APIV2PREFIX + '/playlist/:playlistId/record', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.get(APIV2PREFIX + '/playlist/:playlistId/catalog', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.get(APIV2PREFIX + '/playlist/:playlistId', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.patch(APIV2PREFIX + '/playlist/:playlistId', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.delete(APIV2PREFIX + '/playlist/:playlistId', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.get(APIV2PREFIX + '/playlists', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
+app.post(APIV2PREFIX + '/playlist', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(500).send('Not implemented!');
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
 app.get(APIPREFIX + '/', async (req, res) => {
   res.status(418);
   res.send("Hello world!!");

@@ -60,7 +60,7 @@ sqlhelper.getConnection(
               res.status(500).send(err);
             } else {
               console.log(JSON.stringify(result));
-              if(result[0].email){
+              if(result[0] && result[0].email){
                 request({
                   url: 'http://database-authentication/privlevel?email=' + result[0].email,
                   method: 'GET',
