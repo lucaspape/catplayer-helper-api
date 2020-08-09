@@ -63,16 +63,22 @@ sqlhelper.getConnection(
         });
 
         app.post(APIPREFIX + '/register', (req, res) => {
+          console.log('register');
+
           const email = req.body.email;
           const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
           const privilegeLevel = req.body.privilegeLevel;
 
           const insertUserQuery = 'INSERT INTO `' + dbName + '`.`auth` (email, password, privilegeLevel) values ("' + email + '","' + password + '","' + privilegeLevel + '");';
 
+          console.log(insertUserQuery);
+
           mysqlConnection.query(insertUserQuery, (err, result) => {
             if (err) {
+              console.log(err);
               res.status(500).send(err);
             } else {
+              console.log('OK');
               res.status(200).send('OK');
             }
           });
