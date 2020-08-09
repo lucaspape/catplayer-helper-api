@@ -50,7 +50,7 @@ sqlhelper.getConnection(
               console.log(err);
               res.status(500).send(err);
             } else {
-              if(result.password === password){
+              if(result[0].password === password){
                 request({
                   url: 'http://database-session/session',
                   method: 'GET',
