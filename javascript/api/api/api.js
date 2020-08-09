@@ -48,8 +48,8 @@ app.post(APIV2PREFIX + '/signin', async(req,res) =>{
     method: 'POST',
     json: true,
     body: {email:req.body.email, password:req.body.password}
-    }, function (error, res, body) {
-    if (!error && res.statusCode == 200) {
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
       const sid = body.sid;
 
       if(sid){
@@ -70,8 +70,8 @@ app.post(APIV2PREFIX + '/register', async(req,res) =>{
     method: 'POST',
     json: true,
     body: {email:req.body.email, password:req.body.password}
-    }, function (error, res, body) {
-    if (!error && res.statusCode == 200) {
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
       res.status(200).send(body);
     } else {
       res.status(500).send(error);
