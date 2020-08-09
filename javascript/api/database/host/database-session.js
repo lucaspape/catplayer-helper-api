@@ -62,10 +62,11 @@ sqlhelper.getConnection(
               console.log(JSON.stringify(result));
               if(result[0].email){
                 request({
-                  url: 'http://database-authentication/privlevel?username=' + result[0].email,
+                  url: 'http://database-authentication/privlevel?email=' + result[0].email,
                   method: 'GET',
                 }, function (error, response, body) {
                   if (!error && response.statusCode == 200) {
+                    console.log(body);
                     console.log('auth level for user ' + result[0].email + ' : ' + body.privilegeLevel);
 
                     switch(body.privilegeLevel){

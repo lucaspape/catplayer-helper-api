@@ -97,8 +97,10 @@ sqlhelper.getConnection(
 
         app.get(APIPREFIX + '/privlevel', (req, res) => {
           console.log('Privlevel request');
-          const username = req.query.email;
-          const userquery = 'SELECT privilegeLevel FROM `' + dbName + '`.`auth` WHERE email="' + username + '";'
+          const email = req.query.email;
+          const userquery = 'SELECT privilegeLevel FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
+
+
 
           mysqlConnection.query(userquery, (err, result) => {
             if (err) {
