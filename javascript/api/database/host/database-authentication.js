@@ -64,7 +64,7 @@ sqlhelper.getConnection(
                   }
                 });
               }else{
-                console.log('DB password: ' + results);
+                console.log('DB password: ' + result);
                 console.log('Received password: ' + password)
                 console.log('Wrong password!');
                 res.status(401).send('Wrong password');
