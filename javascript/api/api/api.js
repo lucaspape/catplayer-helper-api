@@ -79,6 +79,17 @@ app.post(APIV2PREFIX + '/register', async(req,res) =>{
   });
 });
 
+app.get(APIV2PREFIX + '/session', async (req, res) => {
+  if(await authenticated(req.cookies)){
+    res.status(200).send({user:{
+      id: 'sampleId',
+      email: 'sampleEmail'
+    }});
+  }else{
+    res.status(401).send('Unauthorized');
+  }
+});
+
 app.get(APIPREFIX + '/', async (req, res) => {
   res.status(418);
   res.send("Hello world!!");
