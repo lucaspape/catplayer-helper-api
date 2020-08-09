@@ -52,7 +52,7 @@ sqlhelper.getConnection(
             } else {
               if(result[0].password === password){
                 request({
-                  url: 'http://database-session/session',
+                  url: 'http://database-session/session?email=' + email,
                   method: 'GET',
                 }, function (error, response, body) {
                   if (!error && response.statusCode == 200) {
