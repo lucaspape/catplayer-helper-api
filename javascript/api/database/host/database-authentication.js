@@ -35,27 +35,35 @@ sqlhelper.getConnection(
         console.log(err);
       } else {
         app.post(APIPREFIX + '/login', (req, res) => {
+          console.log('Login!');
+
           const email = req.body.email;
           const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
 
           const loginQuery = 'SELECT password FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
 
+          console.log(loginQuery);
+
           mysqlConnection.query(loginQuery, (err, result) => {
             if (err) {
-              res.send(err);
+              console.log(err);
+              res.status(500).send(err);
             } else {
               if(result.password === password){
                 request({
                   url: 'http://database-session/session',
                   method: 'GET',
-                  }, function (error, res, body) {
-                  if (!error && res.statusCode == 200) {
+                }, function (error, response, body) {
+                  if (!error && response.statusCode == 200) {
+                    console.log('Session request success!');
                     res.status(200).send(body);
                   } else {
+                    console.log('Session request failed!');
                     res.status(500).send(error);
                   }
                 });
               }else{
+                console.log('Wrong password!');
                 res.status(401).send('Wrong password');
               }
             }
