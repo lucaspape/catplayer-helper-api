@@ -103,7 +103,7 @@ sqlhelper.getConnection(
             if (err) {
               res.status(500).send(err);
             } else {
-              res.status(200).send({privilegeLevel: result.privilegeLevel})
+              res.status(200).send({privilegeLevel: result[0].privilegeLevel})
             }
           });
         });
