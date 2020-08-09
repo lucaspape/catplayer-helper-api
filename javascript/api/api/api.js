@@ -69,7 +69,7 @@ app.post(APIV2PREFIX + '/register', async(req,res) =>{
     url: 'http://proxy-internal/register',
     method: 'POST',
     json: true,
-    body: {email:req.body.email, password:req.body.password}
+    body: {email:req.body.email, password:req.body.password, privilegeLevel: 0}
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       res.status(200).send(body);
