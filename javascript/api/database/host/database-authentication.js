@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const request = require('request');
 const cookieParser = require('cookie-parser');
+const { v4: uuidv4 } = require('uuid');
 
 const PORT = 80;
 const APIPREFIX = '';
@@ -28,7 +29,7 @@ sqlhelper.getConnection(
     //            1->downloading
     //            2->admin
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT UNIQUE KEY, `password` TEXT, `privilegeLevel` INT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT UNIQUE KEY, `password` TEXT, `privilegeLevel` INT, `userId` TEXT UNIQUE KEY);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
@@ -79,8 +80,9 @@ sqlhelper.getConnection(
           const email = req.body.email;
           const password = crypto.createHash('sha256').update(req.body.password).digest('base64');
           const privilegeLevel = req.body.privilegeLevel;
+          const userId = uuidv4();
 
-          const insertUserQuery = 'INSERT INTO `' + dbName + '`.`auth` (email, password, privilegeLevel) values ("' + email + '","' + password + '","' + privilegeLevel + '");';
+          const insertUserQuery = 'INSERT INTO `' + dbName + '`.`auth` (email, password, privilegeLevel, userId) values ("' + email + '","' + password + '","' + privilegeLevel + '","' + userId + '");';
 
           console.log(insertUserQuery);
 

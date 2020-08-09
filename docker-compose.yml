@@ -42,6 +42,7 @@ services:
       - database-artists
       - database-session
       - database-authentication
+      - database-playlists
 
   release-api:
     build:                   javascript/api
@@ -110,6 +111,14 @@ services:
   database-authentication:
     build:                   javascript/api
     command:                 node database/host/database-authentication.js
+    working_dir:             /app/
+    restart:                 always
+    depends_on:
+      - mariadb
+
+  database-playlists:
+    build:                   javascript/api
+    command:                 node database/host/database-playlists.js
     working_dir:             /app/
     restart:                 always
     depends_on:
