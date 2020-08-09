@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const request = require('request');
 const cookieParser = require('cookie-parser');
+const { v4: uuidv4 } = require('uuid');
 
 const PORT = 80;
 const APIPREFIX = '';
@@ -31,9 +32,10 @@ sqlhelper.getConnection(
         console.log(err);
       } else {
         app.get(APIPREFIX + '/session', (req, res) => {
+          console.log('New session key request!');
           const email = req.query.email;
-          const sid = crypto.createHash('sha256').update('').digest('base64');
-          const expires = '';
+          const sid = crypto.createHash('sha256').update(uuidv4()).digest('base64');
+          const expires = 0;
 
           const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (email, sid, expires) values ("' + email + '","' + sid + '","' + expires + '");';
 
