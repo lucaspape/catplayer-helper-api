@@ -28,7 +28,7 @@ sqlhelper.getConnection(
     //            1->downloading
     //            2->admin
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT, `password` TEXT, `privilegeLevel` INT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`auth` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `email` TEXT UNIQUE KEY, `password` TEXT, `privilegeLevel` INT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
