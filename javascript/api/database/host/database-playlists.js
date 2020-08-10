@@ -35,7 +35,7 @@ sqlhelper.getConnection(
           const userId = req.query.userId;
           const playlistsQuery = 'SELECT playlistId,userId,public FROM `' + dbName + '`.`catalog`' + 'ORDER BY sortId DESC WHERE userId="' + userId + '";';
 
-          mysqlConnection.query(releaseQuery, (err, results) => {
+          mysqlConnection.query(playlistsQuery, (err, results) => {
             if (err) {
               res.status(500).send(err);
             } else {
