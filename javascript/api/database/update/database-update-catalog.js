@@ -1,5 +1,8 @@
 const request = require('request');
 const mysql = require('mysql');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const dbName = 'monstercatDB';
 
@@ -8,6 +11,16 @@ const createDatabaseConnection = mysql.createConnection({
   user: 'root',
   password: 'JacPV7QZ'
 });
+
+const PORT = 80;
+const APIPREFIX = '';
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 
 createDatabaseConnection.connect(err => {
   if (err) {
@@ -44,47 +57,17 @@ function initializeDatabase(mysqlConnection) {
     } else {
       console.log('Created catalog table');
 
-      initCatalog(mysqlConnection, function () {
-        console.log('Done!');
+      app.post(APIPREFIX + '/catalog', (req, res) => {
+        addToDB(req.body, mysqlConnection, function(){
+          res.send('OK');
+        });
+      });
 
-        //wait 5 minutes
-        setTimeout(function () {
-          initializeDatabase(mysqlConnection);
-        }, 300000);
+      app.listen(PORT, () => {
+        console.log('Server started on port ' + PORT);
       });
     }
   });
-}
-
-function initCatalog(mysqlConnection, callback) {
-  browseTracks(-1, 0,
-    function (json) {
-      console.log('Received catalog data...');
-      const trackArray = json.results.reverse();
-
-      var i = 0;
-
-      var sqlCallback = function () {
-        if (i < trackArray.length) {
-          if (i % 100 === 0) {
-            console.log((i / trackArray.length) * 100 + '%');
-          }
-
-          addToDB(trackArray[i], mysqlConnection, function () {
-            i++;
-            sqlCallback();
-          });
-        } else {
-          callback();
-        }
-      };
-
-      sqlCallback();
-    },
-
-    function (err) {
-      console.log(err);
-    });
 }
 
 function addToDB(track, mysqlConnection, callback) {
@@ -132,18 +115,4 @@ function addToDB(track, mysqlConnection, callback) {
 
     callback()
   });
-}
-
-function browseTracks(limit, skip, callback, errorCallback) {
-  request({
-    url: 'https://connect.monstercat.com/v2/catalog/browse?limit=' + limit + '&skip=' + skip,
-    method: 'GET'
-  },
-    function (err, resp, body) {
-      if (err) {
-        errorCallback(err);
-      } else {
-        callback(JSON.parse(body));
-      }
-    });
 }

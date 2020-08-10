@@ -41,28 +41,7 @@ function downloadCoverImage(res, albumId, callback) {
     fs.mkdirSync(releaseDir);
   }
 
-  if (!fs.existsSync(releaseDir + '/' + coverFileFull)) {
-    utils.download('https://connect.monstercat.com/v2/release/' + albumId + '/cover?image_width=2048', releaseDir + '/' + coverFileOriginal, function() {
-      sharp(releaseDir + '/' + coverFileOriginal)
-        .toFile(releaseDir + '/' + '/' + coverFileFull, (err, info) => {
-          if (err) {
-            callback(err);
-          } else {
-            sharp(releaseDir + '/' + coverFileOriginal)
-              .resize(res, res)
-              .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback({
-                    filename: coverFile
-                  });
-                }
-              });
-          }
-        });
-    });
-  } else if (!fs.existsSync(releaseDir + '/' + coverFile)) {
+  if (!fs.existsSync(releaseDir + '/' + coverFile)) {
     sharp(releaseDir + '/' + coverFileOriginal)
       .resize(res, res)
       .toFile(releaseDir + '/' + '/' + coverFile, (err, info) => {

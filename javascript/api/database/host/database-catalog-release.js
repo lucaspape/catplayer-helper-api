@@ -29,6 +29,19 @@ sqlhelper.getConnection(
       } else {
         console.log('Created catalog releases table');
 
+        app.post(APIPREFIX + '/catalog/release/:catalogID', (req, res) => {
+          const catalogID = req.params.catalogID;
+
+          const tracks = req.body.tracks;
+          const releaseId = req.body.releaseId;
+
+          insertTracks(mysqlConnection, releaseId, catalogID, tracks, () =>{
+            res.status(200).send('OK');
+          }, (err)=>{
+            res.status(500).send(err);
+          });
+        });
+
         app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
           var gold = false;
 
@@ -45,31 +58,7 @@ sqlhelper.getConnection(
               res.send(err);
             } else {
               if (result[0] === undefined) {
-                getCatalogRelease(mcID, function(json) {
-                    var releaseId = json.release.id;
-
-                    var trackIds = json.tracks[0].id;
-                    for (var i = 1; i < json.tracks.length; i++) {
-                      trackIds += ',' + json.tracks[i].id;
-                    }
-
-                    var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mcID + '");';
-
-                    mysqlConnection.query(insertIdsQuery, (err, result) => {
-                      if (err) {
-                        res.send(err);
-                      } else {
-                        getFromDB(mysqlConnection,releaseId, trackIds.split(','), gold, function(responseObject) {
-                          res.send(responseObject);
-                        }, function(err) {
-                          res.send(err);
-                        });
-                      }
-                    });
-                  },
-                  function(err) {
-                    res.send(err);
-                  })
+                res.status(404).send('Not found');
               } else {
                 var releaseId = result[0].releaseId;
                 var trackIds = result[0].trackIds.split(',');
@@ -152,16 +141,19 @@ function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
   });
 }
 
-function getCatalogRelease(mcID, callback, errorCallback) {
-  request({
-      url: 'https://connect.monstercat.com/v2/catalog/release/' + mcID,
-      method: 'GET'
-    },
-    function(err, resp, body) {
-      if (err) {
+function insertTracks(mysqlConnection, releaseId, catalogId, tracks, callback, errorCallback ){
+  var trackIds = tracks[0].id;
+  for (var i = 1; i < tracks.length; i++) {
+    trackIds += ',' + tracks[i].id;
+  }
+
+  var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + catalogId + '");';
+
+  mysqlConnection.query(insertIdsQuery, (err, result) => {
+    if (err) {
         errorCallback(err);
-      } else {
-        callback(JSON.parse(body));
-      }
-    });
+    } else {
+        callback();
+    }
+  });
 }

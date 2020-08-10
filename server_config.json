@@ -1,0 +1,5 @@
+{
+  "apiprefix": "custom",
+  "public_api_address": "https://api.lucaspape.de/",
+  "public": true
+}

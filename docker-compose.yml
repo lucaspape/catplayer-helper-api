@@ -31,6 +31,18 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+      - ${PWD}/private-static-content:/app/static-private
+      - ${PWD}/javascript/apiclient:/app/apiclient
+      - ${PWD}/server_config.json:/app/server_config.json
+    depends_on:
+      - database-logs
+      - database-catalog-release
+      - database-catalog
+      - database-releases
+      - database-artists
+      - database-session
+      - database-authentication
+      - database-playlists
 
   release-api:
     build:                   javascript/api
@@ -45,88 +57,101 @@ services:
     command:                 node api/related-api.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-logs:
     build:                   javascript/api
     command:                 node database/host/database-logs.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-catalog-release:
     build:                   javascript/api
     command:                 node database/host/database-catalog-release.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-catalog:
     build:                   javascript/api
     command:                 node database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-releases:
     build:                   javascript/api
     command:                 node database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-artists:
     build:                   javascript/api
     command:                 node database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-session:
     build:                   javascript/api
     command:                 node database/host/database-session.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
-  database-local:
+  database-authentication:
     build:                   javascript/api
-    command:                 node database/local/database-local.js
+    command:                 node database/host/database-authentication.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
+
+  database-playlists:
+    build:                   javascript/api
+    command:                 node database/host/database-playlists.js
+    working_dir:             /app/
+    restart:                 always
+    depends_on:
+      - mariadb
 
   database-update-catalog:
     build:                   javascript/api
     command:                 node database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-update-releases:
     build:                   javascript/api
     command:                 node database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
   database-update-artists:
     build:                   javascript/api
     command:                 node database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
+    depends_on:
+      - mariadb
 
-  recg:
-    build:                   javascript/image
-    command:                 node image-recognition.js
-    working_dir:             /app/
+  webui:
+    build:                   javascript/webui
+    command:                 npm start
+    working_dir:             /app/webui
     restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app/static
-      - ${PWD}/screenshots:/app/screenshots
-      
-  stream-screenshot:
-    build:                   javascript/image
-    command:                 node stream-screenshot.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
-      - ${PWD}/screenshots:/app/screenshots
-
-  news-notifications:
-    build:                notifications/
-    command:       node news-notifications.js
-    working_dir:    /app/
-    volumes:
-      - ${PWD}/notification_config:/app/config
-    restart:                 always
+    depends_on:
+      - web
