@@ -46,6 +46,23 @@ sqlhelper.getConnection(
           });
         });
 
+        app.post(APIPREFIX + '/playlists', (req, res) => {
+          const userId = req.body.userId;
+          const public = req.body.public;
+          const playlistName = req.body.playlistName;
+          const playlistId = uuidv4();
+
+          const insertPlaylistQuery = 'INSERT INTO `' + dbName + '`.`playlists` (playlistName, playlistId, userId, public) values ("' + playlistName + '","' + playlistId + '","' + userId + '","' + public + '");';
+
+          mysqlConnection.query(insertPlaylistQuery, (err, results) => {
+            if (err) {
+              res.status(500).send(err);
+            } else {
+              res.status(200).send('OK');
+            }
+          });
+        });
+
         app.get(APIPREFIX + '/playlist', (req, res) => {
 
         });
