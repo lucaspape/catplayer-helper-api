@@ -140,7 +140,55 @@ app.delete(APIV2PREFIX + '/playlist/:playlistId', async (req, res) => {
 
 app.get(APIV2PREFIX + '/playlists', async (req, res) => {
   if(await authenticated(req.cookies)){
-    res.status(500).send('Not implemented!');
+    request({
+      url: 'http://proxy-internal/session',
+      method: 'POST',
+      json: true,
+      body: {sid: cookies['connect.sid']}
+    }, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        if(body){
+          if(body.email){
+            request({
+              url: 'http://proxy-internal/user?email=' + body.email,
+              method: 'GET'
+            }, function(err, resp, body) {
+              if (err) {
+                res.status(500).send(err);
+              } else {
+                try {
+                  const json = JSON.parse(body);
+                  if(json.userId){
+                    request({
+                      url: 'http://proxy-internal/playlists?userId' + json.userId,
+                      method: 'GET'
+                    }, function(err, resp, body) {
+                      if (err) {
+                        res.status(500).send(err);
+                      } else {
+                        try {
+                          res.send(JSON.parse(body));
+                        } catch (e) {
+                          res.status(500).send(e);
+                        }
+                      }
+                    });
+                  }
+                } catch (e) {
+                  res.status(500).send(e);
+                }
+              }
+            });
+          }else{
+            res.status(500).send('Could not find user');
+          }
+        }else{
+          res.status(500).send('Error');
+        }
+      } else {
+        res.status(500).send(error);
+      }
+    });
   }else{
     res.status(401).send('Unauthorized');
   }

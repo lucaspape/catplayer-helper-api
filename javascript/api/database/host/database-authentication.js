@@ -102,8 +102,6 @@ sqlhelper.getConnection(
           const email = req.query.email;
           const userquery = 'SELECT privilegeLevel FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
 
-
-
           mysqlConnection.query(userquery, (err, result) => {
             if (err) {
               console.log(err);
@@ -111,6 +109,22 @@ sqlhelper.getConnection(
             } else {
               console.log(JSON.stringify(result));
               res.status(200).send({privilegeLevel: result[0].privilegeLevel})
+            }
+          });
+        });
+
+        app.get(APIPREFIX + '/user', (req, res) => {
+          console.log('User request');
+          const email = req.query.email;
+          const userquery = 'SELECT userId,privilegeLevel FROM `' + dbName + '`.`auth` WHERE email="' + email + '";'
+
+          mysqlConnection.query(userquery, (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).send(err);
+            } else {
+              console.log(JSON.stringify(result));
+              res.status(200).send(result[0]);
             }
           });
         });

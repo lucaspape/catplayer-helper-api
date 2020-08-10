@@ -71,13 +71,13 @@ sqlhelper.getConnection(
 
                     switch(JSON.parse(body).privilegeLevel){
                       case 0:
-                        res.status(200).send({basicAuthentication: true, downloadAllowed: false, adminActions: false});
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: false, adminActions: false, email: result[0].email});
                         break;
                       case 1:
-                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: false});
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: false, email: result[0].email});
                         break;
                       case 2:
-                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: true});
+                        res.status(200).send({basicAuthentication: true, downloadAllowed: true, adminActions: true, email: result[0].email});
                         break;
                       default:
                         res.status(401).send('Could not find user');

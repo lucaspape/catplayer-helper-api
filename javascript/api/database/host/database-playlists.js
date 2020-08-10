@@ -25,17 +25,32 @@ sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`playlists` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `playlistName` TEXT, `playlistId` TEXT UNIQUE KEY, `userId` TEXt);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`playlists` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `playlistName` TEXT, `playlistId` TEXT UNIQUE KEY, `userId` TEXT, `public` TEXT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        app.get(APIPREFIX + '/session', (req, res) => {
+        app.get(APIPREFIX + '/playlists', (req, res) => {
+          const userId = req.query.userId;
+          const playlistsQuery = 'SELECT playlistId,userId,public FROM `' + dbName + '`.`catalog`' + 'ORDER BY sortId DESC WHERE userId="' + userId + '";';
+
+          mysqlConnection.query(releaseQuery, (err, results) => {
+            if (err) {
+              res.status(500).send(err);
+            } else {
+              res.status(200).send({
+                results: results
+              });
+            }
+          });
+        });
+
+        app.get(APIPREFIX + '/playlist', (req, res) => {
 
         });
 
-        app.post(APIPREFIX + '/session', (req, res) => {
+        app.post(APIPREFIX + '/playlist', (req, res) => {
 
         });
 
