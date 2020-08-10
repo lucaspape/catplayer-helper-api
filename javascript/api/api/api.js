@@ -153,7 +153,7 @@ app.get(APIV2PREFIX + '/playlists', async (req, res) => {
               url: 'http://proxy-internal/user?email=' + body.email,
               method: 'GET'
             }, function(err, resp, body) {
-              if (err) {
+              if (err || resp.statusCode != 200) {
                 res.status(500).send(err);
               } else {
                 try {
@@ -163,7 +163,7 @@ app.get(APIV2PREFIX + '/playlists', async (req, res) => {
                       url: 'http://proxy-internal/playlists?userId=' + json.userId,
                       method: 'GET'
                     }, function(err, resp, body) {
-                      if (err) {
+                      if (err || resp.statusCode != 200) {
                         res.status(500).send(err);
                       } else {
                         try {
