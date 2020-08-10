@@ -33,7 +33,7 @@ sqlhelper.getConnection(
       } else {
         app.get(APIPREFIX + '/playlists', (req, res) => {
           const userId = req.query.userId;
-          const playlistsQuery = 'SELECT playlistId,userId,public FROM `' + dbName + '`.`catalog`' + 'ORDER BY sortId DESC WHERE userId="' + userId + '";';
+          const playlistsQuery = 'SELECT playlistId,userId,public FROM `' + dbName + '`.`catalog`' + ' ORDER BY sortId DESC WHERE userId="' + userId + '";';
 
           mysqlConnection.query(playlistsQuery, (err, results) => {
             if (err) {

@@ -160,7 +160,7 @@ app.get(APIV2PREFIX + '/playlists', async (req, res) => {
                   const json = JSON.parse(body);
                   if(json.userId){
                     request({
-                      url: 'http://proxy-internal/playlists?userId' + json.userId,
+                      url: 'http://proxy-internal/playlists?userId=' + json.userId,
                       method: 'GET'
                     }, function(err, resp, body) {
                       if (err) {
