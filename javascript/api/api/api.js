@@ -144,7 +144,7 @@ app.get(APIV2PREFIX + '/playlists', async (req, res) => {
       url: 'http://proxy-internal/session',
       method: 'POST',
       json: true,
-      body: {sid: cookies['connect.sid']}
+      body: {sid: req.cookies['connect.sid']}
     }, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         if(body){
