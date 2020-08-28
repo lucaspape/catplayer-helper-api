@@ -58,8 +58,8 @@ function initializeDatabase(mysqlConnection) {
   });
 }
 
-var idTempFilename = '/app/static/catalog-search' + id + '.txt';
-var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
+var idTempFilename = '';
+var searchTempFilename = '';
 
 function initCatalog(mysqlConnection, callback) {
   var id = uuidv4();
