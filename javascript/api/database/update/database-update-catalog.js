@@ -1,6 +1,7 @@
 const request = require('request');
 const mysql = require('mysql');
 const fs = require('fs');
+import { v4 as uuidv4 } from 'uuid';
 
 const dbName = 'monstercatDB';
 
@@ -58,13 +59,12 @@ function initializeDatabase(mysqlConnection) {
 }
 
 function initCatalog(mysqlConnection, callback) {
-  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'));
-  fs.unlinkSync('/app/static/catalog-search.txt');
-  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'));
+  var id = uuidv4();
+  var idTempFilename = '/app/static/catalog-search' + id + '.txt';
+  var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
-  fs.closeSync(fs.openSync('/app/static/catalog-ids.txt', 'w'));
-  fs.unlinkSync('/app/static/catalog-ids.txt');
-  fs.closeSync(fs.openSync('/app/static/catalog-ids.txt', 'w'));
+  fs.closeSync(fs.openSync(idTempFilename, 'w'));
+  fs.closeSync(fs.openSync(searchTempFilename, 'w'));
 
   browseTracks(-1, 0,
     function (json) {
@@ -84,6 +84,9 @@ function initCatalog(mysqlConnection, callback) {
             sqlCallback();
           });
         } else {
+          fs.renameSync('/app/static/catalog-search.txt', idTempFilename);
+          fs.renameSync('/app/static/catalog-search.txt', searchTempFilename);
+
           callback();
         }
       };
@@ -142,9 +145,9 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    fs.appendFile('/app/static/catalog-search.txt', track.search + '\n', function (err) {
+    fs.appendFile(searchTempFilename, track.search + '\n', function (err) {
       if (err) throw err;
-      fs.appendFile('/app/static/catalog-ids.txt', track.id + '\n', function (err) {
+      fs.appendFile(idTempFilename, track.id + '\n', function (err) {
         if (err) throw err;
           callback();
       });
