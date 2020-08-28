@@ -139,7 +139,7 @@ func BubbleSort(list []float64, secondaryList []string)[]string{
   return secondaryList;
 }
 
-func CompareFromFile(filename string, inputString string, skip int, limit int,){
+func CompareFromFile(filename string, idFile string, inputString string, skip int, limit int,){
   var totalLines int = countFileLines(filename)
 
   var distances = make([]float64,totalLines)
@@ -158,6 +158,20 @@ func CompareFromFile(filename string, inputString string, skip int, limit int,){
         lines[lineCount] = scanner.Text()
         distances[lineCount] = CompareTwoStrings(scanner.Text(), inputString)
 
+        lineCount++
+    }
+
+		lineCount = 0
+
+		idfile, err := os.Open(idFile)
+		if err != nil {
+        log.Fatal(err)
+    }
+    defer idfile.Close()
+
+		scanner = bufio.NewScanner(idfile)
+    for scanner.Scan() {
+        lines[lineCount] = scanner.Text()
         lineCount++
     }
 
@@ -180,17 +194,17 @@ func CompareFromFile(filename string, inputString string, skip int, limit int,){
 }
 
 func main() {
-    skip, err := strconv.Atoi(os.Args[3])
+    skip, err := strconv.Atoi(os.Args[4])
     if err != nil {
         // handle error
         fmt.Println(err)
         os.Exit(2)
     }
-    limit, err := strconv.Atoi(os.Args[4])
+    limit, err := strconv.Atoi(os.Args[5])
     if err != nil {
         // handle error
         fmt.Println(err)
         os.Exit(2)
     }
-    CompareFromFile(os.Args[1], os.Args[2], skip, limit)
+    CompareFromFile(os.Args[1], os.Args[2], os.Args[3], skip, limit)
 }
