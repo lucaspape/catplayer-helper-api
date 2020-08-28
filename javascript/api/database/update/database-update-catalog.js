@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const dbName = 'monstercatDB';
 
 var id = uuidv4();
-var idTempFilename = idTempFilename = '/app/static/catalog-id' + id + '.txt';
-var searchTempFilename = searchTempFilename = '/app/static/catalog-search' + id + '.txt';
+var idTempFilename = '/app/static/catalog-id' + id + '.txt';
+var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
