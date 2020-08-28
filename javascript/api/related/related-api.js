@@ -41,6 +41,10 @@ sqlhelper.getConnection(
             }
           }
 
+          if(skipMonstercatTracks){
+            excludeString += 'monstercat'
+          }
+
           var command = './calc /app/static/catalog-search.txt /app/static/catalog-ids.txt ' + inputString + ' ' + excludeString + ' ' + skip + ' ' + limit;
 
           console.log(command);
