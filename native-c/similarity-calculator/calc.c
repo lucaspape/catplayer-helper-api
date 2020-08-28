@@ -61,7 +61,7 @@ double similarity(char * s1, char * s2){
     return 1.0;
   }
 
-  return ((longerLength - editDistance(longer, shorter)) / (double)(longerLength)) * 100.0;
+  return ((double)(longerLength - editDistance(longer, shorter)) / (double)(longerLength)) * 100.0;
 }
 
 int linesInFile(char * filename){
@@ -86,7 +86,7 @@ int linesInFile(char * filename){
   return lineCount;
 }
 
-char **bubble_sort(double list[], long n, char * secondaryList[])
+double *bubble_sort(double list[], long n, char * secondaryList[])
 {
   long c, d, t;
   char * f;
@@ -106,7 +106,7 @@ char **bubble_sort(double list[], long n, char * secondaryList[])
     }
   }
 
-  return secondaryList;
+  return list;
 }
 
 char * compareStrings(char * inputFile, char * inputString)
@@ -137,12 +137,12 @@ char * compareStrings(char * inputFile, char * inputString)
       distances[i] = similarity(lines[i], inputString);
     }
 
-    char ** sort = bubble_sort(distances, totalLines, lines);
+    double * sort = bubble_sort(distances, totalLines, lines);
 
     long i = 0;
 
     do {
-      printf("%s", sort[i]);
+      printf("%lf\n", sort[i]);
       i++;
     } while(i<totalLines);
 
