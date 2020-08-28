@@ -41,7 +41,7 @@ services:
       - ${PWD}/static-content:/app/api/static
 
   related-api:
-    build:                   javascript/related
+    build:                   javascript/api/related
     command:                 node related/related-api.js
     working_dir:             /app/
     restart:                 always
