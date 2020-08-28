@@ -84,7 +84,7 @@ function initCatalog(mysqlConnection, callback) {
             sqlCallback();
           });
         } else {
-          fs.renameSync(idTempFilename, '/app/static/catalog-search.txt' );
+          fs.renameSync(idTempFilename, '/app/static/catalog-ids.txt' );
           fs.renameSync(searchTempFilename, '/app/static/catalog-search.txt');
 
           callback();
