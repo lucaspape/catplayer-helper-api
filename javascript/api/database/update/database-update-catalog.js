@@ -62,6 +62,10 @@ function initCatalog(mysqlConnection, callback) {
   fs.unlinkSync('/app/static/catalog-search.txt');
   fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'));
 
+  fs.closeSync(fs.openSync('/app/static/catalog-ids.txt', 'w'));
+  fs.unlinkSync('/app/static/catalog-ids.txt');
+  fs.closeSync(fs.openSync('/app/static/catalog-ids.txt', 'w'));
+
   browseTracks(-1, 0,
     function (json) {
       console.log('Received catalog data...');
@@ -140,7 +144,10 @@ function addToDB(track, mysqlConnection, callback) {
 
     fs.appendFile('/app/static/catalog-search.txt', track.search + '\n', function (err) {
       if (err) throw err;
-        callback();
+      fs.appendFile('/app/static/catalog-ids.txt', track.id + '\n', function (err) {
+        if (err) throw err;
+          callback();
+      });
     });
   });
 }
