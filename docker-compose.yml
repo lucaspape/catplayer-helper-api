@@ -47,7 +47,6 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/api/static
-      - ${PWD}/native:/app/native
 
   database-logs:
     build:                   javascript/api
