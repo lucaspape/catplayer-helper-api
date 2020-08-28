@@ -46,7 +46,7 @@ services:
     working_dir:             /app/
     restart:                 always
     volumes:
-      - ${PWD}/static-content:/app/api/static
+      - ${PWD}/static-content:/app/static
 
   database-logs:
     build:                   javascript/api
