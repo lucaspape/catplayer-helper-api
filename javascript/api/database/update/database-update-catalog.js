@@ -135,7 +135,7 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    fs.appendFile('/app/static/catalog-search.txt', track.search, function (err) {
+    fs.appendFile('/app/static/catalog-search.txt', track.search + '\n', function (err) {
       if (err) throw err;
         callback();
     });
