@@ -42,7 +42,7 @@ services:
 
   related-api:
     build:                   javascript/api/related
-    command:                 node related/related-api.js
+    command:                 node related-api.js
     working_dir:             /app/
     restart:                 always
     volumes:
