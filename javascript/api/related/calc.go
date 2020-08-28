@@ -139,11 +139,8 @@ func BubbleSort(list []float64, secondaryList []string)[]string{
   return secondaryList;
 }
 
-func CompareFromFile(filename string, idFile string, inputString string, skip int, limit int,){
-  var totalLines int = countFileLines(filename)
-
+func CompareFromFile(filename string, idFile string, inputString string, totalLines int, skip int, limit int,)[]float64{
   var distances = make([]float64,totalLines)
-  var lines = make([]string,totalLines)
 
   file, err := os.Open(filename)
     if err != nil {
@@ -155,21 +152,64 @@ func CompareFromFile(filename string, idFile string, inputString string, skip in
 
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
-        lines[lineCount] = scanner.Text()
         distances[lineCount] = CompareTwoStrings(scanner.Text(), inputString)
 
         lineCount++
     }
 
-		lineCount = 0
+    if err := scanner.Err(); err != nil {
+        log.Fatal(err)
+    }
 
-		idfile, err := os.Open(idFile)
+		return distances
+}
+
+func main() {
+		var filename = os.Args[1]
+		var idFilename = os.Args[2]
+
+    skip, err := strconv.Atoi(os.Args[4])
+    if err != nil {
+        // handle error
+        fmt.Println(err)
+        os.Exit(2)
+    }
+    limit, err := strconv.Atoi(os.Args[5])
+    if err != nil {
+        // handle error
+        fmt.Println(err)
+        os.Exit(2)
+    }
+
+		var totalLines int = countFileLines(os.Args[1])
+
+		var distances = make([]float64,totalLines)
+
+		inputStrings := strings.Split(os.Args[3], ",")
+
+		for k:=0; k < len(inputStrings); k++{
+			if k==0{
+				distances = CompareFromFile(filename, idFilename, inputStrings[k], totalLines, skip, limit)
+			}else{
+				newDistances := CompareFromFile(filename, idFilename, inputStrings[k], totalLines, skip, limit)
+
+				for j:=0; j<len(newDistances); j++{
+					distances[j] = distances[j] + newDistances[j]
+				}
+			}
+		}
+
+		var lines = make([]string,totalLines)
+
+		var lineCount int = 0
+
+		idFile, err := os.Open(idFilename)
 		if err != nil {
         log.Fatal(err)
     }
-    defer idfile.Close()
+    defer idFile.Close()
 
-		scanner = bufio.NewScanner(idfile)
+		scanner := bufio.NewScanner(idFile)
     for scanner.Scan() {
         lines[lineCount] = scanner.Text()
         lineCount++
@@ -187,24 +227,4 @@ func CompareFromFile(filename string, idFile string, inputString string, skip in
       fmt.Println(sorted[i])
       count++
     }
-
-    if err := scanner.Err(); err != nil {
-        log.Fatal(err)
-    }
-}
-
-func main() {
-    skip, err := strconv.Atoi(os.Args[4])
-    if err != nil {
-        // handle error
-        fmt.Println(err)
-        os.Exit(2)
-    }
-    limit, err := strconv.Atoi(os.Args[5])
-    if err != nil {
-        // handle error
-        fmt.Println(err)
-        os.Exit(2)
-    }
-    CompareFromFile(os.Args[1], os.Args[2], os.Args[3], skip, limit)
 }
