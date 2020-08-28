@@ -6,6 +6,7 @@ import (
   "os"
   "bufio"
   "log"
+  "strconv"
 )
 
 func CompareTwoStrings(stringOne, stringTwo string) float64 {
@@ -138,7 +139,7 @@ func BubbleSort(list []float64, secondaryList []string)[]string{
   return secondaryList;
 }
 
-func CompareFromFile(filename, inputString string){
+func CompareFromFile(filename string, inputString string, skip int, limit int,){
   var totalLines int = countFileLines(filename)
 
   var distances = make([]float64,totalLines)
@@ -162,8 +163,15 @@ func CompareFromFile(filename, inputString string){
 
     var sorted []string = BubbleSort(distances, lines)
 
-    for i:=0; i < len(sorted); i++{
+    var count int = 0
+
+    for i:=skip; i < len(sorted); i++{
+      if count >= limit{
+        break
+      }
+
       fmt.Println(sorted[i])
+      count++
     }
 
     if err := scanner.Err(); err != nil {
@@ -172,5 +180,17 @@ func CompareFromFile(filename, inputString string){
 }
 
 func main() {
-    CompareFromFile(os.Args[1], os.Args[2])
+    skip, err := strconv.Atoi(os.Args[3])
+    if err != nil {
+        // handle error
+        fmt.Println(err)
+        os.Exit(2)
+    }
+    limit, err := strconv.Atoi(os.Args[4])
+    if err != nil {
+        // handle error
+        fmt.Println(err)
+        os.Exit(2)
+    }
+    CompareFromFile(os.Args[1], os.Args[2], skip, limit)
 }
