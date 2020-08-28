@@ -58,10 +58,13 @@ function initializeDatabase(mysqlConnection) {
   });
 }
 
+var idTempFilename = '/app/static/catalog-search' + id + '.txt';
+var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
+
 function initCatalog(mysqlConnection, callback) {
   var id = uuidv4();
-  var idTempFilename = '/app/static/catalog-search' + id + '.txt';
-  var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
+  idTempFilename = '/app/static/catalog-search' + id + '.txt';
+  searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
   fs.closeSync(fs.openSync(idTempFilename, 'w'));
   fs.closeSync(fs.openSync(searchTempFilename, 'w'));
