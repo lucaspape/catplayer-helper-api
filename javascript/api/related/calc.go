@@ -167,14 +167,15 @@ func CompareFromFile(filename string, idFile string, inputString string, totalLi
 func main() {
 		var filename = os.Args[1]
 		var idFilename = os.Args[2]
+		var excludeIds = os.Args[4]
 
-    skip, err := strconv.Atoi(os.Args[4])
+    skip, err := strconv.Atoi(os.Args[5])
     if err != nil {
         // handle error
         fmt.Println(err)
         os.Exit(2)
     }
-    limit, err := strconv.Atoi(os.Args[5])
+    limit, err := strconv.Atoi(os.Args[6])
     if err != nil {
         // handle error
         fmt.Println(err)
@@ -224,7 +225,12 @@ func main() {
         break
       }
 
-      fmt.Println(sorted[i])
-      count++
+			if strings.Contains(excludeIds, sorted[i]){
+				limit++
+				count++
+			}else{
+				fmt.Println(sorted[i])
+	      count++
+			}
     }
 }
