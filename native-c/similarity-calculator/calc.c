@@ -87,7 +87,7 @@ int linesInFile(char * filename){
   return lineCount;
 }
 
-char **bubble_sort(long list[], long n, char * secondaryList[])
+char **bubble_sort(double list[], long n, char * secondaryList[])
 {
   long c, d, t;
   char * f;
@@ -114,7 +114,7 @@ char * compareStrings(char * inputFile, char * inputString)
 {
     long totalLines = linesInFile(inputFile);
 
-    long distances[totalLines];
+    double distances[totalLines];
     char *lines[totalLines];
 
     FILE * fp;
