@@ -58,7 +58,7 @@ sqlhelper.getConnection(
             var out = stdout.split(/\r?\n/);
             var array = [];
 
-            for(var i=0; i<out.length(); i++){
+            for(var i=0; i<out.length; i++){
               array[i] = {id: out[i]};
             }
 
