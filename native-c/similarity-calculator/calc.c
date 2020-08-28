@@ -1,12 +1,26 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-int editDistance(const char * s1, const char * s2){
-  //to lower case
+char *strtolower(char *s)
+{
+    char *d = (char *)malloc(strlen(s));
+    while (*s)
+    {
+        *d =tolower(*s);
+        d++;
+        s++;
+    }
+    return d;
+}
+
+int editDistance(char * s1, char * s2){
+  s1 = strtolower(s1);
+  s2 = strtolower(s2);
 
   int costs[strlen(s2)];
 
