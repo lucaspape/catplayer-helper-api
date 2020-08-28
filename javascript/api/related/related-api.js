@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { fork } = require('child_process');
+const { exec } = require("child_process");
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -31,13 +31,13 @@ sqlhelper.getConnection(
           var inputString = '';
 
           for (var i = 0; i < search.length; i++) {
-            inputString += search[i] + ',';
-            excludeString += search[i] + ',';
+            inputString += search[i].id + ',';
+            excludeString += search[i].id + ',';
           }
 
           if(exclude){
             for (var i = 0; i < exclude.length; i++) {
-              excludeString += exclude[i] + ',';
+              excludeString += exclude[i].id + ',';
             }
           }
 
