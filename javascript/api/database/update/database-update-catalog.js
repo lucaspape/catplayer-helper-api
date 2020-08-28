@@ -1,5 +1,6 @@
 const request = require('request');
 const mysql = require('mysql');
+const fs = require('fs');
 
 const dbName = 'monstercatDB';
 
@@ -57,6 +58,7 @@ function initializeDatabase(mysqlConnection) {
 }
 
 function initCatalog(mysqlConnection, callback) {
+  fs.unlinkSync('/app/static/catalog-search.txt');
   browseTracks(-1, 0,
     function (json) {
       console.log('Received catalog data...');
@@ -130,7 +132,10 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    callback()
+    fs.appendFile('/app/static/catalog-search.txt', search, function (err) {
+      if (err) throw err;
+        callback();
+    });
   });
 }
 

@@ -93,6 +93,8 @@ services:
     command:                 node database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/static-content:/app/static
 
   database-update-releases:
     build:                   javascript/api
@@ -114,7 +116,7 @@ services:
     volumes:
       - ${PWD}/static-content:/app/static
       - ${PWD}/screenshots:/app/screenshots
-      
+
   stream-screenshot:
     build:                   javascript/image
     command:                 node stream-screenshot.js
