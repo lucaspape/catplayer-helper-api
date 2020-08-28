@@ -59,6 +59,8 @@ function initializeDatabase(mysqlConnection) {
 
 function initCatalog(mysqlConnection, callback) {
   fs.unlinkSync('/app/static/catalog-search.txt');
+  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'))
+
   browseTracks(-1, 0,
     function (json) {
       console.log('Received catalog data...');
