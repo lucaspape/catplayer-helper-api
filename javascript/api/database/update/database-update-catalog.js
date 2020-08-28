@@ -58,8 +58,9 @@ function initializeDatabase(mysqlConnection) {
 }
 
 function initCatalog(mysqlConnection, callback) {
+  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'));
   fs.unlinkSync('/app/static/catalog-search.txt');
-  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'))
+  fs.closeSync(fs.openSync('/app/static/catalog-search.txt', 'w'));
 
   browseTracks(-1, 0,
     function (json) {
@@ -134,7 +135,7 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    fs.appendFile('/app/static/catalog-search.txt', search, function (err) {
+    fs.appendFile('/app/static/catalog-search.txt', track.search, function (err) {
       if (err) throw err;
         callback();
     });
