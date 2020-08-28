@@ -27,39 +27,23 @@ sqlhelper.getConnection(
         const exclude = req.body.exclude;
 
         getSearchFromIds(tracks, mysqlConnection, function (search) {
-          var catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
+          var excludeString = '';
+          var inputString = '';
 
-          for (var i = 1; i < search.length; i++) {
-            catalogSongQuery += 'AND id != "' + search[i].id + '" ';
+          for (var i = 0; i < search.length; i++) {
+            inputString += search[i] + ',';
+            excludeString += search[i] + ',';
           }
 
-          if (exclude !== undefined) {
+          if(exclude){
             for (var i = 0; i < exclude.length; i++) {
-              catalogSongQuery += 'AND id != "' + exclude[i].id + '" ';
+              excludeString += exclude[i] + ',';
             }
           }
 
-          if (skipMonstercatTracks) {
-            catalogSongQuery += 'AND artistsTitle NOT LIKE "Monstercat" ';
-          }
-
-          catalogSongQuery += ';';
-
-          mysqlConnection.query(catalogSongQuery, (err, result) => {
-            if (err) {
-              res.send(err);
-            } else {
-              const process = fork('/app/processors/related-processor.js');
-              process.send({
-                searchArray: search,
-                sqlResult: result
-              });
-
-              process.on('message', (processResult) => {
-                res.send(processResult);
-              });
-            }
-          });
+          var command = './calc /app/static/catalog-search.txt /app/static/catalog-ids.txt ' + inputString + ' ' + excludeString + ' ' + skip + ' ' + limit;
+          console.log(command);
+          res.send({});
         }, function (err) {
           console.log(err);
           res.send(err);
