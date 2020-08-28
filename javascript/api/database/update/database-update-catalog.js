@@ -5,6 +5,10 @@ const { v4: uuidv4 } = require('uuid');
 
 const dbName = 'monstercatDB';
 
+var id = uuidv4();
+var idTempFilename = idTempFilename = '/app/static/catalog-search' + id + '.txt';
+var searchTempFilename = searchTempFilename = '/app/static/catalog-search' + id + '.txt';
+
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
   user: 'root',
@@ -58,14 +62,7 @@ function initializeDatabase(mysqlConnection) {
   });
 }
 
-var idTempFilename = '';
-var searchTempFilename = '';
-
 function initCatalog(mysqlConnection, callback) {
-  var id = uuidv4();
-  idTempFilename = '/app/static/catalog-search' + id + '.txt';
-  searchTempFilename = '/app/static/catalog-search' + id + '.txt';
-
   fs.closeSync(fs.openSync(idTempFilename, 'w'));
   fs.closeSync(fs.openSync(searchTempFilename, 'w'));
 
