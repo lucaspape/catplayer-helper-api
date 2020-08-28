@@ -31,7 +31,7 @@ sqlhelper.getConnection(
           var inputString = '';
 
           for (var i = 0; i < search.length; i++) {
-            inputString += search[i].search.replace(/\s/g, '').replace(search[i].id, '').replace('&', '').trim() + ',';
+            inputString += search[i].search.replace(search[i].id, '').replace(/[^a-zA-Z ]/g, '').trim() + ',';
             excludeString += search[i].id + ',';
           }
 
