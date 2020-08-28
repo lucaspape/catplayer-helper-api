@@ -128,6 +128,9 @@ function addToDB(track, mysqlConnection, callback) {
   const debutDate = track.debutDate.substr(0, track.debutDate.indexOf('T'));
   const debutTime = track.debutDate.substr(track.debutDate.indexOf('T'), track.debutDate.length);
 
+  track.search.replace(' ', '');
+  track.search.replace('\n', '');
+
   const insertTrackQuery = 'REPLACE INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime, duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + debutDate + '","' + debutTime + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ;';
 
   mysqlConnection.query(insertTrackQuery, (err, results) => {
