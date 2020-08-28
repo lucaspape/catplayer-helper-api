@@ -42,8 +42,28 @@ sqlhelper.getConnection(
           }
 
           var command = './calc /app/static/catalog-search.txt /app/static/catalog-ids.txt ' + inputString + ' ' + excludeString + ' ' + skip + ' ' + limit;
+
           console.log(command);
-          res.send({});
+
+          exec(command, (error, stdout, stderr) => {
+            if (error) {
+              console.log(`error: ${error.message}`);
+              return;
+            }
+            if (stderr) {
+              console.log(`stderr: ${stderr}`);
+              return;
+            }
+
+            var out = stdout.split(/\r?\n/);
+            var array = [];
+
+            for(var i=0; i<out.length(); i++){
+              array[i] = {id: out[i]};
+            }
+
+            res.send({results: array});
+          });
         }, function (err) {
           console.log(err);
           res.send(err);
