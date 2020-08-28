@@ -6,21 +6,20 @@
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-char *strtolower(char *s)
-{
-    char *d = (char *)malloc(strlen(s));
-    while (*s)
-    {
-        *d =tolower(*s);
-        d++;
-        s++;
-    }
-    return d;
+char * charToLower(const char *s){
+  char * lower;
+  lower = malloc(strlen(s));
+
+  for(int i=0; i<strlen(s); i++){
+    lower[i] = tolower(s[i]);
+  }
+
+  return lower;
 }
 
-int editDistance(char * s1, char * s2){
-  s1 = strtolower(s1);
-  s2 = strtolower(s2);
+int editDistance(const char * i1, const char * i2){
+  char * s1 = charToLower(i1);
+  char * s2 = charToLower(i2);
 
   int costs[strlen(s2)];
 
@@ -134,6 +133,7 @@ char * compareStrings(char * inputFile, char * inputString)
     }
 
     for(long i=0; i<totalLines; i++){
+      printf("%l", similarity(lines[i], inputString));
       distances[i] = similarity(lines[i], inputString);
     }
 
