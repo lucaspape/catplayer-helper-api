@@ -109,28 +109,3 @@ services:
     command:                 node database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
-
-  recg:
-    build:                   javascript/image
-    command:                 node image-recognition.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
-      - ${PWD}/static-content:/app/static
-      - ${PWD}/screenshots:/app/screenshots
-
-  stream-screenshot:
-    build:                   javascript/image
-    command:                 node stream-screenshot.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
-      - ${PWD}/screenshots:/app/screenshots
-
-  news-notifications:
-    build:                notifications/
-    command:       node news-notifications.js
-    working_dir:    /app/
-    volumes:
-      - ${PWD}/notification_config:/app/config
-    restart:                 always
