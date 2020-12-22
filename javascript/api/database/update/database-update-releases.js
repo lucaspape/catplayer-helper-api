@@ -97,14 +97,14 @@ function addToDB(release, mysqlConnection, callback) {
   release.search += release.version;
   release.search += release.id;
 
-  var links = release.links[0];
+  var links = '';
 
-  if (links !== undefined) {
+  if(release.links) {
+    links = release.links[0];
+
     for (var k = 1; k < release.links.length; k++) {
       links += ',' + release.links[k];
     }
-  } else {
-    links = '';
   }
 
   const releaseDate = release.releaseDate.substr(0, release.releaseDate.indexOf('T'));
