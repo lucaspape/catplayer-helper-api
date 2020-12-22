@@ -108,9 +108,9 @@ app.post(APIPREFIX + '/related', (req, res) => {
 app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
   const mcID = req.params.mcID;
 
-  const sid = req.cookies['connect.sid'];
+  const cid = req.cookies['cid'];
 
-  getSession(sid,
+  getSession(cid,
     function(json) {
       var hasGold = false;
 
@@ -161,9 +161,9 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -194,9 +194,9 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 
 app.get(APIPREFIX + '/releases', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -250,9 +250,9 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -286,9 +286,9 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -344,14 +344,14 @@ app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
 
-function getSession(sid, callback, errorCallback) {
-  if (sid !== undefined) {
+function getSession(cid, callback, errorCallback) {
+  if (cid !== undefined) {
     request({
       url: 'http://proxy-internal/session',
       method: 'POST',
       json: true,
       body: {
-        sid: sid
+        cid: cid
       }
     }, function(err, resp, body) {
       if (err) {
