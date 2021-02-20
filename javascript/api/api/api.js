@@ -41,7 +41,9 @@ app.get(APIPREFIX + '/', (req, res) => {
 
 app.get(APIPREFIX + '/streamurl', (req, res) => {
   exec("streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
-    res.send(stdout);
+    res.send({
+      'monstercat': stdout
+    });
   });
 });
 
