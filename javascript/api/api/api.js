@@ -5,6 +5,7 @@ const request = require('request');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const useragent = require('express-useragent');
+const { exec } = require("child_process");
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -36,6 +37,12 @@ app.use(function(req, res, next) {
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
   res.send("Hello world!!");
+});
+
+app.get(APIPREFIX + '/streamurl', (req, res) => {
+  exec("streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
+    res.send(stdout);
+  });
 });
 
 app.get(PREFIX + '/features', (req, res) => {
