@@ -48,12 +48,12 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
 
     const stream_links = stdout.split(/\r?\n/);
 
-    res.send({
-      'chillout':stream_links[0],
-      'progressive_house':stream_links[1],
-      'deep_house':stream_links[2],
-      'monstercat': stream_links[3]
-    });
+    res.send({results: {
+      chillout: {name: 'Chillout', url: stream_links[0]},
+      progressive_house: {name: 'Progressive House', url: stream_links[1]},
+      deep_house: {name: 'Deep House', url:stream_links[2]},
+      monstercat: {name: 'Monstercat', url:stream_links[3]}},
+      monstercat: stream_links[3]});
   });
 });
 
