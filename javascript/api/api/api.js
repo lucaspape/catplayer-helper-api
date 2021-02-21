@@ -43,8 +43,8 @@ app.get(APIPREFIX + '/', (req, res) => {
 
 app.get(APIPREFIX + '/streamurl', (req, res) => {
   var remoteIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-  exec("streamlink \"https://www.youtube.com/watch?v=ql4S8z1jW8I\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=d8Oc90QevaI\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=WsDyRAPFBC8\" best --stream-url && streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
+  // "streamlink \"https://www.youtube.com/watch?v=ql4S8z1jW8I\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=d8Oc90QevaI\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=WsDyRAPFBC8\" best --stream-url && streamlink twitch.tv/monstercat audio_only --stream-url"
+  exec("streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
     //0-> Chillout
     //1-> Progressive house
     //2-> deep house
@@ -54,11 +54,14 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
       const stream_links = stdout.split(/\r?\n/);
 
       res.send({results: {
-        chillout: {name: 'Chillout', url: stream_links[0].replace(ip, remoteIp)},
-        progressive_house: {name: 'Progressive House', url: stream_links[1].replace(ip, remoteIp)},
-        deep_house: {name: 'Deep House', url:stream_links[2].replace(ip, remoteIp)},
-        monstercat: {name: 'Monstercat', url:stream_links[3].replace(ip, remoteIp)}},
-        monstercat: stream_links[3].replace(ip, remoteIp)});
+        //chillout: {name: 'Chillout', url: stream_links[0].replace(ip, remoteIp)},
+        //progressive_house: {name: 'Progressive House', url: stream_links[1].replace(ip, remoteIp)},
+        //deep_house: {name: 'Deep House', url:stream_links[2].replace(ip, remoteIp)},
+        chillout: {name: 'Chillout', url: "https://www.youtube.com/watch?v=ql4S8z1jW8I"},
+        progressive_house: {name: 'Progressive House', url: "https://www.youtube.com/watch?v=d8Oc90QevaI")},
+        deep_house: {name: 'Deep House', url:"https://www.youtube.com/watch?v=WsDyRAPFBC8"},
+        monstercat: {name: 'Monstercat', url:stream_links[0].replace(ip, remoteIp)}},
+        monstercat: stream_links[0].replace(ip, remoteIp)});
     });
   });
 });
