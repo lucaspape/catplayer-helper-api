@@ -51,7 +51,9 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
     //3-> monstercat
 
     publicIp.v4().then((ip)=>{
-      console.log('Remote ip:' + remoteIp)
+      console.log(stdout);
+      console.log('Remote ip:' + remoteIp);
+      console.log('my ip:' + ip);
       stdout = stdout.replace(/ip/g, remoteIp);
 
       const stream_links = stdout.split(/\r?\n/);
