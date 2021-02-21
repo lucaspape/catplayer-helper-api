@@ -51,19 +51,14 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
     //3-> monstercat
 
     publicIp.v4().then((ip)=>{
-      console.log(stdout);
-      console.log('Remote ip:' + remoteIp);
-      console.log('my ip:' + ip);
-      stdout = stdout.replace(/ip/g, remoteIp);
-
       const stream_links = stdout.split(/\r?\n/);
 
       res.send({results: {
-        chillout: {name: 'Chillout', url: stream_links[0]},
-        progressive_house: {name: 'Progressive House', url: stream_links[1]},
-        deep_house: {name: 'Deep House', url:stream_links[2]},
-        monstercat: {name: 'Monstercat', url:stream_links[3]}},
-        monstercat: stream_links[3]});
+        chillout: {name: 'Chillout', url: stream_links[0].replace(ip, remoteIp)},
+        progressive_house: {name: 'Progressive House', url: stream_links[1].replace(ip, remoteIp)},
+        deep_house: {name: 'Deep House', url:stream_links[2].replace(ip, remoteIp)},
+        monstercat: {name: 'Monstercat', url:stream_links[3].replace(ip, remoteIp)}},
+        monstercat: stream_links[3].replace(ip, remoteIp)});
     });
   });
 });
