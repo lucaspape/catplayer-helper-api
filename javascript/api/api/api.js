@@ -60,7 +60,7 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
         chillout: {name: 'Chillout', url: "https://www.youtube.com/watch?v=ql4S8z1jW8I"},
         progressive_house: {name: 'Progressive House', url: "https://www.youtube.com/watch?v=d8Oc90QevaI"},
         deep_house: {name: 'Deep House', url:"https://www.youtube.com/watch?v=WsDyRAPFBC8"},
-        monstercat: {name: 'Monstercat', url:stream_links[0].replace(ip, remoteIp)}},
+        monstercat: {name: 'Monstercat', url:"https://twitch.tv/monstercat"}},
         monstercat: stream_links[0].replace(ip, remoteIp)});
     });
   });
