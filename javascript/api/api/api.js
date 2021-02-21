@@ -40,9 +40,19 @@ app.get(APIPREFIX + '/', (req, res) => {
 });
 
 app.get(APIPREFIX + '/streamurl', (req, res) => {
-  exec("streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
+  exec("streamlink \"https://www.youtube.com/watch?v=ql4S8z1jW8I\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=d8Oc90QevaI\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=WsDyRAPFBC8\" best --stream-url && streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
+    //0-> Chillout
+    //1-> Progressive house
+    //2-> deep house
+    //3-> monstercat
+
+    const stream_links = stdout.split(/\r?\n/);
+
     res.send({
-      'monstercat': stdout.replace(/\r?\n|\r/g, "")
+      'chillout':stream_links[0],
+      'progressive_house':stream_links[1],
+      'deep_house':stream_links[2],
+      'monstercat': stream_links[3]
     });
   });
 });
