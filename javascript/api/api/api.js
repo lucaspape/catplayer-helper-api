@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const useragent = require('express-useragent');
 const { exec } = require("child_process");
+const publicIp = require('public-ip');
+
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -40,20 +42,26 @@ app.get(APIPREFIX + '/', (req, res) => {
 });
 
 app.get(APIPREFIX + '/streamurl', (req, res) => {
+  var remoteIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
   exec("streamlink \"https://www.youtube.com/watch?v=ql4S8z1jW8I\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=d8Oc90QevaI\" best --stream-url && streamlink \"https://www.youtube.com/watch?v=WsDyRAPFBC8\" best --stream-url && streamlink twitch.tv/monstercat audio_only --stream-url", (error, stdout, stderr) => {
     //0-> Chillout
     //1-> Progressive house
     //2-> deep house
     //3-> monstercat
 
-    const stream_links = stdout.split(/\r?\n/);
+    publicIp.v4().then((ip)=>{
+      var stream_links = stdout.split(/\r?\n/);
 
-    res.send({results: {
-      chillout: {name: 'Chillout', url: stream_links[0]},
-      progressive_house: {name: 'Progressive House', url: stream_links[1]},
-      deep_house: {name: 'Deep House', url:stream_links[2]},
-      monstercat: {name: 'Monstercat', url:stream_links[3]}},
-      monstercat: stream_links[3]});
+      stream_links = stream_links.replace(/ip/g, remoteIp);
+
+      res.send({results: {
+        chillout: {name: 'Chillout', url: stream_links[0]},
+        progressive_house: {name: 'Progressive House', url: stream_links[1]},
+        deep_house: {name: 'Deep House', url:stream_links[2]},
+        monstercat: {name: 'Monstercat', url:stream_links[3]}},
+        monstercat: stream_links[3]});
+    });
   });
 });
 
