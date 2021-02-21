@@ -51,9 +51,9 @@ app.get(APIPREFIX + '/streamurl', (req, res) => {
     //3-> monstercat
 
     publicIp.v4().then((ip)=>{
-      var stream_links = stdout.split(/\r?\n/);
+      stdout = stdout.replace(/ip/g, remoteIp);
 
-      stream_links = stream_links.replace(/ip/g, remoteIp);
+      const stream_links = stdout.split(/\r?\n/);
 
       res.send({results: {
         chillout: {name: 'Chillout', url: stream_links[0]},
