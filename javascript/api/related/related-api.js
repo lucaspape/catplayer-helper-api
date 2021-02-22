@@ -62,11 +62,22 @@ sqlhelper.getConnection(
             var out = stdout.split(/\r?\n/);
             var array = [];
 
-            for(var i=0; i<out.length; i++){
-              array[i] = {id: out[i]};
+            const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id="' + out[0] + '" ';
+
+            for(var i=1; i<out.length; i++){
+              catalogSearchQuery += 'OR id="' + out[i] + '" ';
+              //array[i] = {id: out[i]};
             }
 
-            res.send({results: array});
+            mysqlConnection.query(catalogQuery, (err, catalogResult) => {
+              if (err) {
+                res.send(err);
+              } else {
+                res.send(catalogResult);
+              }
+            });
+
+          //  res.send({results: array});
           });
         }, function (err) {
           console.log(err);
