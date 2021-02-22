@@ -71,7 +71,7 @@ sqlhelper.getConnection(
               array[i] = {id: out[i]};
             }
 
-            catalogQuery += ') ORDER BY FIND_IN_SET(id, )'
+            catalogQuery += ') ORDER BY FIND_IN_SET(id, '
             catalogQuery += '"' + out[0] + '"';
 
             for(var i=0; i<out.length; i++){
