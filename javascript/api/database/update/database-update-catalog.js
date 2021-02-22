@@ -1,7 +1,13 @@
 const request = require('request');
 const mysql = require('mysql');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 const dbName = 'monstercatDB';
+
+var id = uuidv4();
+var idTempFilename = '/app/static/catalog-id' + id + '.txt';
+var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
 const createDatabaseConnection = mysql.createConnection({
   host: 'mariadb',
@@ -57,6 +63,9 @@ function initializeDatabase(mysqlConnection) {
 }
 
 function initCatalog(mysqlConnection, callback) {
+  fs.closeSync(fs.openSync(idTempFilename, 'w'));
+  fs.closeSync(fs.openSync(searchTempFilename, 'w'));
+
   browseTracks(-1, 0,
     function (json) {
       console.log('Received catalog data...');
@@ -75,6 +84,9 @@ function initCatalog(mysqlConnection, callback) {
             sqlCallback();
           });
         } else {
+          fs.renameSync(idTempFilename, '/app/static/catalog-ids.txt' );
+          fs.renameSync(searchTempFilename, '/app/static/catalog-search.txt');
+
           callback();
         }
       };
@@ -123,6 +135,9 @@ function addToDB(track, mysqlConnection, callback) {
   const debutDate = track.debutDate.substr(0, track.debutDate.indexOf('T'));
   const debutTime = track.debutDate.substr(track.debutDate.indexOf('T'), track.debutDate.length);
 
+  track.search.replace(' ', '');
+  track.search.replace('\n', '');
+
   const insertTrackQuery = 'REPLACE INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime, duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + debutDate + '","' + debutTime + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ;';
 
   mysqlConnection.query(insertTrackQuery, (err, results) => {
@@ -130,7 +145,13 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    callback()
+    fs.appendFile(searchTempFilename, track.search + '\n', function (err) {
+      if (err) throw err;
+      fs.appendFile(idTempFilename, track.id + '\n', function (err) {
+        if (err) throw err;
+          callback();
+      });
+    });
   });
 }
 

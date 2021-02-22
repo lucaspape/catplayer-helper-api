@@ -5,6 +5,8 @@ const request = require('request');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const useragent = require('express-useragent');
+const { exec } = require("child_process");
+
 const utils = require('./utils.js');
 
 const PORT = 80;
@@ -36,6 +38,15 @@ app.use(function(req, res, next) {
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
   res.send("Hello world!!");
+});
+
+app.get(APIPREFIX + '/streamurl', (req, res) => {
+  res.send({results: {
+    chillout: {name: 'Chillout', url: "https://www.youtube.com/watch?v=ql4S8z1jW8I"},
+    progressive_house: {name: 'Progressive House', url: "https://www.youtube.com/watch?v=d8Oc90QevaI"},
+    deep_house: {name: 'Deep House', url:"https://www.youtube.com/watch?v=WsDyRAPFBC8"},
+    monstercat: {name: 'Monstercat', url:"https://twitch.tv/monstercat"}},
+  });
 });
 
 app.get(PREFIX + '/features', (req, res) => {
@@ -80,37 +91,52 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 });
 
 app.post(APIPREFIX + '/related', (req, res) => {
-  const skipMonstercatTracks = (req.query.skipMC === 'true');
+  const cid = req.cookies['cid'];
 
-  utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    request({
-      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks,
-      method: 'POST',
-      json: true,
-      body: {
-        tracks: req.body.tracks,
-        exclude: req.body.exclude
+  getSession(cid,
+    function(json) {
+      const skipMonstercatTracks = (req.query.skipMC === 'true');
+
+      var hasGold = false;
+
+      if (json.gold !== undefined) {
+        hasGold = json.gold;
       }
-    }, function(err, resp, body) {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        try {
-          res.send(body);
-        } catch (e) {
-          res.status(500).send(e);
-        }
-      }
-    });
-  });
+
+      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+        request({
+          url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
+          method: 'POST',
+          json: true,
+          body: {
+            tracks: req.body.tracks,
+            exclude: req.body.exclude
+          }
+        }, function(err, resp, body) {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            try {
+              res.send(body);
+            } catch (e) {
+              res.status(500).send(e);
+            }
+          }
+        });
+      });
+    },
+    function(err) {
+      res.status(500).send(err);
+    }
+  );
 });
 
 app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
   const mcID = req.params.mcID;
 
-  const sid = req.cookies['connect.sid'];
+  const cid = req.cookies['cid'];
 
-  getSession(sid,
+  getSession(cid,
     function(json) {
       var hasGold = false;
 
@@ -161,9 +187,9 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -194,9 +220,9 @@ app.get(APIPREFIX + '/catalog', (req, res) => {
 
 app.get(APIPREFIX + '/releases', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -250,9 +276,9 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -286,9 +312,9 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const sid = req.cookies['connect.sid'];
+    const cid = req.cookies['cid'];
 
-    getSession(sid,
+    getSession(cid,
       function(json) {
         var hasGold = false;
 
@@ -344,14 +370,14 @@ app.listen(PORT, () => {
   console.log('Server started on port ' + PORT);
 });
 
-function getSession(sid, callback, errorCallback) {
-  if (sid !== undefined) {
+function getSession(cid, callback, errorCallback) {
+  if (cid !== undefined) {
     request({
       url: 'http://proxy-internal/session',
       method: 'POST',
       json: true,
       body: {
-        sid: sid
+        cid: cid
       }
     }, function(err, resp, body) {
       if (err) {

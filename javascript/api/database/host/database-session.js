@@ -22,26 +22,26 @@ sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `sid` TEXT, `gold` TEXT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `cid` TEXT, `gold` TEXT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
         console.log(err);
       } else {
         app.post(APIPREFIX + '/session', (req, res) => {
-          const sid = req.body.sid;
-          const sidHash = crypto.createHash('sha256').update(sid).digest('base64');
+          const cid = req.body.cid;
+          const cidHash = crypto.createHash('sha256').update(cid).digest('base64');
 
-          const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE sid="' + sidHash + '";'
+          const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE cid="' + cidHash + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
               res.send(err);
             } else {
               if (result.gold === undefined) {
-                getSession(sid,
+                getSession(cid,
                   function(json) {
-                    const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (sid, gold) values ("' + sidHash + '","' + json.user.hasGold + '");';
+                    const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (cid, gold) values ("' + cidHash + '","' + json.user.hasGold + '");';
 
                     mysqlConnection.query(insertSessionQuery, (err, result) => {
                       if (err) {
@@ -75,13 +75,13 @@ sqlhelper.getConnection(
     return err;
   });
 
-function getSession(sid, callback, errorCallback) {
-  if (sid !== undefined) {
+function getSession(cid, callback, errorCallback) {
+  if (cid !== undefined) {
     request({
       url: 'https://connect.monstercat.com/v2/self/session',
       method: 'GET',
       headers: {
-        'Cookie': 'connect.sid=' + sid
+        'Cookie': 'cid=' + cid
       }
     }, function(err, resp, body) {
       if (err) {
