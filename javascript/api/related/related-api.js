@@ -71,8 +71,6 @@ sqlhelper.getConnection(
               array[i] = {id: out[i]};
             }
 
-            catalogQuery += ');'
-
             catalogQuery += ') ORDER BY FIELD(id, '
             catalogQuery += '"' + out[0] + '"';
 
