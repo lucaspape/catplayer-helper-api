@@ -62,11 +62,20 @@ sqlhelper.getConnection(
             var out = stdout.split(/\r?\n/);
             var array = [];
 
-            var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id="' + out[0] + '" ';
+            var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id IN(';
+
+            catalogQuery += '"' + out[0] + '"';
 
             for(var i=1; i<out.length; i++){
-              catalogQuery += 'OR id="' + out[i] + '" ';
+              catalogQuery += ',"' + out[i] + '"';
               array[i] = {id: out[i]};
+            }
+
+            catalogQuery += ' ORDER BY FIND_IN_SET(id, )'
+            catalogQuery += '"' + out[0] + '"';
+
+            for(var i=0; i<out.length; i++){
+              catalogQuery += ',"' + out[i] + '"';
             }
 
             mysqlConnection.query(catalogQuery, (err, catalogResult) => {
