@@ -127,7 +127,7 @@ app.post(APIPREFIX + '/related', (req, res) => {
     },
     function(err) {
       res.status(500).send(err);
-    });
+    }
   );
 });
 
