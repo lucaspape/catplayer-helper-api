@@ -71,14 +71,16 @@ sqlhelper.getConnection(
               array[i] = {id: out[i]};
             }
 
-            catalogQuery += ') ORDER BY FIND_IN_SET(id, '
-            catalogQuery += '"' + out[0] + '"';
+            catalogQuery += ');'
 
-            for(var i=1; i<out.length; i++){
-              catalogQuery += ',"' + out[i] + '"';
-            }
+          //  catalogQuery += ') ORDER BY FIND_IN_SET(id, '
+          //  catalogQuery += '"' + out[0] + '"';
 
-            catalogQuery += ");"
+          //  for(var i=1; i<out.length; i++){
+          //    catalogQuery += ',"' + out[i] + '"';
+          //  }
+
+          //  catalogQuery += ");"
 
             mysqlConnection.query(catalogQuery, (err, catalogResult) => {
               if (err) {
