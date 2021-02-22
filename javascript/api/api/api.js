@@ -91,35 +91,44 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 });
 
 app.post(APIPREFIX + '/related', (req, res) => {
-  const skipMonstercatTracks = (req.query.skipMC === 'true');
+  const cid = req.cookies['cid'];
 
-  var hasGold = false;
+  getSession(cid,
+    function(json) {
+      const skipMonstercatTracks = (req.query.skipMC === 'true');
 
-  if (json.gold !== undefined) {
-    hasGold = json.gold;
-  }
+      var hasGold = false;
 
-  utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    request({
-      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
-      method: 'POST',
-      json: true,
-      body: {
-        tracks: req.body.tracks,
-        exclude: req.body.exclude
+      if (json.gold !== undefined) {
+        hasGold = json.gold;
       }
-    }, function(err, resp, body) {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        try {
-          res.send(body);
-        } catch (e) {
-          res.status(500).send(e);
-        }
-      }
+
+      utils.fixSkipAndLimit(req.query, function(skip, limit) {
+        request({
+          url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
+          method: 'POST',
+          json: true,
+          body: {
+            tracks: req.body.tracks,
+            exclude: req.body.exclude
+          }
+        }, function(err, resp, body) {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            try {
+              res.send(body);
+            } catch (e) {
+              res.status(500).send(e);
+            }
+          }
+        });
+      });
+    },
+    function(err) {
+      res.status(500).send(err);
     });
-  });
+  );
 });
 
 app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
