@@ -93,9 +93,15 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 app.post(APIPREFIX + '/related', (req, res) => {
   const skipMonstercatTracks = (req.query.skipMC === 'true');
 
+  var hasGold = false;
+
+  if (json.gold !== undefined) {
+    hasGold = json.gold;
+  }
+
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
     request({
-      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks,
+      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
       method: 'POST',
       json: true,
       body: {

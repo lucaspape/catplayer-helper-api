@@ -26,6 +26,12 @@ sqlhelper.getConnection(
         const tracks = req.body.tracks;
         const exclude = req.body.exclude;
 
+        var gold = false;
+
+        if (req.query.gold !== undefined) {
+          gold = JSON.parse(req.query.gold);
+        }
+
         getSearchFromIds(tracks, mysqlConnection, function (search) {
           var excludeString = '';
           var inputString = '';
