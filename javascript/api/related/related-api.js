@@ -65,7 +65,7 @@ sqlhelper.getConnection(
             const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id="' + out[0] + '" ';
 
             for(var i=1; i<out.length; i++){
-              catalogSearchQuery += 'OR id="' + out[i] + '" ';
+              catalogQuery += 'OR id="' + out[i] + '" ';
               //array[i] = {id: out[i]};
             }
 
