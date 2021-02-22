@@ -66,14 +66,14 @@ sqlhelper.getConnection(
 
             for(var i=1; i<out.length; i++){
               catalogQuery += 'OR id="' + out[i] + '" ';
-              //array[i] = {id: out[i]};
+              array[i] = {id: out[i]};
             }
 
             mysqlConnection.query(catalogQuery, (err, catalogResult) => {
               if (err) {
                 res.send(err);
               } else {
-                res.send(catalogResult);
+                res.send({results: catalogResult, orig: array});
               }
             });
 
