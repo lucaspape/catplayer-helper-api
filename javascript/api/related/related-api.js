@@ -82,7 +82,37 @@ sqlhelper.getConnection(
               if (err) {
                 res.send(err);
               } else {
-                res.send({results: catalogResult});
+                var trackArray = catalogResult;
+                var i = 0;
+
+                var releasesQueryFinished = function () {
+                  if (i < catalogResult.length) {
+                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
+
+                    mysqlConnection.query(releaseQuery, (err, releaseResult) => {
+                      if (err) {
+                        res.send(err);
+                      } else {
+                        utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
+                          trackArray[i] = track;
+                          i++;
+                          releasesQueryFinished();
+                        }, function (err) {
+                          res.send(err);
+                        });
+
+                      }
+                    });
+                  } else {
+                    var returnObject = {
+                      results: result
+                    };
+
+                    res.send(returnObject);
+                  }
+                };
+
+                releasesQueryFinished();
               }
             });
 
