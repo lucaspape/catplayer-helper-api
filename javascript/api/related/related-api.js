@@ -60,7 +60,6 @@ sqlhelper.getConnection(
             }
 
             var out = stdout.split(/\r?\n/);
-            var array = [];
 
             var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id IN(';
 
@@ -68,7 +67,6 @@ sqlhelper.getConnection(
 
             for(var i=1; i<out.length; i++){
               catalogQuery += ',"' + out[i] + '"';
-              array[i] = {id: out[i]};
             }
 
             catalogQuery += ') ORDER BY FIELD(id, '
@@ -84,7 +82,7 @@ sqlhelper.getConnection(
               if (err) {
                 res.send(err);
               } else {
-                res.send({results: catalogResult, orig: array});
+                res.send({results: catalogResult});
               }
             });
 
