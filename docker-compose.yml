@@ -32,9 +32,9 @@ services:
     volumes:
       - ${PWD}/static-content:/app/static
 
-  release-api:
+  cover-image:
     build:                   javascript
-    command:                 node api/release-api.js
+    command:                 node api/cover-image.js
     working_dir:             /app/
     restart:                 always
     volumes:
