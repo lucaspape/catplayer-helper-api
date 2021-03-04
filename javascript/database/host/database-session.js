@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const request = require('request');
+const utils = require('/app/utils.js');
 
 const PORT = 80;
 const APIPREFIX = '';

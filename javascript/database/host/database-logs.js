@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const utils = require('/app/utils.js');
 
 const PORT = 80;
 const APIPREFIX = '';
