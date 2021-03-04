@@ -25,6 +25,12 @@ sqlhelper.getConnection(
         const tracks = req.body.tracks;
         const exclude = req.body.exclude;
 
+        var gold = false;
+
+        if (req.query.gold !== undefined) {
+          gold = JSON.parse(req.query.gold);
+        }
+
         getSearchFromIds(tracks, mysqlConnection, function (search) {
           var catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
 
@@ -51,7 +57,8 @@ sqlhelper.getConnection(
               const process = fork('./related-processor.js');
               process.send({
                 searchArray: search,
-                sqlResult: result
+                sqlResult: result,
+                gold: gold
               });
 
               process.on('message', (processResult) => {

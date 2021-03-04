@@ -1,6 +1,6 @@
 const utils = require('/app/utils.js');
 
-function processRelated(searchArray, sqlResult, callback, errorCallback) {
+function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
   utils.sqlhelper.getConnection(
       function (mysqlConnection) {
         var arrayWithSimiliarity = [];
@@ -89,7 +89,7 @@ function processRelated(searchArray, sqlResult, callback, errorCallback) {
 }
 
 process.on('message', async (data) => {
-    processRelated(data.searchArray, data.sqlResult, data.mysqlConnection, function (result) {
+    processRelated(data.searchArray, data.sqlResult, data.gold, function (result) {
         process.send({ results: result });
     }, function (err) { process.send({ err: err }) });
 });
