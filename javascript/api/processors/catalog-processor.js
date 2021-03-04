@@ -1,8 +1,8 @@
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 const dbName = 'monstercatDB';
 
-const sqlhelper = require('./sqlhelper.js');
+const sqlhelper = require('/app/sqlhelper.js');
 
 function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold, callback, errorCallback) {
     sqlhelper.getConnection(

@@ -1,4 +1,4 @@
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 function processArtistSearch(searchString, terms, artistsArray, skip, limit, callback) {
     for (var k = 1; k < terms.length; k++) {

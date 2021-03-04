@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { fork } = require('child_process');
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 const PORT = 80;
 const APIPREFIX = '';
@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 
 const dbName = 'monstercatDB';
 
-const sqlhelper = require('./sqlhelper.js');
+const sqlhelper = require('/app/sqlhelper.js');
 
 sqlhelper.getConnection(
   function (mysqlConnection) {

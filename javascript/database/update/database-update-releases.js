@@ -22,7 +22,7 @@ createDatabaseConnection.connect(err => {
       } else {
         console.log('Created database/exists!');
 
-        const sqlhelper = require('./sqlhelper.js');
+        const sqlhelper = require('/app/sqlhelper.js');
 
         sqlhelper.getConnection(
           function (mysqlConnection) {

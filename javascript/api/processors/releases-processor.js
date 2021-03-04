@@ -1,4 +1,4 @@
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 function processReleasesSearch(searchString, terms, releaseArray, skip, limit, callback) {
     for (var k = 1; k < terms.length; k++) {

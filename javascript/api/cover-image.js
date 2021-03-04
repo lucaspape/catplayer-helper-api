@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const sharp = require('sharp');
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 const PORT = 80;
 const APIPREFIX = '/release/';

@@ -7,7 +7,7 @@ const fs = require('fs');
 const useragent = require('express-useragent');
 const { exec } = require("child_process");
 
-const utils = require('./utils.js');
+const utils = require('/app/utils.js');
 
 const PORT = 80;
 
