@@ -1,14 +1,9 @@
 const request = require('request');
 const mysql = require('mysql');
-const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const utils = require('/app/utils.js');
 
 const sqlhelper = utils.sqlhelper;
-
-var id = uuidv4();
-var idTempFilename = '/app/static/catalog-id' + id + '.txt';
-var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
 const createDatabaseConnection = sqlhelper.getConnectionWitoutSelectedDB;
 
@@ -58,9 +53,6 @@ function initializeDatabase(mysqlConnection) {
 }
 
 function initCatalog(mysqlConnection, callback) {
-  fs.closeSync(fs.openSync(idTempFilename, 'w'));
-  fs.closeSync(fs.openSync(searchTempFilename, 'w'));
-
   browseTracks(-1, 0,
     function (json) {
       console.log('Received catalog data...');
@@ -79,9 +71,6 @@ function initCatalog(mysqlConnection, callback) {
             sqlCallback();
           });
         } else {
-          fs.renameSync(idTempFilename, '/app/static/catalog-ids.txt' );
-          fs.renameSync(searchTempFilename, '/app/static/catalog-search.txt');
-
           callback();
         }
       };
@@ -140,13 +129,7 @@ function addToDB(track, mysqlConnection, callback) {
       console.log(err);
     }
 
-    fs.appendFile(searchTempFilename, track.search + '\n', function (err) {
-      if (err) throw err;
-      fs.appendFile(idTempFilename, track.id + '\n', function (err) {
-        if (err) throw err;
-          callback();
-      });
-    });
+    callback();
   });
 }
 
