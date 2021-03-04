@@ -1,7 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 
-const dbName = 'monstercatDB';
+const dbName = require('/app/sqlhelper.js').dbName;
 
 function editDistance(s1, s2) {
   s1 = s1.toLowerCase();

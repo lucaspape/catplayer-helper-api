@@ -44,7 +44,8 @@ app.use((req,res,next)=>{
       next();
     },
   (err)=>{
-    res.status(500).send(err);
+    req.session = undefined;
+    next();
   });
 });
 

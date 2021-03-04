@@ -14,8 +14,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const dbName = 'monstercatDB';
-
 const sqlhelper = require('/app/sqlhelper.js');
 
 sqlhelper.getConnection(
@@ -30,7 +28,7 @@ sqlhelper.getConnection(
       }
 
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + 'ORDER BY debutDate DESC LIMIT ' + skip + ', ' + limit + ';';
+        const catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + 'ORDER BY debutDate DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
           if (err) {
@@ -41,7 +39,7 @@ sqlhelper.getConnection(
 
             var releasesQueryFinished = function () {
               if (i < result.length) {
-                const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
+                const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
                 mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                   if (err) {
@@ -84,7 +82,7 @@ sqlhelper.getConnection(
 
         const terms = searchString.split(' ');
 
-        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY debutDate DESC ' + ';';
+        const catalogSearchQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE search LIKE "%' + terms[0] + '%" ORDER BY debutDate DESC ' + ';';
 
         mysqlConnection.query(catalogSearchQuery, (err, result) => {
           if (err) {

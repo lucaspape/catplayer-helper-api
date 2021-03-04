@@ -14,15 +14,13 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const dbName = 'monstercatDB';
-
 const sqlhelper = require('/app/sqlhelper.js');
 
 sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `cid` TEXT, `gold` TEXT);'
+    const createSessionTableQuery = 'CREATE TABLE IF NOT EXISTS `' + sqlhelper.dbName + '`.`session` (`sortId` INT AUTO_INCREMENT PRIMARY KEY, `cid` TEXT, `gold` TEXT);'
 
     mysqlConnection.query(createSessionTableQuery, (err, result) => {
       if (err) {
@@ -32,7 +30,7 @@ sqlhelper.getConnection(
           const cid = req.body.cid;
           const cidHash = crypto.createHash('sha256').update(cid).digest('base64');
 
-          const sessionQuery = 'SELECT gold FROM `' + dbName + '`.`session` WHERE cid="' + cidHash + '";'
+          const sessionQuery = 'SELECT gold FROM `' + sqlhelper.dbName + '`.`session` WHERE cid="' + cidHash + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
@@ -41,7 +39,7 @@ sqlhelper.getConnection(
               if (result.gold === undefined) {
                 getSession(cid,
                   function(json) {
-                    const insertSessionQuery = 'INSERT INTO `' + dbName + '`.`session` (cid, gold) values ("' + cidHash + '","' + json.user.hasGold + '");';
+                    const insertSessionQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`session` (cid, gold) values ("' + cidHash + '","' + json.user.hasGold + '");';
 
                     mysqlConnection.query(insertSessionQuery, (err, result) => {
                       if (err) {

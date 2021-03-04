@@ -14,8 +14,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const dbName = 'monstercatDB';
-
 const sqlhelper = require('/app/sqlhelper.js');
 
 sqlhelper.getConnection(
@@ -24,7 +22,7 @@ sqlhelper.getConnection(
 
     app.get(APIPREFIX + '/releases', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const releasesQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version FROM `' + dbName + '`.`releases` ORDER BY releaseDate DESC LIMIT ' + skip + ', ' + limit + ';';
+        const releasesQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version FROM `' + sqlhelper.dbName + '`.`releases` ORDER BY releaseDate DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(releasesQuery, (err, result) => {
           if (err) {
@@ -49,7 +47,7 @@ sqlhelper.getConnection(
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const releasesSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search FROM `' + dbName + '`.`releases` WHERE search LIKE "%' + terms[0] + '%" ORDER BY releaseDate DESC;';
+        const releasesSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE "%' + terms[0] + '%" ORDER BY releaseDate DESC;';
 
         mysqlConnection.query(releasesSearchQuery, (err, result) => {
           if (err) {

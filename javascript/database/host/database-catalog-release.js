@@ -14,15 +14,13 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const dbName = 'monstercatDB';
-
 const sqlhelper = require('/app/sqlhelper.js');
 
 sqlhelper.getConnection(
   function (mysqlConnection) {
     console.log('Connected to database!');
 
-    const createCatalogReleasesQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`catalogReleases` (`trackIds` TEXT, `releaseId` TEXT, `mcID` VARCHAR(36), PRIMARY KEY(`mcID`));';
+    const createCatalogReleasesQuery = 'CREATE TABLE IF NOT EXISTS `' + sqlhelper.dbName + '`.`catalogReleases` (`trackIds` TEXT, `releaseId` TEXT, `mcID` VARCHAR(36), PRIMARY KEY(`mcID`));';
     mysqlConnection.query(createCatalogReleasesQuery, (err, result) => {
       if (err) {
         console.log(err);
@@ -38,7 +36,7 @@ sqlhelper.getConnection(
 
           const mcID = req.params.mcID;
 
-          var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + dbName + '`.`catalogReleases` WHERE mcID="' + mcID + '";';
+          var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + sqlhelper.dbName + '`.`catalogReleases` WHERE mcID="' + mcID + '";';
 
           mysqlConnection.query(getIdsQuery, (err, result) => {
             if (err) {
@@ -53,7 +51,7 @@ sqlhelper.getConnection(
                       trackIds += ',' + json.tracks[i].id;
                     }
 
-                    var insertIdsQuery = 'INSERT INTO `' + dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mcID + '");';
+                    var insertIdsQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mcID + '");';
 
                     mysqlConnection.query(insertIdsQuery, (err, result) => {
                       if (err) {
@@ -117,7 +115,7 @@ function getTracks(mysqlConnection,trackIdArray, gold, releaseObject, callback, 
   var sqlCallback = function() {
     if (i < trackIdArray.length) {
       const catalogId = trackIdArray[i];
-      const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
+      const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
 
       mysqlConnection.query(catalogQuery, (err, result) => {
         if (err) {
@@ -141,7 +139,7 @@ function getTracks(mysqlConnection,trackIdArray, gold, releaseObject, callback, 
 }
 
 function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
-  var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
+  var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + releaseId + '";';
 
   mysqlConnection.query(getReleaseQuery, (err, result) => {
     if (err) {
