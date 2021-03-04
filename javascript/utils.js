@@ -1,6 +1,8 @@
 const request = require('request');
 const fs = require('fs');
 
+const dbName = 'monstercatDB';
+
 function editDistance(s1, s2) {
   s1 = s1.toLowerCase();
   s2 = s2.toLowerCase();
