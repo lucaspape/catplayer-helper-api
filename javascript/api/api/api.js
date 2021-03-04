@@ -41,6 +41,7 @@ app.use((req,res,next)=>{
   getSession(cid,
     (json) => {
       req.session = json;
+      next();
     },
   (err)=>{
     res.status(500).send(err);
@@ -84,22 +85,6 @@ app.get(APIPREFIX + '/stats', (req, res) => {
       }
     }
   });
-});
-
-app.get(APIPREFIX + '/playlist/public', (req, res) => {
-  try {
-    res.send(JSON.parse(fs.readFileSync('static/public-playlists.json')));
-  } catch (e) {
-    res.status(500).send(e);
-  }
-});
-
-app.get(APIPREFIX + '/liveinfo', (req, res) => {
-  try {
-    res.send(JSON.parse(fs.readFileSync('static/liveinfo.json')));
-  } catch (e) {
-    res.status(500).send(e);
-  }
 });
 
 app.post(APIPREFIX + '/related', (req, res) => {
