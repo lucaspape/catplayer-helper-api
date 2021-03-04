@@ -35,6 +35,18 @@ app.use(function(req, res, next) {
   });
 });
 
+app.use((req,res,next)=>{
+  const cid = req.cookies['cid'];
+
+  getSession(cid,
+    (json) => {
+      req.session = json;
+    },
+  (err)=>{
+    res.status(500).send(err);
+  });
+});
+
 app.get(APIPREFIX + '/', (req, res) => {
   res.status(418);
   res.send("Hello world!!");
@@ -91,77 +103,60 @@ app.get(APIPREFIX + '/liveinfo', (req, res) => {
 });
 
 app.post(APIPREFIX + '/related', (req, res) => {
-  const cid = req.cookies['cid'];
+  const skipMonstercatTracks = (req.query.skipMC === 'true');
 
-  getSession(cid,
-    function(json) {
-      const skipMonstercatTracks = (req.query.skipMC === 'true');
+  var hasGold = false;
 
-      var hasGold = false;
+  if (req.session.gold !== undefined) {
+    hasGold = req.session.gold;
+  }
 
-      if (json.gold !== undefined) {
-        hasGold = json.gold;
+  utils.fixSkipAndLimit(req.query, function(skip, limit) {
+    request({
+      url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
+      method: 'POST',
+      json: true,
+      body: {
+        tracks: req.body.tracks,
+        exclude: req.body.exclude
       }
-
-      utils.fixSkipAndLimit(req.query, function(skip, limit) {
-        request({
-          url: 'http://proxy-internal/related?skip=' + skip + '&limit=' + limit + "&skipMC=" + skipMonstercatTracks + '&gold=' + hasGold,
-          method: 'POST',
-          json: true,
-          body: {
-            tracks: req.body.tracks,
-            exclude: req.body.exclude
-          }
-        }, function(err, resp, body) {
-          if (err) {
-            res.status(500).send(err);
-          } else {
-            try {
-              res.send(body);
-            } catch (e) {
-              res.status(500).send(e);
-            }
-          }
-        });
-      });
-    },
-    function(err) {
-      res.status(500).send(err);
-    }
-  );
+    }, function(err, resp, body) {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        try {
+          res.send(body);
+        } catch (e) {
+          res.status(500).send(e);
+        }
+      }
+    });
+  });
 });
 
 app.get(APIPREFIX + '/catalog/release/:mcID', (req, res) => {
   const mcID = req.params.mcID;
 
-  const cid = req.cookies['cid'];
+  var hasGold = false;
 
-  getSession(cid,
-    function(json) {
-      var hasGold = false;
+  if (req.session.gold !== undefined) {
+    hasGold = req.session.gold;
+  }
 
-      if (json.gold !== undefined) {
-        hasGold = json.gold;
-      }
-
-      request({
-        url: 'http://proxy-internal/catalog/release/' + mcID + '?gold=' + hasGold,
-        method: 'GET'
-      }, function(err, resp, body) {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          try {
-            res.send(JSON.parse(body));
-          } catch (e) {
-            res.status(500).send(e);
-          }
-        }
-      });
-    },
-    function(err) {
+  request({
+    url: 'http://proxy-internal/catalog/release/' + mcID + '?gold=' + hasGold,
+    method: 'GET'
+  }, function(err, resp, body) {
+    if (err) {
       res.status(500).send(err);
-    });
+    } else {
+      try {
+        res.send(JSON.parse(body));
+      } catch (e) {
+        res.status(500).send(e);
+      }
+    }
+  });
 });
 
 app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
@@ -187,68 +182,54 @@ app.get(APIPREFIX + '/release/:releaseId/cover', (req, res) => {
 
 app.get(APIPREFIX + '/catalog', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const cid = req.cookies['cid'];
 
-    getSession(cid,
-      function(json) {
-        var hasGold = false;
+    var hasGold = false;
 
-        if (json.gold !== undefined) {
-          hasGold = json.gold;
-        }
+    if (req.session.gold !== undefined) {
+      hasGold = req.session.gold;
+    }
 
-        request({
-          url: 'http://proxy-internal/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
-          method: 'GET'
-        }, function(err, resp, body) {
-          if (err) {
-            res.status(500).send(err);
-          } else {
-            try {
-              res.send(JSON.parse(body));
-            } catch (e) {
-              res.status(500).send(e);
-            }
-          }
-        });
-      },
-      function(err) {
+    request({
+      url: 'http://proxy-internal/catalog?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+      method: 'GET'
+    }, function(err, resp, body) {
+      if (err) {
         res.status(500).send(err);
-      });
+      } else {
+        try {
+          res.send(JSON.parse(body));
+        } catch (e) {
+          res.status(500).send(e);
+        }
+      }
+    });
   });
 });
 
 app.get(APIPREFIX + '/releases', (req, res) => {
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const cid = req.cookies['cid'];
 
-    getSession(cid,
-      function(json) {
-        var hasGold = false;
+  var hasGold = false;
 
-        if (json.gold !== undefined) {
-          hasGold = json.gold;
-        }
+  if (req.session.gold !== undefined) {
+    hasGold = req.session.gold;
+  }
 
-        request({
-            url: 'http://proxy-internal/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
-            method: 'GET'
-          },
-          function(err, resp, body) {
-            if (err) {
-              res.status(500).send(err);
-            } else {
-              try {
-                res.send(JSON.parse(body));
-              } catch (e) {
-                res.status(500).send(e);
-              }
-            }
-          });
-      },
-      function(err) {
+  request({
+      url: 'http://proxy-internal/releases?limit=' + limit + '&skip=' + skip + '&gold=' + hasGold,
+      method: 'GET'
+    },
+    function(err, resp, body) {
+      if (err) {
         res.status(500).send(err);
-      });
+      } else {
+        try {
+          res.send(JSON.parse(body));
+        } catch (e) {
+          res.status(500).send(e);
+        }
+      }
+    });
   });
 });
 
@@ -276,34 +257,26 @@ app.get(APIPREFIX + '/catalog/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const cid = req.cookies['cid'];
+    var hasGold = false;
 
-    getSession(cid,
-      function(json) {
-        var hasGold = false;
+    if (req.session.gold !== undefined) {
+      hasGold = req.session.gold;
+    }
 
-        if (json.gold !== undefined) {
-          hasGold = json.gold;
-        }
-
-        request({
-            url: 'http://proxy-internal/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
-            method: 'GET'
-          },
-          function(err, resp, body) {
-            if (err) {
-              res.status(500).send(err);
-            } else {
-              try {
-                res.send(JSON.parse(body));
-              } catch (e) {
-                res.status(500).send(e);
-              }
-            }
-          });
+    request({
+        url: 'http://proxy-internal/catalog/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+        method: 'GET'
       },
-      function(err) {
-        res.status(500).send(err);
+      function(err, resp, body) {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          try {
+            res.send(JSON.parse(body));
+          } catch (e) {
+            res.status(500).send(e);
+          }
+        }
       });
   });
 });
@@ -312,34 +285,26 @@ app.get(APIPREFIX + '/releases/search', (req, res) => {
   var searchString = utils.fixSearchString(req.query.term);
 
   utils.fixSkipAndLimit(req.query, function(skip, limit) {
-    const cid = req.cookies['cid'];
+    var hasGold = false;
 
-    getSession(cid,
-      function(json) {
-        var hasGold = false;
+    if (req.session.gold !== undefined) {
+      hasGold = req.session.gold;
+    }
 
-        if (json.gold !== undefined) {
-          hasGold = json.gold;
-        }
-
-        request({
-            url: 'http://proxy-internal/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
-            method: 'GET'
-          },
-          function(err, resp, body) {
-            if (err) {
-              res.status(500).send(err);
-            } else {
-              try {
-                res.send(JSON.parse(body));
-              } catch (e) {
-                res.status(500).send(e);
-              }
-            }
-          });
+    request({
+        url: 'http://proxy-internal/releases/search?term=' + searchString + "&limit=" + limit + "&skip=" + skip + '&gold=' + hasGold,
+        method: 'GET'
       },
-      function(err) {
-        res.status(500).send(err);
+      function(err, resp, body) {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          try {
+            res.send(JSON.parse(body));
+          } catch (e) {
+            res.status(500).send(e);
+          }
+        }
       });
   });
 });
