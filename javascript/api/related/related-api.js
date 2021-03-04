@@ -25,103 +25,40 @@ sqlhelper.getConnection(
         const tracks = req.body.tracks;
         const exclude = req.body.exclude;
 
-        var gold = false;
-
-        if (req.query.gold !== undefined) {
-          gold = JSON.parse(req.query.gold);
-        }
-
         getSearchFromIds(tracks, mysqlConnection, function (search) {
-          var excludeString = '';
-          var inputString = '';
+          var catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
 
-          for (var i = 0; i < search.length; i++) {
-            inputString += search[i].search.replace(search[i].id, '').replace(/[^a-zA-Z]/g, '').trim() + ',';
-            excludeString += search[i].id + ',';
+          for (var i = 1; i < search.length; i++) {
+            catalogSongQuery += 'AND id != "' + search[i].id + '" ';
           }
 
-          if(exclude){
+          if (exclude !== undefined) {
             for (var i = 0; i < exclude.length; i++) {
-              excludeString += exclude[i].id + ',';
+              catalogSongQuery += 'AND id != "' + exclude[i].id + '" ';
             }
           }
 
-          if(skipMonstercatTracks){
-            excludeString += 'monstercat'
+          if (skipMonstercatTracks) {
+            catalogSongQuery += 'AND artistsTitle NOT LIKE "Monstercat" ';
           }
 
-          var command = './calc /app/static/catalog-search.txt /app/static/catalog-ids.txt ' + inputString + ' ' + excludeString + ' ' + skip + ' ' + limit;
+          catalogSongQuery += ';';
 
-          console.log(command);
+          mysqlConnection.query(catalogSongQuery, (err, result) => {
+            if (err) {
+              res.send(err);
+            } else {
+              const process = fork('./related-processor.js');
+              process.send({
+                searchArray: search,
+                sqlResult: result,
+                mysqlConnection: mysqlConnection
+              });
 
-          exec(command, (error, stdout, stderr) => {
-            if (error) {
-              console.log(`error: ${error.message}`);
-              return;
+              process.on('message', (processResult) => {
+                res.send(processResult);
+              });
             }
-            if (stderr) {
-              console.log(`stderr: ${stderr}`);
-              return;
-            }
-
-            var out = stdout.split(/\r?\n/);
-
-            var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE id IN(';
-
-            catalogQuery += '"' + out[0] + '"';
-
-            for(var i=1; i<out.length; i++){
-              catalogQuery += ',"' + out[i] + '"';
-            }
-
-            catalogQuery += ') ORDER BY FIELD(id, '
-            catalogQuery += '"' + out[0] + '"';
-
-            for(var i=1; i<out.length; i++){
-              catalogQuery += ',"' + out[i] + '"';
-            }
-
-            catalogQuery += ");"
-
-            mysqlConnection.query(catalogQuery, (err, catalogResult) => {
-              if (err) {
-                res.send(err);
-              } else {
-                var trackArray = catalogResult;
-                var i = 0;
-
-                var releasesQueryFinished = function () {
-                  if (i < catalogResult.length) {
-                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-
-                    mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                      if (err) {
-                        res.send(err);
-                      } else {
-                        utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
-                          trackArray[i] = track;
-                          i++;
-                          releasesQueryFinished();
-                        }, function (err) {
-                          res.send(err);
-                        });
-
-                      }
-                    });
-                  } else {
-                    var returnObject = {
-                      results: trackArray
-                    };
-
-                    res.send(returnObject);
-                  }
-                };
-
-                releasesQueryFinished();
-              }
-            });
-
-          //  res.send({results: array});
           });
         }, function (err) {
           console.log(err);
