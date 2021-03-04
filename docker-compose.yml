@@ -25,7 +25,7 @@ services:
      - ${PWD}/mariadb:/var/lib/mysql
 
   web:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node api/api.js
     working_dir:             /app/
     restart:                 always
@@ -33,7 +33,7 @@ services:
       - ${PWD}/static-content:/app/static
 
   release-api:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node api/release-api.js
     working_dir:             /app/
     restart:                 always
@@ -41,7 +41,7 @@ services:
       - ${PWD}/static-content:/app/api/static
 
   related-api:
-    build:                   javascript/api/related
+    build:                   javascript/related
     command:                 node related-api.js
     working_dir:             /app/
     restart:                 always
@@ -49,49 +49,49 @@ services:
       - ${PWD}/static-content:/app/static
 
   database-logs:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-logs.js
     working_dir:             /app/
     restart:                 always
 
   database-catalog-release:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-catalog-release.js
     working_dir:             /app/
     restart:                 always
 
   database-catalog:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
 
   database-releases:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
 
   database-artists:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
 
   database-session:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/host/database-session.js
     working_dir:             /app/
     restart:                 always
 
   database-local:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/local/database-local.js
     working_dir:             /app/
     restart:                 always
 
   database-update-catalog:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/update/database-update-catalog.js
     working_dir:             /app/
     restart:                 always
@@ -99,13 +99,13 @@ services:
       - ${PWD}/static-content:/app/static
 
   database-update-releases:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
 
   database-update-artists:
-    build:                   javascript/api
+    build:                   javascript
     command:                 node database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
