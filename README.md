@@ -93,16 +93,112 @@ Returns:
 {
     "results": [
         {
-            "id": "d0420179-2bba-48a7-af6f-f48f6dfec1ec",
-            "similarity": 65.66194482905527
+            "id": "0af71497-70c1-4fa5-967f-809aa1db034f",
+            "artists": [
+                {
+                    "id": "450e700a-a864-4eed-b8ae-090747349e20",
+                    "name": "SLANDER"
+                },
+                {
+                    "id": "e173ce85-77d8-4170-9c93-8a89e55eee67",
+                    "name": "Said The Sky"
+                },
+                {
+                    "id": "f3758481-e1e6-4c16-8235-55b6aa379859",
+                    "name": "JT Roach"
+                },
+                {
+                    "id": "f69849e2-5e70-45ab-a7ba-d0acd7d75e8b",
+                    "name": "Stonebank"
+                }
+            ],
+            "artistsTitle": "SLANDER & Said The Sky feat. JT Roach",
+            "bpm": 150,
+            "creatorFriendly": "false",
+            "debutDate": "2020-04-08T00:00:00.000Z",
+            "debutTime": "T00:00:00-07:00",
+            "duration": 201,
+            "explicit": "false",
+            "genrePrimary": "Dance",
+            "genreSecondary": "Dubstep",
+            "isrc": "CA6D22000154",
+            "playlistSort": 0,
+            "releaseId": "c461bdc4-353f-4436-830f-6b988ac3899f",
+            "tags": [
+                "melodic",
+                "heavy",
+                "gaming",
+                "bass"
+            ],
+            "title": "Potions",
+            "trackNumber": 9,
+            "version": "Stonebank Remix",
+            "inEarlyAccess": "false",
+            "search": "SLANDER & Said The Sky feat. JT RoachDanceDubstep0af71497-70c1-4fa5-967f-809aa1db034fSLANDER & Said The Sky feat. JT RoachMCEP184c461bdc4-353f-4436-830f-6b988ac3899fPotionsStonebank RemixmelodicheavygamingbassSLANDERSaid The SkyJT RoachStonebank",
+            "streamable": true,
+            "downloadable": false,
+            "release": {
+                "artistsTitle": "SLANDER & Said The Sky feat. JT Roach",
+                "catalogId": "MCEP184",
+                "id": "c461bdc4-353f-4436-830f-6b988ac3899f",
+                "releaseDate": "2020-04-08T00:00:00.000Z",
+                "title": "Potions (Remixes)",
+                "type": "EP"
+            }
         },
         {
-            "id": "cc6533ea-5f20-480e-8324-345d84634725",
-            "similarity": 65.45731889693127
-        },
-        {
-            "id": "8eb23916-c0c3-41d4-a81a-63436f6d6d09",
-            "similarity": 65.43040019142191
+            "id": "d11337d5-6bae-4b4f-a930-b053bca0ef50",
+            "artists": [
+                {
+                    "id": "e173ce85-77d8-4170-9c93-8a89e55eee67",
+                    "name": "Said The Sky"
+                },
+                {
+                    "id": "450e700a-a864-4eed-b8ae-090747349e20",
+                    "name": "SLANDER"
+                },
+                {
+                    "id": "f3758481-e1e6-4c16-8235-55b6aa379859",
+                    "name": "JT Roach"
+                },
+                {
+                    "id": "e3737895-793a-4941-ba6e-ee6810441338",
+                    "name": "Au5"
+                }
+            ],
+            "artistsTitle": "SLANDER & Said The Sky feat. JT Roach",
+            "bpm": 153,
+            "creatorFriendly": "false",
+            "debutDate": "2020-04-08T00:00:00.000Z",
+            "debutTime": "T00:00:00-07:00",
+            "duration": 289,
+            "explicit": "false",
+            "genrePrimary": "Dance",
+            "genreSecondary": "Dubstep",
+            "isrc": "CA6D22000148",
+            "playlistSort": 0,
+            "releaseId": "c461bdc4-353f-4436-830f-6b988ac3899f",
+            "tags": [
+                "melodic",
+                "heavy",
+                "gaming",
+                "bass"
+            ],
+            "title": "Potions",
+            "trackNumber": 1,
+            "version": "Au5 Remix",
+            "inEarlyAccess": "false",
+            "search": "SLANDER & Said The Sky feat. JT RoachDanceDubstepd11337d5-6bae-4b4f-a930-b053bca0ef50SLANDER & Said The Sky feat. JT RoachMCEP184c461bdc4-353f-4436-830f-6b988ac3899fPotionsAu5 RemixmelodicheavygamingbassSaid The SkySLANDERJT RoachAu5",
+            "streamable": true,
+            "downloadable": false,
+            "release": {
+                "artistsTitle": "SLANDER & Said The Sky feat. JT Roach",
+                "catalogId": "MCEP184",
+                "id": "c461bdc4-353f-4436-830f-6b988ac3899f",
+                "releaseDate": "2020-04-08T00:00:00.000Z",
+                "title": "Potions (Remixes)",
+                "type": "EP"
+            }
         },
         ...
     ]
@@ -138,57 +234,3 @@ Use [/catalog/search](https://api.lucaspape.de/monstercat/v1/catalog/search) to 
 ## GET [/stats](https://api.lucaspape.de/monstercat/v1/stats)
 
 Returns logs
-
-## GET [/liveinfo](https://api.lucaspape.de/monstercat/v1/liveinfo)
-
-Get livestream info of the [twitch](https://www.twitch.tv/monstercat) livestream
-
-Warning: the track can be missing in the response if the track could not be found or a livestream event is currenly ongoing!
-
-Sample response:
-
-```
-{
-  "title": "What Are You Waiting For",
-  "version": "",
-  "artist": "Stonebank",
-  "track": {
-    "artists": [{
-      "id": "f69849e2-5e70-45ab-a7ba-d0acd7d75e8b",
-      "name": "Stonebank",
-      "public": true,
-      "role": "Primary",
-      "uri": "stonebank"
-    }],
-    "artistsTitle": "Stonebank",
-    "bpm": 128,
-    "creatorFriendly": true,
-    "debutDate": "2018-03-22T03:00:00-04:00",
-    "duration": 256,
-    "explicit": false,
-    "genrePrimary": "Dance",
-    "genreSecondary": "Electro",
-    "id": "3d9ad36e-603d-459d-825e-9746ea775029",
-    "isrc": "CA6D21800056",
-    "playlistSort": 0,
-    "release": {
-      "artistsTitle": "Monstercat",
-      "catalogId": "MCBO2018",
-      "id": "b142c486-c9fc-4aaf-b04c-49ac548e8c73",
-      "releaseDate": "2018-12-14T03:00:00-05:00",
-      "tags": null,
-      "title": "Monstercat - Best of 2018",
-      "type": "Album",
-      "upc": "703980543979"
-    },
-    "tags": ["nocontentid", "rocketleagueprimary"],
-    "title": "What Are You Waiting For",
-    "trackNumber": 31,
-    "version": ""
-  },
-  "titleConfidence": 92.3076923076923,
-  "artistConfidence": 81.81818181818183,
-  "versionConfidence": 100,
-  "totalConfidence": 87.06293706293707
-}
-```
