@@ -54,7 +54,7 @@ sqlhelper.getConnection(
             if (err) {
               res.send(err);
             } else {
-              const process = fork('./related-processor.js');
+              const process = fork('/app/api/processors/related-processor.js');
               process.send({
                 searchArray: search,
                 sqlResult: result,

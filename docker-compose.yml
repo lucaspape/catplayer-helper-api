@@ -45,8 +45,8 @@ services:
       - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   related-api:
-    build:                   javascript/api/related
-    command:                 node related-api.js
+    build:                   javascript
+    command:                 node api/related.js
     working_dir:             /app/
     restart:                 always
     volumes:
