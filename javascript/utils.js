@@ -1,4 +1,5 @@
-const dbName = 'monstercatDB';
+const request = require('request');
+const fs = require('fs');
 
 function editDistance(s1, s2) {
   s1 = s1.toLowerCase();
@@ -45,12 +46,14 @@ module.exports = {
       return 0.0;
     }
   },
-
   fixSearchString: function(searchString) {
     if (searchString === undefined) {
       return '';
     } else {
       searchString = searchString.replace(/[^\x20-\x7E]/g, "");
+      searchString = searchString.replace('(', '%7B');
+      searchString = searchString.replace(')', '%7D');
+      searchString = searchString.replace(' ', '%20');
       searchString = searchString.trim();
 
       return searchString;
@@ -67,9 +70,28 @@ module.exports = {
 
     if (reqQuery.limit !== undefined) {
       limit = parseInt(reqQuery.limit);
+
+      if (limit > 50) {
+        limit = 50;
+      }
     }
 
     callback(skip, limit);
+  },
+
+  download: function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+  },
+  addMissingReleaseKeys: function(release) {
+    if (release.links.length > 0) {
+      release.links = release.links.split(',');
+    } else {
+      release.links = [];
+    }
+
+    return release;
   },
 
   addMissingTrackKeys: function(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
@@ -77,7 +99,10 @@ module.exports = {
       if (track.inEarlyAccess === 'true') {
         track.downloadable = false;
         track.streamable = gold;
-      } else {
+      } else if (track.tags !== undefined && track.tags.includes('streamingonly')){
+        track.streamable = true;
+        track.downloadable = false;
+      }else{
         track.streamable = true;
         track.downloadable = gold;
       }
@@ -105,7 +130,7 @@ module.exports = {
         track.release = {};
       }
 
-      if (track.artists !== undefined) {
+      if (track.artists !== undefined && track.artists !== null && track.artists !== '') {
         var artistArray = [];
         const artists = track.artists.split(',');
 
@@ -119,7 +144,9 @@ module.exports = {
               if (err) {
                 errorCallback(err);
               } else {
-                artistArray[i] = artistResults[0];
+                if(artistResults[0] != null){
+                  artistArray[i] = artistResults[0];
+                }
 
                 i++;
                 sqlCallback();
@@ -128,16 +155,40 @@ module.exports = {
 
           } else {
             track.artists = artistArray;
+
+            if(track.artists == null || track.artists === ''){
+              track.artists = [];
+            }
+
             callback(track);
           }
         };
 
         sqlCallback();
       } else {
+        track.artists = [];
         callback(track);
       }
     } else {
       callback(track);
     }
+  },
+
+  addMissingArtistKeys: function(artist) {
+    if (artist.years.length > 0) {
+      artist.years = artist.years.split(',');
+    } else {
+      artist.years = [];
+    }
+
+    if (artist.links.length > 0) {
+      artist.links = artist.links.split(',');
+    } else {
+      artist.links = [];
+    }
+
+    artist.about = Buffer.from(artist.about, 'base64').toString('ascii');
+
+    return artist;
   }
 };

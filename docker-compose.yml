@@ -31,6 +31,8 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   cover-image:
     build:                   javascript
@@ -39,6 +41,8 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/api/static
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   related-api:
     build:                   javascript/api/related
@@ -47,48 +51,71 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-logs:
     build:                   javascript
     command:                 node database/host/database-logs.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-catalog-release:
     build:                   javascript
     command:                 node database/host/database-catalog-release.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-catalog:
     build:                   javascript
     command:                 node database/host/database-catalog.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-releases:
     build:                   javascript
     command:                 node database/host/database-releases.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-artists:
     build:                   javascript
     command:                 node database/host/database-artists.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-session:
     build:                   javascript
     command:                 node database/host/database-session.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-local:
     build:                   javascript
     command:                 node database/local/database-local.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-update-catalog:
     build:                   javascript
@@ -97,15 +124,23 @@ services:
     restart:                 always
     volumes:
       - ${PWD}/static-content:/app/static
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-update-releases:
     build:                   javascript
     command:                 node database/update/database-update-releases.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
   database-update-artists:
     build:                   javascript
     command:                 node database/update/database-update-artists.js
     working_dir:             /app/
     restart:                 always
+    volumes:
+      - ${PWD}/javascript/utils.js:/app/utils.js
+      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
