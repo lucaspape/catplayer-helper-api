@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { exec } = require("child_process");
+const { fork } = require("child_process");
 const utils = require('/app/utils.js');
 
 const PORT = 80;
