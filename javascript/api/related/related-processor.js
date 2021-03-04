@@ -35,14 +35,14 @@ function processRelated(searchArray, sqlResult, callback, errorCallback) {
 
         catalogQuery += '"' + arrayWithSimiliarity[0].id + '"';
 
-        for(var i=1; i<out.length; i++){
+        for(var i=1; i<arrayWithSimiliarity.length; i++){
           catalogQuery += ',"' + arrayWithSimiliarity[i].id + '"';
         }
 
         catalogQuery += ') ORDER BY FIELD(id, '
         catalogQuery += '"' + arrayWithSimiliarity[0].id + '"';
 
-        for(var i=1; i<out.length; i++){
+        for(var i=1; i<arrayWithSimiliarity.length; i++){
           catalogQuery += ',"' + arrayWithSimiliarity[i].id + '"';
         }
 
