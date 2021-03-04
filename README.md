@@ -1,7 +1,9 @@
 # catplayer-helper-api
 A helper api for the catplayer app
 
-This api is hosted at https://api.lucaspape.de/monstercat/v1/
+This api is hosted at https://api.lucaspape.de/monstercat/v1/  
+
+This api clones the content of the monstercat connect api and provides some extra features.  
 
 Deploy using
 ```
