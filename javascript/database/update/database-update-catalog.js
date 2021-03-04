@@ -8,7 +8,9 @@ var id = uuidv4();
 var idTempFilename = '/app/static/catalog-id' + id + '.txt';
 var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
-sqlhelper.getConnectionWitoutSelectedDB.connect(err => {
+const createDatabaseConnection = sqlhelper.getConnectionWitoutSelectedDB;
+
+createDatabaseConnection.connect(err => {
   if (err) {
     console.log(err);
     return err;

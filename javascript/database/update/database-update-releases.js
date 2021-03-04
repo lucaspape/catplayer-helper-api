@@ -2,7 +2,9 @@ const request = require('request');
 const mysql = require('mysql');
 const sqlhelper = require('/app/sqlhelper.js');
 
-sqlhelper.getConnectionWitoutSelectedDB.connect(err => {
+const createDatabaseConnection = sqlhelper.getConnectionWitoutSelectedDB;
+
+createDatabaseConnection.connect(err => {
   if (err) {
     console.log(err);
     return err;
