@@ -51,8 +51,7 @@ sqlhelper.getConnection(
               const process = fork('./related-processor.js');
               process.send({
                 searchArray: search,
-                sqlResult: result,
-                mysqlConnection: mysqlConnection
+                sqlResult: result
               });
 
               process.on('message', (processResult) => {
