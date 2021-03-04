@@ -31,6 +31,8 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
             return 0;
         });
 
+        arrayWithSimiliarity = arrayWithSimiliarity.slice(0, 50);
+
         var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + utils.sqlhelper.dbName + '`.`catalog` WHERE id IN(';
 
         catalogQuery += '"' + arrayWithSimiliarity[0].id + '"';
@@ -50,7 +52,7 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
 
         mysqlConnection.query(catalogQuery, (err, catalogResult) => {
           if (err) {
-            res.send(err);
+            errorCallback(err);
           } else {
             var trackArray = catalogResult;
             var i = 0;
@@ -61,14 +63,14 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
 
                 mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                   if (err) {
-                    res.send(err);
+                    errorCallback(err);
                   } else {
                     utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
                       trackArray[i] = track;
                       i++;
                       releasesQueryFinished();
                     }, function (err) {
-                      res.send(err);
+                      errorCallback(err);
                     });
 
                   }
