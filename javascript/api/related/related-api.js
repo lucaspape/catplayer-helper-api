@@ -14,9 +14,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const dbName = 'monstercatDB';
 
-const sqlhelper = require('/app/sqlhelper.js');
+const sqlhelper = utils.sqlhelper;
 
 sqlhelper.getConnection(
   function (mysqlConnection) {
@@ -67,7 +66,7 @@ sqlhelper.getConnection(
 
             var out = stdout.split(/\r?\n/);
 
-            var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + dbName + '`.`catalog` WHERE id IN(';
+            var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE id IN(';
 
             catalogQuery += '"' + out[0] + '"';
 
@@ -93,7 +92,7 @@ sqlhelper.getConnection(
 
                 var releasesQueryFinished = function () {
                   if (i < catalogResult.length) {
-                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
+                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
                     mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                       if (err) {
@@ -146,7 +145,7 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
 
   var sqlCallback = function () {
     if (i < trackArray.length) {
-      const catalogSongQuery = 'SELECT id,search FROM `' + dbName + '`.`catalog` WHERE id="' + trackArray[i].id + '";';
+      const catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE id="' + trackArray[i].id + '";';
 
       mysqlConnection.query(catalogSongQuery, (err, result) => {
         if (err) {

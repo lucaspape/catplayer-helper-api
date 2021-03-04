@@ -2,7 +2,9 @@ const request = require('request');
 const mysql = require('mysql');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const sqlhelper = require('/app/sqlhelper.js');
+const utils = require('/app/utils.js');
+
+const sqlhelper = utils.sqlhelper;
 
 var id = uuidv4();
 var idTempFilename = '/app/static/catalog-id' + id + '.txt';

@@ -1,8 +1,5 @@
 const utils = require('/app/utils.js');
-
-const dbName = 'monstercatDB';
-
-const sqlhelper = require('/app/sqlhelper.js');
+const sqlhelper = utils.sqlhelper;
 
 function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold, callback, errorCallback) {
     sqlhelper.getConnection(
@@ -27,7 +24,7 @@ function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold
 
             var releasesQueryFinished = function () {
                 if (i < trackArray.length) {
-                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
+                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
 
                     mysqlConnection.query(releaseQuery, (err, releaseResult) => {
                         if (err) {

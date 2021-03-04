@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const sqlhelper = require('/app/sqlhelper.js');
+const sqlhelper = utils.sqlhelper;
 
 sqlhelper.getConnection(
   function (mysqlConnection) {

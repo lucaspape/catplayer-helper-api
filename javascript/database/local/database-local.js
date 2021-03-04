@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const { fork } = require('child_process');
 const utils = require('/app/utils.js');
-const sqlhelper = require('/app/sqlhelper.js');
+
+const sqlhelper = utils.sqlhelper;
 
 const PORT = 80;
 const APIPREFIX = '';

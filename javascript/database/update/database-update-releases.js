@@ -1,6 +1,8 @@
 const request = require('request');
 const mysql = require('mysql');
-const sqlhelper = require('/app/sqlhelper.js');
+const utils = require('/app/utils.js');
+
+const sqlhelper = utils.sqlhelper;
 
 const createDatabaseConnection = sqlhelper.getConnectionWitoutSelectedDB;
 

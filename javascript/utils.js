@@ -1,7 +1,8 @@
 const request = require('request');
 const fs = require('fs');
+const sqlhelper = require('/app/sqlhelper.js');
 
-const dbName = require('/app/sqlhelper.js').dbName;
+const dbName = sqlhelper.dbName;
 
 function editDistance(s1, s2) {
   s1 = s1.toLowerCase();
@@ -31,6 +32,7 @@ function editDistance(s1, s2) {
 }
 
 module.exports = {
+  sqlhelper: sqlhelper,
   similarity: function(s1, s2) {
     if (s1 !== undefined && s2 !== undefined) {
       var longer = s1;
