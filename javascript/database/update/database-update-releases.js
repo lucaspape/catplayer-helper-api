@@ -1,28 +1,18 @@
 const request = require('request');
-
 const mysql = require('mysql');
+const sqlhelper = require('/app/sqlhelper.js');
 
-const dbName = 'monstercatDB';
-
-const createDatabaseConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ'
-});
-
-createDatabaseConnection.connect(err => {
+sqlhelper.getConnectionWitoutSelectedDB.connect(err => {
   if (err) {
     console.log(err);
     return err;
   } else {
-    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + sqlhelper.dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
       if (err) {
         console.log(err);
         return err;
       } else {
         console.log('Created database/exists!');
-
-        const sqlhelper = require('/app/sqlhelper.js');
 
         sqlhelper.getConnection(
           function (mysqlConnection) {
@@ -38,7 +28,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createReleasesTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`releases` (`id` VARCHAR(36), `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` DATE, `releaseTime` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT, PRIMARY KEY(`id`));'
+  const createReleasesTableQuery = 'CREATE TABLE IF NOT EXISTS `' + sqlhelper.dbName + '`.`releases` (`id` VARCHAR(36), `catalogId` TEXT, `artistsTitle` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `links` TEXT, `releaseDate` DATE, `releaseTime` TEXT, `title` TEXT, `type` TEXT, `version` TEXT, `search` TEXT, PRIMARY KEY(`id`));'
   mysqlConnection.query(createReleasesTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -110,7 +100,7 @@ function addToDB(release, mysqlConnection, callback) {
   const releaseDate = release.releaseDate.substr(0, release.releaseDate.indexOf('T'));
   const releaseTime = release.releaseDate.substr(release.releaseDate.indexOf('T'), release.releaseDate.length);
 
-  const insertReleaseQuery = 'REPLACE INTO `' + dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
+  const insertReleaseQuery = 'REPLACE INTO `' + sqlhelper.dbName + '`.`releases` (id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search) values ("' + release.id + '","' + release.catalogId + '","' + release.artistsTitle + '","' + release.genrePrimary + '","' + release.genreSecondary + '","' + links + '","' + releaseDate + '","' + releaseTime + '","' + release.title + '","' + release.type + '","' + release.version + '","' + release.search + '");';
 
   mysqlConnection.query(insertReleaseQuery, (err, results) => {
     if (err) {

@@ -2,28 +2,19 @@
 
 const request = require('request');
 const mysql = require('mysql');
+const sqlhelper = require('/app/sqlhelper.js');
 
-const dbName = 'monstercatDB';
-
-const createDatabaseConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ'
-});
-
-createDatabaseConnection.connect(err => {
+sqlhelper.getConnectionWitoutSelectedDB.connect(err => {
   if (err) {
     console.log(err);
     return err;
   } else {
-    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + sqlhelper.dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
       if (err) {
         console.log(err);
         return err;
       } else {
         console.log('Created database/exists!');
-
-        const sqlhelper = require('/app/sqlhelper.js');
 
         sqlhelper.getConnection(
           function (mysqlConnection) {
@@ -39,7 +30,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`artists` ( `sortId` INT AUTO_INCREMENT, `id` VARCHAR(36), `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT, PRIMARY KEY(`id`), UNIQUE KEY(`sortId`));';
+  const createArtistsTableQuery = 'CREATE TABLE IF NOT EXISTS `' + sqlhelper.dbName + '`.`artists` ( `sortId` INT AUTO_INCREMENT, `id` VARCHAR(36), `about` TEXT, `bookingDetails` TEXT, `imagePositionX` INT, `imagePositionY` INT, `links` TEXT, `managementDetails` TEXT, `name` TEXT, `uri` TEXT, `years` TEXT, `search` TEXT, PRIMARY KEY(`id`), UNIQUE KEY(`sortId`));';
   mysqlConnection.query(createArtistsTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -123,7 +114,7 @@ function addToDB(artist, mysqlConnection, callback) {
 
   //about can contain HTML -> convert to base64
   const about = Buffer.from(artist.about).toString('base64');
-  const insertArtistQuery = 'REPLACE INTO `' + dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ;';
+  const insertArtistQuery = 'REPLACE INTO `' + sqlhelper.dbName + '`.`artists` (id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search) values ("' + artist.id + '","' + about + '","' + artist.bookingDetails + '","' + artist.imagePositionX + '","' + artist.imagePositionY + '","' + links + '","' + artist.managementDetails + '","' + artist.name + '","' + artist.uri + '","' + years + '","' + artist.search + '") ;';
 
   mysqlConnection.query(insertArtistQuery, (err, results) => {
     if (err) {

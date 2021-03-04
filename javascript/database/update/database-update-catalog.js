@@ -2,32 +2,23 @@ const request = require('request');
 const mysql = require('mysql');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-
-const dbName = 'monstercatDB';
+const sqlhelper = require('/app/sqlhelper.js');
 
 var id = uuidv4();
 var idTempFilename = '/app/static/catalog-id' + id + '.txt';
 var searchTempFilename = '/app/static/catalog-search' + id + '.txt';
 
-const createDatabaseConnection = mysql.createConnection({
-  host: 'mariadb',
-  user: 'root',
-  password: 'JacPV7QZ'
-});
-
-createDatabaseConnection.connect(err => {
+sqlhelper.getConnectionWitoutSelectedDB.connect(err => {
   if (err) {
     console.log(err);
     return err;
   } else {
-    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
+    createDatabaseConnection.query('CREATE DATABASE IF NOT EXISTS ' + sqlhelper.dbName + ' DEFAULT CHARACTER SET "utf8" COLLATE "utf8_unicode_ci";', (err, result) => {
       if (err) {
         console.log(err);
         return err;
       } else {
         console.log('Created database/exists!');
-
-        const sqlhelper = require('/app/sqlhelper.js');
 
         sqlhelper.getConnection(
           function (mysqlConnection) {
@@ -43,7 +34,7 @@ createDatabaseConnection.connect(err => {
 });
 
 function initializeDatabase(mysqlConnection) {
-  const createCatalogTableQuery = 'CREATE TABLE IF NOT EXISTS `' + dbName + '`.`catalog` (`id` VARCHAR(36), `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` TEXT, `debutDate` DATE, `debutTime` TEXT, `duration` INT, `explicit` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `releaseId` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `inEarlyAccess` TEXT, `search` TEXT, PRIMARY KEY(`id`));'
+  const createCatalogTableQuery = 'CREATE TABLE IF NOT EXISTS `' + sqlhelper.dbName + '`.`catalog` (`id` VARCHAR(36), `artists` TEXT, `artistsTitle` TEXT, `bpm` INT, `creatorFriendly` TEXT, `debutDate` DATE, `debutTime` TEXT, `duration` INT, `explicit` TEXT, `genrePrimary` TEXT, `genreSecondary` TEXT, `isrc` TEXT, `playlistSort` INT, `releaseId` TEXT, `tags` TEXT, `title` TEXT, `trackNumber` INT, `version` TEXT, `inEarlyAccess` TEXT, `search` TEXT, PRIMARY KEY(`id`));'
   mysqlConnection.query(createCatalogTableQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -138,7 +129,7 @@ function addToDB(track, mysqlConnection, callback) {
   track.search.replace(' ', '');
   track.search.replace('\n', '');
 
-  const insertTrackQuery = 'REPLACE INTO `' + dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime, duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + debutDate + '","' + debutTime + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ;';
+  const insertTrackQuery = 'REPLACE INTO `' + sqlhelper.dbName + '`.`catalog` (id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime, duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search) values ("' + track.id + '","' + artistIds + '","' + track.artistsTitle + '","' + track.bpm + '","' + track.creatorFriendly + '","' + debutDate + '","' + debutTime + '","' + track.duration + '","' + track.explicit + '","' + track.genrePrimary + '","' + track.genreSecondary + '","' + track.isrc + '","' + track.playlistSort + '","' + track.release.id + '","' + track.tags + '","' + track.title + '","' + track.trackNumber + '","' + track.version + '","' + track.inEarlyAccess + '","' + track.search + '") ;';
 
   mysqlConnection.query(insertTrackQuery, (err, results) => {
     if (err) {
