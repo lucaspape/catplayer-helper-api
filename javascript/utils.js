@@ -256,5 +256,26 @@ module.exports = {
         callback(result);
       }
     });
+  },
+  addReleaseObjects: function(mysqlConnection, tracks, gold, callback, errorCallback){
+    var i = 0;
+
+    var releasesQueryFinished = function () {
+      if (i < tracks.length) {
+        utils.getRelease(mysqlConnection, tracks[i].releaseId, (release)=>{
+          utils.addMissingTrackKeys(tracks[i], gold, release, mysqlConnection, function (track) {
+            tracks[i] = track;
+            i++;
+            releasesQueryFinished();
+          }, function (err) {
+            errorCallback(err);
+          });
+        }, (err)=>{
+          errorCallback(err);
+        })
+      } else {
+         callback(tracks);
+      }
+    };
   }
 };

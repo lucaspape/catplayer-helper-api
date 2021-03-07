@@ -28,27 +28,12 @@ function processRelated(searchArray, allSongs, gold, callback, errorCallback) {
 
         allSongs = allSongs.slice(0, 50);
 
-        var i = 0;
-
-        var releasesQueryFinished = function () {
-          if (i < allSongs.length) {
-            utils.getRelease(mysqlConnection, allSongs[i].releaseId, (release)=>{
-              utils.addMissingTrackKeys(allSongs[i], gold, release, mysqlConnection, function (track) {
-                allSongs[i] = track;
-                i++;
-                releasesQueryFinished();
-              }, function (err) {
-                res.send(err);
-              });
-            }, (err)=>{
-              res.send(err);
-            })
-          } else {
-             callback(allSongs);
-          }
-        };
-
-        releasesQueryFinished();
+        utils.addReleaseObjects(mysqlConnection, allSongs, gold, (result)=>{
+          callback(result);
+        },(err)=>{
+          errorCallback(err);
+        });
+        
       },
         function (err) {
             console.log(err);
