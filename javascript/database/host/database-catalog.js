@@ -39,22 +39,17 @@ sqlhelper.getConnection(
 
             var releasesQueryFinished = function () {
               if (i < result.length) {
-                const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-
-                mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                  if (err) {
+                utils.getRelease(mysqlConnection, trackArray[i].releaseId, (release)=>{
+                  utils.addMissingTrackKeys(trackArray[i], gold, release, mysqlConnection, function (track) {
+                    trackArray[i] = track;
+                    i++;
+                    releasesQueryFinished();
+                  }, function (err) {
                     res.send(err);
-                  } else {
-                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
-                      trackArray[i] = track;
-                      i++;
-                      releasesQueryFinished();
-                    }, function (err) {
-                      res.send(err);
-                    });
-
-                  }
-                });
+                  });
+                }, (err)=>{
+                  res.send(err);
+                })
               } else {
                 var returnObject = {
                   results: result

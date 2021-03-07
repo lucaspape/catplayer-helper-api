@@ -194,5 +194,16 @@ module.exports = {
     artist.about = Buffer.from(artist.about, 'base64').toString('ascii');
 
     return artist;
+  },
+  getRelease: function(mysqlConnection, releaseId, callback, errorCallback) {
+    var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
+
+    mysqlConnection.query(getReleaseQuery, (err, result) => {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(addMissingReleaseKeys(result[0]));
+      }
+    });
   }
 };

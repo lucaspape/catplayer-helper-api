@@ -94,7 +94,7 @@ sqlhelper.getConnection(
   });
 
 function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCallback) {
-  getRelease(mysqlConnection, releaseId, function(release) {
+  utils.getRelease(mysqlConnection, releaseId, function(release) {
     getTracks(mysqlConnection, trackIds, gold, release, function(tracks) {
       callback({
         release: release,
@@ -136,18 +136,6 @@ function getTracks(mysqlConnection,trackIdArray, gold, releaseObject, callback, 
   }
 
   sqlCallback();
-}
-
-function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
-  var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + releaseId + '";';
-
-  mysqlConnection.query(getReleaseQuery, (err, result) => {
-    if (err) {
-      errorCallback(err);
-    } else {
-      callback(utils.addMissingReleaseKeys(result[0]));
-    }
-  });
 }
 
 function getCatalogRelease(mcID, callback, errorCallback) {
