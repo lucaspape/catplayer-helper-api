@@ -122,7 +122,7 @@ function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callba
 }
 
 function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
-  var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
+  var getReleaseQuery = 'SELECT * FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
 
   mysqlConnection.query(getReleaseQuery, (err, result) => {
     if (err) {
@@ -218,7 +218,7 @@ module.exports = {
     var sqlCallback = function() {
       if (i < trackIdArray.length) {
         const catalogId = trackIdArray[i];
-        const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
+        const catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
           if (err) {
@@ -241,7 +241,7 @@ module.exports = {
     sqlCallback();
   },
   getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
-    var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess,search FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
+    var catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
 
     for (var i = 1; i < trackIdArray.length; i++) {
       catalogQuery += 'AND id != "' + trackIdArray[i].id + '" ';

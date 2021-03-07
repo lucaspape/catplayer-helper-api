@@ -22,7 +22,7 @@ sqlhelper.getConnection(
 
     app.get(APIPREFIX + '/releases', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const releasesQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version FROM `' + sqlhelper.dbName + '`.`releases` ORDER BY releaseDate DESC LIMIT ' + mysqlConnection.escape(skip) + ', ' + mysqlConnection.escape(limit) + ';';
+        const releasesQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`releases` ORDER BY releaseDate DESC LIMIT ' + mysqlConnection.escape(skip) + ', ' + mysqlConnection.escape(limit) + ';';
 
         mysqlConnection.query(releasesQuery, (err, result) => {
           if (err) {
@@ -47,7 +47,7 @@ sqlhelper.getConnection(
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const releasesSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY releaseDate DESC;';
+        const releasesSearchQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY releaseDate DESC;';
 
         mysqlConnection.query(releasesSearchQuery, (err, result) => {
           if (err) {
