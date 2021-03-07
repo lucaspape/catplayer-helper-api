@@ -249,10 +249,13 @@ module.exports = {
       catalogQuery += 'AND artistsTitle NOT LIKE "Monstercat";';
     }
 
+    console.log(catalogQuery);
+
     mysqlConnection.query(catalogQuery, (err, result) => {
       if (err) {
         errorCallback(err);
       } else {
+        console.log(result);
         callback(result);
       }
     });
