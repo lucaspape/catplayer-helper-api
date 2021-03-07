@@ -277,5 +277,7 @@ module.exports = {
          callback(tracks);
       }
     };
+
+    releasesQueryFinished();
   }
 };
