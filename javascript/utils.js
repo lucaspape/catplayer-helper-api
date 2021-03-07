@@ -31,6 +31,16 @@ function editDistance(s1, s2) {
   return costs[s2.length];
 }
 
+function addMissingReleaseKeys(release) {
+  if (release.links.length > 0) {
+    release.links = release.links.split(',');
+  } else {
+    release.links = [];
+  }
+
+  return release;
+}
+
 module.exports = {
   sqlhelper: sqlhelper,
   similarity: function(s1, s2) {
@@ -88,15 +98,7 @@ module.exports = {
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
   },
-  addMissingReleaseKeys: function(release) {
-    if (release.links.length > 0) {
-      release.links = release.links.split(',');
-    } else {
-      release.links = [];
-    }
-
-    return release;
-  },
+  addMissingReleaseKeys: addMissingReleaseKeys,
 
   addMissingTrackKeys: function(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
     if (track !== undefined) {
