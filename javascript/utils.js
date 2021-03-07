@@ -257,6 +257,7 @@ module.exports = {
           } else {
             trackArray[i] = result[0];
             i++;
+            sqlCallback();
           }
         });
       } else {
