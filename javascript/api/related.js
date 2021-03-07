@@ -41,6 +41,8 @@ sqlhelper.getConnection(
 
         getSearchFromIds(tracks, mysqlConnection, function (search) {
           utils.getTracksFromNotIds(mysqlConnection, [...search, ...exclude], skipMonstercatTracks, (result)=>{
+            const process = fork('/app/api/processors/related-processor.js');
+            
             process.send({
               searchArray: search,
               sqlResult: result,
