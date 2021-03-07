@@ -26,7 +26,9 @@ function processRelated(searchArray, allSongs, gold, callback, errorCallback) {
             return 0;
         });
 
-        allSongs = JSON.parse(JSON.stringify(allSongs.slice(0, 50)));
+        allSongs = allSongs.slice(0, 50);
+
+        var i = 0;
 
         var releasesQueryFinished = function () {
           if (i < allSongs.length) {
