@@ -47,7 +47,7 @@ sqlhelper.getConnection(
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const releasesSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE "%' + mysqlConnection.escape(terms[0]) + '%" ORDER BY releaseDate DESC;';
+        const releasesSearchQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,releaseTime,title,type,version,search FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY releaseDate DESC;';
 
         mysqlConnection.query(releasesSearchQuery, (err, result) => {
           if (err) {

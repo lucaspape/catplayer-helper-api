@@ -47,7 +47,7 @@ sqlhelper.getConnection(
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search FROM `' + sqlhelper.dbName + '`.`artists` WHERE search LIKE "%' + mysqlConnection.escape(terms[0]) + '%" ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const artistsSearchQuery = 'SELECT id, about, bookingDetails, imagePositionX, imagePositionY, links, managementDetails, name, uri, years, search FROM `' + sqlhelper.dbName + '`.`artists` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
 
         mysqlConnection.query(artistsSearchQuery, (err, result) => {
           if (err) {
