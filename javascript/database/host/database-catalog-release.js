@@ -36,51 +36,11 @@ sqlhelper.getConnection(
 
           const mcID = req.params.mcID;
 
-          var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + sqlhelper.dbName + '`.`catalogReleases` WHERE mcID="' + mysqlConnection.escape(mcID) + '";';
-
-          mysqlConnection.query(getIdsQuery, (err, result) => {
-            if (err) {
-              res.send(err);
-            } else {
-              if (result[0] === undefined) {
-                getCatalogRelease(mcID, function(json) {
-                    var releaseId = json.release.id;
-
-                    var trackIds = json.tracks[0].id;
-                    for (var i = 1; i < json.tracks.length; i++) {
-                      trackIds += ',' + json.tracks[i].id;
-                    }
-
-                    var insertIdsQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mysqlConnection.escape(mcID) + '");';
-
-                    mysqlConnection.query(insertIdsQuery, (err, result) => {
-                      if (err) {
-                        res.send(err);
-                      } else {
-                        getFromDB(mysqlConnection,releaseId, trackIds.split(','), gold, function(responseObject) {
-                          res.send(responseObject);
-                        }, function(err) {
-                          res.send(err);
-                        });
-                      }
-                    });
-                  },
-                  function(err) {
-                    res.send(err);
-                  })
-              } else {
-                var releaseId = result[0].releaseId;
-                var trackIds = result[0].trackIds.split(',');
-
-                getFromDB(mysqlConnection, releaseId, trackIds, gold, function(responseObject) {
-                  res.send(responseObject);
-                }, function(err) {
-                  res.send(err);
-                });
-              }
-            }
+          getCatalogRelease(mysqlConnection, mcID, gold, (result)=>{
+            res.send(result);
+          }, (err)=>{
+            res.send(err);
           });
-
         });
 
         app.listen(PORT, () => {
@@ -92,6 +52,53 @@ sqlhelper.getConnection(
     console.log(err);
     return err;
   });
+
+function getCatalogRelease(mysqlConnection, mcID, gold, callback, errorCallback){
+  var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + sqlhelper.dbName + '`.`catalogReleases` WHERE mcID="' + mysqlConnection.escape(mcID) + '";';
+
+  mysqlConnection.query(getIdsQuery, (err, result) => {
+    if (err) {
+      errorCallback(err);
+    } else {
+      if (result[0] === undefined) {
+        getRemoteCatalogRelease(mcID, function(json) {
+            var releaseId = json.release.id;
+
+            var trackIds = json.tracks[0].id;
+            for (var i = 1; i < json.tracks.length; i++) {
+              trackIds += ',' + json.tracks[i].id;
+            }
+
+            var insertIdsQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mysqlConnection.escape(mcID) + '");';
+
+            mysqlConnection.query(insertIdsQuery, (err, result) => {
+              if (err) {
+                res.send(err);
+              } else {
+                getFromDB(mysqlConnection,releaseId, trackIds.split(','), gold, function(responseObject) {
+                  callback(responseObject);
+                }, function(err) {
+                  errorCallback(err);
+                });
+              }
+            });
+          },
+          function(err) {
+            errorCallback(err);
+          })
+      } else {
+        var releaseId = result[0].releaseId;
+        var trackIds = result[0].trackIds.split(',');
+
+        getFromDB(mysqlConnection, releaseId, trackIds, gold, function(responseObject) {
+          callback(responseObject);
+        }, function(err) {
+          errorCallback(err);
+        });
+      }
+    }
+  });
+}
 
 function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCallback) {
   utils.getRelease(mysqlConnection, releaseId, function(release) {
@@ -108,7 +115,7 @@ function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCa
   });
 }
 
-function getCatalogRelease(mcID, callback, errorCallback) {
+function getRemoteCatalogRelease(mcID, callback, errorCallback) {
   request({
       url: 'https://connect.monstercat.com/v2/catalog/release/' + mcID,
       method: 'GET'
