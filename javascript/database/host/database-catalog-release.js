@@ -95,7 +95,7 @@ sqlhelper.getConnection(
 
 function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCallback) {
   utils.getRelease(mysqlConnection, releaseId, function(release) {
-    getTracks(mysqlConnection, trackIds, gold, release, function(tracks) {
+    utils.getTracksFromIds(mysqlConnection, trackIds, gold, release, function(tracks) {
       callback({
         release: release,
         tracks: tracks
@@ -106,36 +106,6 @@ function getFromDB(mysqlConnection, releaseId, trackIds, gold, callback, errorCa
   }, function(err) {
     errorCallback(err);
   });
-}
-
-function getTracks(mysqlConnection,trackIdArray, gold, releaseObject, callback, errorCallback) {
-  var trackArray = [];
-  var i = 0;
-
-  var sqlCallback = function() {
-    if (i < trackIdArray.length) {
-      const catalogId = trackIdArray[i];
-      const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
-
-      mysqlConnection.query(catalogQuery, (err, result) => {
-        if (err) {
-          errorCallback(err);
-        } else {
-          utils.addMissingTrackKeys(result[0], gold, releaseObject, mysqlConnection, function(track) {
-            trackArray[i] = track;
-            i++;
-            sqlCallback();
-          }, function(err) {
-            errorCallback(err);
-          });
-        }
-      });
-    } else {
-      callback(trackArray);
-    }
-  }
-
-  sqlCallback();
 }
 
 function getCatalogRelease(mcID, callback, errorCallback) {

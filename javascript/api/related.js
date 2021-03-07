@@ -32,39 +32,19 @@ sqlhelper.getConnection(
         }
 
         getSearchFromIds(tracks, mysqlConnection, function (search) {
-          var catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE ' + 'id!="' + search[0].id + '" ';
+          utils.getTracksFromNotIds(mysqlConnection, [...search, ...exclude], skipMonstercatTracks, (result)=>{
+            process.send({
+              searchArray: search,
+              sqlResult: result,
+              gold: gold
+            });
 
-          for (var i = 1; i < search.length; i++) {
-            catalogSongQuery += 'AND id != "' + search[i].id + '" ';
-          }
-
-          if (exclude !== undefined) {
-            for (var i = 0; i < exclude.length; i++) {
-              catalogSongQuery += 'AND id != "' + exclude[i].id + '" ';
-            }
-          }
-
-          if (skipMonstercatTracks) {
-            catalogSongQuery += 'AND artistsTitle NOT LIKE "Monstercat" ';
-          }
-
-          catalogSongQuery += ';';
-
-          mysqlConnection.query(catalogSongQuery, (err, result) => {
-            if (err) {
-              res.send(err);
-            } else {
-              const process = fork('/app/api/processors/related-processor.js');
-              process.send({
-                searchArray: search,
-                sqlResult: result,
-                gold: gold
-              });
-
-              process.on('message', (processResult) => {
-                res.send(processResult);
-              });
-            }
+            process.on('message', (processResult) => {
+              res.send(processResult);
+            });
+          }, (err)=>{
+            console.log(err);
+            res.send(err);
           });
         }, function (err) {
           console.log(err);

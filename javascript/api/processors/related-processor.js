@@ -33,56 +33,29 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
 
         arrayWithSimiliarity = arrayWithSimiliarity.slice(0, 50);
 
-        var catalogQuery = 'SELECT id,artists,artistsTitle,bpm ,creatorFriendly,debutDate,debutTime,duration,explicit,genrePrimary,genreSecondary,isrc,playlistSort,releaseId,tags,title,trackNumber,version,inEarlyAccess,search FROM `' + utils.sqlhelper.dbName + '`.`catalog` WHERE id IN(';
-
-        catalogQuery += '"' + arrayWithSimiliarity[0].id + '"';
-
-        for(var i=1; i<arrayWithSimiliarity.length; i++){
-          catalogQuery += ',"' + arrayWithSimiliarity[i].id + '"';
-        }
-
-        catalogQuery += ') ORDER BY FIELD(id, '
-        catalogQuery += '"' + arrayWithSimiliarity[0].id + '"';
-
-        for(var i=1; i<arrayWithSimiliarity.length; i++){
-          catalogQuery += ',"' + arrayWithSimiliarity[i].id + '"';
-        }
-
-        catalogQuery += ");"
-
-        mysqlConnection.query(catalogQuery, (err, catalogResult) => {
-          if (err) {
-            errorCallback(err);
+        var releasesQueryFinished = function () {
+          if (i < arrayWithSimiliarity.length) {
+            utils.getRelease(mysqlConnection, arrayWithSimiliarity[i].releaseId, (release)=>{
+              utils.addMissingTrackKeys(arrayWithSimiliarity[i], gold, release, mysqlConnection, function (track) {
+                arrayWithSimiliarity[i] = track;
+                i++;
+                releasesQueryFinished();
+              }, function (err) {
+                res.send(err);
+              });
+            }, (err)=>{
+              res.send(err);
+            })
           } else {
-            var trackArray = catalogResult;
-            var i = 0;
-
-            var releasesQueryFinished = function () {
-              if (i < catalogResult.length) {
-                const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + utils.sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-
-                mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                  if (err) {
-                    errorCallback(err);
-                  } else {
-                    utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
-                      trackArray[i] = track;
-                      i++;
-                      releasesQueryFinished();
-                    }, function (err) {
-                      errorCallback(err);
-                    });
-
-                  }
-                });
-              } else {
-                callback(trackArray);
-              }
+            var returnObject = {
+              results: arrayWithSimiliarity
             };
 
-            releasesQueryFinished();
+            res.send(returnObject);
           }
-        });
+        };
+
+        releasesQueryFinished();
       },
         function (err) {
             console.log(err);

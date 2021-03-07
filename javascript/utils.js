@@ -41,6 +41,86 @@ function addMissingReleaseKeys(release) {
   return release;
 }
 
+function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
+  if (track !== undefined) {
+    if (track.inEarlyAccess === 'true') {
+      track.downloadable = false;
+      track.streamable = gold;
+    } else if (track.tags !== undefined && track.tags.includes('streamingonly')){
+      track.streamable = true;
+      track.downloadable = false;
+    }else{
+      track.streamable = true;
+      track.downloadable = gold;
+    }
+
+    if (track.tags !== undefined) {
+      const tags = track.tags.split(',');
+      track.tags = [];
+
+      for (var i = 0; i < tags.length; i++) {
+        track.tags[i] = tags[i];
+      }
+    }
+
+    if (releaseObject !== undefined) {
+      track.release = {
+        artistsTitle: releaseObject.artistsTitle,
+        catalogId: releaseObject.catalogId,
+        id: releaseObject.id,
+        releaseDate: releaseObject.releaseDate,
+        title: releaseObject.title,
+        type: releaseObject.type
+      };
+
+    } else {
+      track.release = {};
+    }
+
+    if (track.artists !== undefined && track.artists !== null && track.artists !== '') {
+      var artistArray = [];
+      const artists = track.artists.split(',');
+
+      var i = 0;
+
+      var sqlCallback = function() {
+        if (i < artists.length) {
+          const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
+
+          mysqlConnection.query(artistQuery, (err, artistResults) => {
+            if (err) {
+              errorCallback(err);
+            } else {
+              if(artistResults[0] != null){
+                artistArray[i] = artistResults[0];
+              }
+
+              i++;
+              sqlCallback();
+            }
+          });
+
+        } else {
+          track.artists = artistArray;
+
+          if(track.artists == null || track.artists === ''){
+            track.artists = [];
+          }
+
+          callback(track);
+        }
+      };
+
+      sqlCallback();
+    } else {
+      track.artists = [];
+      callback(track);
+    }
+  } else {
+    callback(track);
+  }
+}
+
 module.exports = {
   sqlhelper: sqlhelper,
   similarity: function(s1, s2) {
@@ -99,86 +179,7 @@ module.exports = {
     });
   },
   addMissingReleaseKeys: addMissingReleaseKeys,
-
-  addMissingTrackKeys: function(track, gold, releaseObject, mysqlConnection, callback, errorCallback) {
-    if (track !== undefined) {
-      if (track.inEarlyAccess === 'true') {
-        track.downloadable = false;
-        track.streamable = gold;
-      } else if (track.tags !== undefined && track.tags.includes('streamingonly')){
-        track.streamable = true;
-        track.downloadable = false;
-      }else{
-        track.streamable = true;
-        track.downloadable = gold;
-      }
-
-      if (track.tags !== undefined) {
-        const tags = track.tags.split(',');
-        track.tags = [];
-
-        for (var i = 0; i < tags.length; i++) {
-          track.tags[i] = tags[i];
-        }
-      }
-
-      if (releaseObject !== undefined) {
-        track.release = {
-          artistsTitle: releaseObject.artistsTitle,
-          catalogId: releaseObject.catalogId,
-          id: releaseObject.id,
-          releaseDate: releaseObject.releaseDate,
-          title: releaseObject.title,
-          type: releaseObject.type
-        };
-
-      } else {
-        track.release = {};
-      }
-
-      if (track.artists !== undefined && track.artists !== null && track.artists !== '') {
-        var artistArray = [];
-        const artists = track.artists.split(',');
-
-        var i = 0;
-
-        var sqlCallback = function() {
-          if (i < artists.length) {
-            const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
-
-            mysqlConnection.query(artistQuery, (err, artistResults) => {
-              if (err) {
-                errorCallback(err);
-              } else {
-                if(artistResults[0] != null){
-                  artistArray[i] = artistResults[0];
-                }
-
-                i++;
-                sqlCallback();
-              }
-            });
-
-          } else {
-            track.artists = artistArray;
-
-            if(track.artists == null || track.artists === ''){
-              track.artists = [];
-            }
-
-            callback(track);
-          }
-        };
-
-        sqlCallback();
-      } else {
-        track.artists = [];
-        callback(track);
-      }
-    } else {
-      callback(track);
-    }
-  },
+  addMissingTrackKeys: addMissingTrackKeys,
 
   addMissingArtistKeys: function(artist) {
     if (artist.years.length > 0) {
@@ -207,5 +208,62 @@ module.exports = {
         callback(addMissingReleaseKeys(result[0]));
       }
     });
+  },
+  getTracksFromIds: function(mysqlConnection,trackIdArray, gold, releaseObject, callback, errorCallback) {
+    var trackArray = [];
+    var i = 0;
+
+    var sqlCallback = function() {
+      if (i < trackIdArray.length) {
+        const catalogId = trackIdArray[i];
+        const catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
+
+        mysqlConnection.query(catalogQuery, (err, result) => {
+          if (err) {
+            errorCallback(err);
+          } else {
+            addMissingTrackKeys(result[0], gold, releaseObject, mysqlConnection, function(track) {
+              trackArray[i] = track;
+              i++;
+              sqlCallback();
+            }, function(err) {
+              errorCallback(err);
+            });
+          }
+        });
+      } else {
+        callback(trackArray);
+      }
+    }
+
+    sqlCallback();
+  },
+  getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
+    var trackArray = [];
+    var i = 0;
+
+    var sqlCallback = function() {
+      if (i < trackIdArray.length) {
+        const catalogId = trackIdArray[i];
+        var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + catalogId + '" ';
+
+        if (skipMonstercatTracks) {
+          catalogQuery += 'AND artistsTitle NOT LIKE "Monstercat";';
+        }
+
+        mysqlConnection.query(catalogQuery, (err, result) => {
+          if (err) {
+            errorCallback(err);
+          } else {
+            trackArray[i] = track;
+            i++;
+          }
+        });
+      } else {
+        callback(trackArray);
+      }
+    }
+
+    sqlCallback();
   }
 };
