@@ -26,13 +26,13 @@ function processRelated(searchArray, allSongs, gold, callback, errorCallback) {
             return 0;
         });
 
-        var songs = allSongs.slice(0, 50);
+        allSongs = JSON.parse(JSON.stringify(allSongs.slice(0, 50)));
 
         var releasesQueryFinished = function () {
-          if (i < songs.length) {
-            utils.getRelease(mysqlConnection, songs[i].releaseId, (release)=>{
-              utils.addMissingTrackKeys(songs[i], gold, release, mysqlConnection, function (track) {
-                songs[i] = track;
+          if (i < allSongs.length) {
+            utils.getRelease(mysqlConnection, allSongs[i].releaseId, (release)=>{
+              utils.addMissingTrackKeys(allSongs[i], gold, release, mysqlConnection, function (track) {
+                allSongs[i] = track;
                 i++;
                 releasesQueryFinished();
               }, function (err) {
@@ -42,7 +42,7 @@ function processRelated(searchArray, allSongs, gold, callback, errorCallback) {
               res.send(err);
             })
           } else {
-             callback(songs);
+             callback(allSongs);
           }
         };
 
