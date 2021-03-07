@@ -239,7 +239,7 @@ module.exports = {
     sqlCallback();
   },
   getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
-    var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
+    var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess,search FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
 
     for (var i = 1; i < trackIdArray.length; i++) {
       catalogQuery += 'AND id != "' + trackIdArray[i].id + '" ';
@@ -249,13 +249,10 @@ module.exports = {
       catalogQuery += 'AND artistsTitle NOT LIKE "Monstercat";';
     }
 
-    console.log(catalogQuery);
-
     mysqlConnection.query(catalogQuery, (err, result) => {
       if (err) {
         errorCallback(err);
       } else {
-        console.log(result);
         callback(result);
       }
     });

@@ -1,6 +1,6 @@
 const utils = require('/app/utils.js');
 
-function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
+function processRelated(searchArray, allSongs, gold, callback, errorCallback) {
   utils.sqlhelper.getConnection(
       function (mysqlConnection) {
         var arrayWithSimiliarity = [];
@@ -8,11 +8,11 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
         for (var i = 0; i < searchArray.length; i++) {
             const firstSearch = searchArray[i].search.replace(searchArray[i].id, '');
 
-            for(var k=0; k<sqlResult.length; k++){
-                var secondSearch = sqlResult[k].search.replace(sqlResult[k].id, '');
+            for(var k=0; k<allSongs.length; k++){
+                var secondSearch = allSongs[k].search.replace(allSongs[k].id, '');
 
                 var similarity = utils.similarity(firstSearch, secondSearch);
-                const id = sqlResult[k].id;
+                const id = allSongs[k].id;
 
                 if (arrayWithSimiliarity[k] !== undefined) {
                     similarity += arrayWithSimiliarity[k].similarity;
@@ -60,7 +60,7 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
 }
 
 process.on('message', async (data) => {
-    processRelated(data.searchArray, data.sqlResult, data.gold, function (result) {
+    processRelated(data.searchArray, data.allSongs, data.gold, function (result) {
         process.send({ results: result });
     }, function (err) { process.send({ err: err }) });
 });
