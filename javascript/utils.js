@@ -239,32 +239,22 @@ module.exports = {
     sqlCallback();
   },
   getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
-    var trackArray = [];
-    var i = 0;
+    var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
 
-    var sqlCallback = function() {
-      if (i < trackIdArray.length) {
-        const catalogId = trackIdArray[i];
-        var catalogQuery = 'SELECT catalog.id,artists,catalog.artistsTitle,bpm ,creatorFriendly,debutDate,duration,explicit,catalog.genrePrimary,catalog.genreSecondary,isrc,playlistSort,releaseId,tags,catalog.title,trackNumber,catalog.version,inEarlyAccess FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + catalogId + '" ';
-
-        if (skipMonstercatTracks) {
-          catalogQuery += 'AND artistsTitle NOT LIKE "Monstercat";';
-        }
-
-        mysqlConnection.query(catalogQuery, (err, result) => {
-          if (err) {
-            errorCallback(err);
-          } else {
-            trackArray[i] = result[0];
-            i++;
-            sqlCallback();
-          }
-        });
-      } else {
-        callback(trackArray);
-      }
+    for (var i = 1; i < trackIdArray.length; i++) {
+      catalogQuery += 'AND id != "' + trackIdArray[i].id + '" ';
     }
 
-    sqlCallback();
+    if (skipMonstercatTracks) {
+      catalogQuery += 'AND artistsTitle NOT LIKE "Monstercat";';
+    }
+
+    mysqlConnection.query(catalogQuery, (err, result) => {
+      if (err) {
+        errorCallback(err);
+      } else {
+        callback(result);
+      }
+    });
   }
 };
