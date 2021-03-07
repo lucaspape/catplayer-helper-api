@@ -121,6 +121,18 @@ function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callba
   }
 }
 
+function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
+  var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
+
+  mysqlConnection.query(getReleaseQuery, (err, result) => {
+    if (err) {
+      errorCallback(err);
+    } else {
+      callback(addMissingReleaseKeys(result[0]));
+    }
+  });
+}
+
 module.exports = {
   sqlhelper: sqlhelper,
   similarity: function(s1, s2) {
@@ -198,17 +210,7 @@ module.exports = {
 
     return artist;
   },
-  getRelease: function(mysqlConnection, releaseId, callback, errorCallback) {
-    var getReleaseQuery = 'SELECT id,catalogId,artistsTitle,genrePrimary,genreSecondary,links,releaseDate,title,type,version FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
-
-    mysqlConnection.query(getReleaseQuery, (err, result) => {
-      if (err) {
-        errorCallback(err);
-      } else {
-        callback(addMissingReleaseKeys(result[0]));
-      }
-    });
-  },
+  getRelease: getRelease,
   getTracksFromIds: function(mysqlConnection,trackIdArray, gold, releaseObject, callback, errorCallback) {
     var trackArray = [];
     var i = 0;
@@ -262,8 +264,8 @@ module.exports = {
 
     var releasesQueryFinished = function () {
       if (i < tracks.length) {
-        utils.getRelease(mysqlConnection, tracks[i].releaseId, (release)=>{
-          utils.addMissingTrackKeys(tracks[i], gold, release, mysqlConnection, function (track) {
+        getRelease(mysqlConnection, tracks[i].releaseId, (release)=>{
+          addMissingTrackKeys(tracks[i], gold, release, mysqlConnection, function (track) {
             tracks[i] = track;
             i++;
             releasesQueryFinished();

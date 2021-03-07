@@ -20,31 +20,11 @@ function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold
 
             trackArray = trackArray.slice(skip, skip + limit);
 
-            var i = 0;
-
-            var releasesQueryFinished = function () {
-                if (i < trackArray.length) {
-                    const releaseQuery = 'SELECT artistsTitle, catalogId, id, releaseDate, title, type FROM `' + sqlhelper.dbName + '`.`releases` WHERE id="' + trackArray[i].releaseId + '";';
-
-                    mysqlConnection.query(releaseQuery, (err, releaseResult) => {
-                        if (err) {
-                            errorCallback(err);
-                        } else {
-                            utils.addMissingTrackKeys(trackArray[i], gold, releaseResult[0], mysqlConnection, function (track) {
-                                trackArray[i] = track;
-                                i++;
-                                releasesQueryFinished();
-                            }, function (err) {
-                                errorCallback(err);
-                            });
-                        }
-                    });
-                } else {
-                    callback(trackArray);
-                }
-            };
-
-            releasesQueryFinished();
+            utils.addReleaseObjects(mysqlConnection, trackArray, gold, (result)=>{
+              callback(result);
+            },(err)=>{
+              errorCallback(err);
+            });
         }, function (err) {
             console.log(err);
             errorCallback(err);
