@@ -240,11 +240,11 @@ module.exports = {
 
     sqlCallback();
   },
-  getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
-    var catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!=' + mysqlConnection.escape(trackIdArray[0]) + ' ';
+  getTracksFromNotIds: function(mysqlConnection,trackArray, skipMonstercatTracks, callback, errorCallback) {
+    var catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!=' + mysqlConnection.escape(trackArray[0].id) + ' ';
 
-    for (var i = 1; i < trackIdArray.length; i++) {
-      catalogQuery += 'AND id != ' + mysqlConnection.escape(trackIdArray[i].id) + ' ';
+    for (var i = 1; i < trackArray.length; i++) {
+      catalogQuery += 'AND id != ' + mysqlConnection.escape(trackArray[i].id) + ' ';
     }
 
     if (skipMonstercatTracks) {
