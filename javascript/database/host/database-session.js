@@ -31,7 +31,7 @@ sqlhelper.getConnection(
           const cid = req.body.cid;
           const cidHash = crypto.createHash('sha256').update(cid).digest('base64');
 
-          const sessionQuery = 'SELECT gold FROM `' + sqlhelper.dbName + '`.`session` WHERE cid="' + cidHash + '";'
+          const sessionQuery = 'SELECT gold FROM `' + sqlhelper.dbName + '`.`session` WHERE cid="' + mysqlConnection.escape(cidHash) + '";'
 
           mysqlConnection.query(sessionQuery, (err, result) => {
             if (err) {
@@ -40,7 +40,7 @@ sqlhelper.getConnection(
               if (result.gold === undefined) {
                 getSession(cid,
                   function(json) {
-                    const insertSessionQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`session` (cid, gold) values ("' + cidHash + '","' + json.user.hasGold + '");';
+                    const insertSessionQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`session` (cid, gold) values ("' + mysqlConnection.escape(cidHash) + '","' + json.user.hasGold + '");';
 
                     mysqlConnection.query(insertSessionQuery, (err, result) => {
                       if (err) {

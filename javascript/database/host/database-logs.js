@@ -32,7 +32,7 @@ sqlhelper.getConnection(
           const userAgent = req.body.userAgent;
           const timestamp = Math.floor(new Date() / 1000);
 
-          const insertLogQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`log` (timestamp, url, userAgent) values ("' + timestamp + '","' + url + '", "' + userAgent + '");'
+          const insertLogQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`log` (timestamp, url, userAgent) values ("' + timestamp + '","' + mysqlConnection.escape(url) + '", "' + mysqlConnection.escape(userAgent) + '");'
 
           mysqlConnection.query(insertLogQuery, (err, result) => {
             if (err) {

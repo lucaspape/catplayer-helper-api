@@ -36,7 +36,7 @@ sqlhelper.getConnection(
 
           const mcID = req.params.mcID;
 
-          var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + sqlhelper.dbName + '`.`catalogReleases` WHERE mcID="' + mcID + '";';
+          var getIdsQuery = 'SELECT trackIds, releaseId FROM `' + sqlhelper.dbName + '`.`catalogReleases` WHERE mcID="' + mysqlConnection.escape(mcID) + '";';
 
           mysqlConnection.query(getIdsQuery, (err, result) => {
             if (err) {
@@ -51,7 +51,7 @@ sqlhelper.getConnection(
                       trackIds += ',' + json.tracks[i].id;
                     }
 
-                    var insertIdsQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mcID + '");';
+                    var insertIdsQuery = 'INSERT INTO `' + sqlhelper.dbName + '`.`catalogReleases` (trackIds, releaseId, mcID) values ("' + trackIds + '","' + releaseId + '","' + mysqlConnection.escape(mcID) + '");';
 
                     mysqlConnection.query(insertIdsQuery, (err, result) => {
                       if (err) {
