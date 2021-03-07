@@ -78,7 +78,7 @@ function getSearchFromIds(trackArray, mysqlConnection, callback, errorCallback) 
 
   var sqlCallback = function () {
     if (i < trackArray.length) {
-      const catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE id="' + trackArray[i].id + '";';
+      const catalogSongQuery = 'SELECT id,search FROM `' + sqlhelper.dbName + '`.`catalog` WHERE id=' + mysqlConnection.escape(trackArray[i].id) + ';';
 
       mysqlConnection.query(catalogSongQuery, (err, result) => {
         if (err) {

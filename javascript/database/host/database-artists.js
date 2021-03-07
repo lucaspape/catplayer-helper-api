@@ -22,7 +22,7 @@ sqlhelper.getConnection(
 
     app.get(APIPREFIX + '/artists', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const artistsQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`artists` ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const artistsQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`artists` ORDER BY sortId DESC LIMIT ' + mysqlConnection.escape(skip) + ', ' + mysqlConnection.escape(limit) + ';';
 
         mysqlConnection.query(artistsQuery, (err, result) => {
           if (err) {
@@ -47,7 +47,7 @@ sqlhelper.getConnection(
         const searchString = utils.fixSearchString(req.query.term)
         const terms = searchString.split(' ');
 
-        const artistsSearchQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`artists` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY sortId DESC LIMIT ' + skip + ', ' + limit + ';';
+        const artistsSearchQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`artists` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY sortId DESC LIMIT ' + mysqlConnection.escape(skip) + ', ' + mysqlConnection.escape(limit) + ';';
 
         mysqlConnection.query(artistsSearchQuery, (err, result) => {
           if (err) {
