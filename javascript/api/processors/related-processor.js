@@ -47,11 +47,7 @@ function processRelated(searchArray, sqlResult, gold, callback, errorCallback) {
               res.send(err);
             })
           } else {
-            var returnObject = {
-              results: arrayWithSimiliarity
-            };
-
-            res.send(returnObject);
+             callback(arrayWithSimiliarity);
           }
         };
 
