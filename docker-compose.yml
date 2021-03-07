@@ -108,15 +108,6 @@ services:
       - ${PWD}/javascript/utils.js:/app/utils.js
       - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
 
-  database-local:
-    build:                   javascript
-    command:                 node database/local/database-local.js
-    working_dir:             /app/
-    restart:                 always
-    volumes:
-      - ${PWD}/javascript/utils.js:/app/utils.js
-      - ${PWD}/javascript/sqlhelper.js:/app/sqlhelper.js
-
   database-update-catalog:
     build:                   javascript
     command:                 node database/update/database-update-catalog.js

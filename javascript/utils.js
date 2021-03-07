@@ -85,7 +85,7 @@ function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callba
 
       var sqlCallback = function() {
         if (i < artists.length) {
-          const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id="' + artists[i] + '";';
+          const artistQuery = 'SELECT id,name FROM `' + dbName + '`.`artists` WHERE artists.id=' + mysqlConnection.escape(artists[i]) + ';';
 
           mysqlConnection.query(artistQuery, (err, artistResults) => {
             if (err) {
@@ -122,7 +122,7 @@ function addMissingTrackKeys(track, gold, releaseObject, mysqlConnection, callba
 }
 
 function getRelease(mysqlConnection, releaseId, callback, errorCallback) {
-  var getReleaseQuery = 'SELECT * FROM `' + dbName + '`.`releases` WHERE id="' + releaseId + '";';
+  var getReleaseQuery = 'SELECT * FROM `' + dbName + '`.`releases` WHERE id=' + mysqlConnection.escape(releaseId) + ';';
 
   mysqlConnection.query(getReleaseQuery, (err, result) => {
     if (err) {
@@ -218,7 +218,7 @@ module.exports = {
     var sqlCallback = function() {
       if (i < trackIdArray.length) {
         const catalogId = trackIdArray[i];
-        const catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id="' + catalogId + '";';
+        const catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id=' + mysqlConnection.escape(catalogId) + ';';
 
         mysqlConnection.query(catalogQuery, (err, result) => {
           if (err) {
@@ -241,10 +241,10 @@ module.exports = {
     sqlCallback();
   },
   getTracksFromNotIds: function(mysqlConnection,trackIdArray, skipMonstercatTracks, callback, errorCallback) {
-    var catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!="' + trackIdArray[0] + '" ';
+    var catalogQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`catalog`' + ' WHERE id!=' + mysqlConnection.escape(trackIdArray[0]) + ' ';
 
     for (var i = 1; i < trackIdArray.length; i++) {
-      catalogQuery += 'AND id != "' + trackIdArray[i].id + '" ';
+      catalogQuery += 'AND id != ' + mysqlConnection.escape(trackIdArray[i].id) + ' ';
     }
 
     if (skipMonstercatTracks) {
