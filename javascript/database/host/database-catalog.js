@@ -34,32 +34,15 @@ sqlhelper.getConnection(
           if (err) {
             res.send(err);
           } else {
-            var trackArray = result;
-            var i = 0;
+            utils.addReleaseObjects(mysqlConnection, result, gold, (result)=>{
+              var returnObject = {
+                results: result
+              };
 
-            var releasesQueryFinished = function () {
-              if (i < result.length) {
-                utils.getRelease(mysqlConnection, trackArray[i].releaseId, (release)=>{
-                  utils.addMissingTrackKeys(trackArray[i], gold, release, mysqlConnection, function (track) {
-                    trackArray[i] = track;
-                    i++;
-                    releasesQueryFinished();
-                  }, function (err) {
-                    res.send(err);
-                  });
-                }, (err)=>{
-                  res.send(err);
-                })
-              } else {
-                var returnObject = {
-                  results: result
-                };
-
-                res.send(returnObject);
-              }
-            };
-
-            releasesQueryFinished();
+              res.send(returnObject);
+            },(err)=>{
+              res.send(err);
+            });
           }
         });
       });
