@@ -22,8 +22,16 @@ sqlhelper.getConnection(
     app.post(APIPREFIX + '/', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
         const skipMonstercatTracks = (req.query.skipMC === 'true');
-        const tracks = req.body.tracks;
-        const exclude = req.body.exclude;
+        var tracks = req.body.tracks;
+        var exclude = req.body.exclude;
+
+        if(!tracks){
+          tracks = [];
+        }
+
+        if(!exclude){
+          exclude = [];
+        }
 
         var gold = false;
 

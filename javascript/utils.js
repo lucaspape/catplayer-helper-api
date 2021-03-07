@@ -255,7 +255,7 @@ module.exports = {
           if (err) {
             errorCallback(err);
           } else {
-            trackArray[i] = track;
+            trackArray[i] = result[0];
             i++;
           }
         });
