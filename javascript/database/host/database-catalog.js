@@ -56,7 +56,7 @@ sqlhelper.getConnection(
       }
 
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const searchString = utils.fixSearchString(req.query.term);
+        const searchString = req.query.term;
 
         const terms = searchString.split(' ');
 
