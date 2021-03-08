@@ -44,7 +44,7 @@ sqlhelper.getConnection(
 
     app.get(APIPREFIX + '/releases/search', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const searchString = utils.fixSearchString(req.query.term)
+        const searchString = req.query.term;
         const terms = searchString.split(' ');
 
         const releasesSearchQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`releases` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY releaseDate DESC;';

@@ -44,7 +44,7 @@ sqlhelper.getConnection(
 
     app.get(APIPREFIX + '/artists/search', (req, res) => {
       utils.fixSkipAndLimit(req.query, function (skip, limit) {
-        const searchString = utils.fixSearchString(req.query.term)
+        const searchString = req.query.term;
         const terms = searchString.split(' ');
 
         const artistsSearchQuery = 'SELECT * FROM `' + sqlhelper.dbName + '`.`artists` WHERE search LIKE ' + mysqlConnection.escape('%' + terms[0] + '%') + ' ORDER BY sortId DESC LIMIT ' + mysqlConnection.escape(skip) + ', ' + mysqlConnection.escape(limit) + ';';
