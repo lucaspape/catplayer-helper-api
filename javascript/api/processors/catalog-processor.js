@@ -4,10 +4,6 @@ const sqlhelper = utils.sqlhelper;
 function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold, callback, errorCallback) {
     sqlhelper.getConnection(
         function (mysqlConnection) {
-            for (var k = 1; k < terms.length; k++) {
-                trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(trackArray[i].search));
-            }
-
             for (var i = 0; i < trackArray.length; i++) {
                 trackArray[i].similarity = utils.similarity(trackArray[i].search.replace(trackArray[i].id, ''), searchString);
             }
