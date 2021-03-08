@@ -157,8 +157,8 @@ module.exports = {
       return '';
     } else {
       searchString = searchString.replace(/[^\x20-\x7E]/g, "");
-      searchString = searchString.replace('(', '%7B');
-      searchString = searchString.replace(')', '%7D');
+      searchString = searchString.replace('(', '%28');
+      searchString = searchString.replace(')', '%29');
       searchString = searchString.replace(' ', '%20');
       searchString = searchString.trim();
 
