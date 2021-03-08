@@ -2,7 +2,7 @@ const utils = require('/app/utils.js');
 
 function processArtistSearch(searchString, terms, artistsArray, skip, limit, callback) {
     for (var k = 1; k < terms.length; k++) {
-        artistsArray = artistsArray.filter(artist => new RegExp(terms[k], 'i').test(artist.search));
+        artistsArray = artistsArray.filter(artist => new RegExp(terms[k].replace('(','').replace(')',''), 'i').test(artist.search));
       }
 
       for (var i = 0; i < artistsArray.length; i++) {

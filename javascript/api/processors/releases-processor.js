@@ -2,7 +2,7 @@ const utils = require('/app/utils.js');
 
 function processReleasesSearch(searchString, terms, releaseArray, skip, limit, callback) {
     for (var k = 1; k < terms.length; k++) {
-        releaseArray = releaseArray.filter(release => new RegExp(terms[k], 'i').test(release.search));
+        releaseArray = releaseArray.filter(release => new RegExp(terms[k].replace('(','').replace(')',''), 'i').test(release.search));
     }
 
     for (var i = 0; i < releaseArray.length; i++) {
