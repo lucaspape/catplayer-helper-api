@@ -5,7 +5,7 @@ function processCatalogSearch(searchString, terms, trackArray, skip, limit, gold
     sqlhelper.getConnection(
         function (mysqlConnection) {
             for (var k = 1; k < terms.length; k++) {
-                trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(track.search));
+                trackArray = trackArray.filter(track => new RegExp(terms[k], 'i').test(trackArray[i].search));
             }
 
             for (var i = 0; i < trackArray.length; i++) {
